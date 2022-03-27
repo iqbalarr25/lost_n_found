@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:lost_n_found/view/pages/page.dart';
+
+import 'package:get/get.dart';
+import 'app/modules/landing/views/landing_view.dart';
+
+import 'app/routes/app_pages.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flutter Starter',
-      home: LoginPage(),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LandingView(),
     );
   }
 }
