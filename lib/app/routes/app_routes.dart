@@ -10,6 +10,7 @@ abstract class Routes {
   static const DETAIL_LAPORAN = _Paths.DETAIL_LAPORAN;
   static const POST = _Paths.POST;
   static const HISTORY = _Paths.HISTORY;
+  static const MAIN = _Paths.MAIN;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const DETAIL_LAPORAN = '/detail-laporan';
   static const POST = '/post';
   static const HISTORY = '/history';
+  static const MAIN = '/main';
 }

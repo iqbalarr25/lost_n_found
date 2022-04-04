@@ -10,6 +10,8 @@ import '../modules/landing/bindings/landing_binding.dart';
 import '../modules/landing/views/landing_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/main/bindings/main_binding.dart';
+import '../modules/main/views/main_view.dart';
 import '../modules/news/bindings/news_binding.dart';
 import '../modules/news/views/news_view.dart';
 import '../modules/post/bindings/post_binding.dart';
@@ -61,6 +63,11 @@ class AppPages {
       name: _Paths.HISTORY,
       page: () => HistoryView(),
       binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAIN,
+      page: () => MainView(),
+      binding: MainBinding(),
     ),
   ];
 }
