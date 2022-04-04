@@ -9,6 +9,12 @@ TextStyle textAppBar = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 18, fontWeight: FontWeight.w900);
 TextStyle textWhiteMedium = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 16, fontWeight: FontWeight.w600);
+TextStyle textBlackMedium = GoogleFonts.poppins()
+    .copyWith(color: blackColor, fontSize: 16, fontWeight: FontWeight.w600);
+TextStyle textBlackSmall = GoogleFonts.poppins()
+    .copyWith(color: blackColor, fontSize: 14, fontWeight: FontWeight.w600);
+TextStyle textGreyHintSec =
+    GoogleFonts.poppins().copyWith(color: greyColor, fontSize: 11);
 TextStyle textBottomNavBar = GoogleFonts.poppins()
     .copyWith(color: greyColor, fontSize: 12, fontWeight: FontWeight.w900);
 TextStyle textBottomNavBarActive = GoogleFonts.poppins()
@@ -21,3 +27,4 @@ TextStyle textRedMini = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 11, fontWeight: FontWeight.w600);
 TextStyle textRedBig = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 16, fontWeight: FontWeight.bold);
+TextStyle textHint = TextStyle(color: greyColor, fontWeight: FontWeight.w600);
