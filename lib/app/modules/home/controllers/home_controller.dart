@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   var selectedItem = 0.obs;
 
-  final count = 0.obs;
+  var laporanDiikuti = List<Widget>.empty().obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -16,5 +18,4 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
-  void increment() => count.value++;
 }

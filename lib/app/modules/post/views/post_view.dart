@@ -72,7 +72,7 @@ class PostView extends GetView<PostController> {
                       TextField(
                         judul: "Pertanyaan",
                         hint: "Masukkan pertanyaan validasi",
-                        expands: false,
+                        expands: true,
                         hintSecondary:
                             "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
                       ),
