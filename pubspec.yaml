@@ -16,6 +16,9 @@ dependencies:
   get_storage: ^2.0.3
   form_field_validator: ^1.1.0
   carousel_slider: ^4.0.0
+  image_picker: ^0.8.5
+  convert: ^3.0.1
+  http: ^0.13.4
 
 dev_dependencies: 
   flutter_lints: ^1.0.0
@@ -23,5 +26,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter: 
+  assets:
+    - assets/images/surtr.jpg
   uses-material-design: true
+  
 

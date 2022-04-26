@@ -4,6 +4,7 @@ Color whiteColor = "FFFFFF".toColor();
 Color primaryColor = "B11116".toColor();
 Color blackColor = "000000".toColor();
 Color greyColor = "B1B1B1".toColor();
+Color lightGreyColor = "E6E6E6".toColor();
 Color darkGreyColor = "909090".toColor();
 Color greenColor = "19D709".toColor();
 

@@ -1,16 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
-
 import '../controllers/post_controller.dart';
-
-enum MediaSosial { Whatsapp, Instagram, Line }
 
 class PostView extends GetView<PostController> {
   final _formKey = GlobalKey<FormState>();
-  final MediaSosial _mediaSosial = MediaSosial.Whatsapp;
   @override
   PostController get controller => super.controller;
 
@@ -38,12 +37,14 @@ class PostView extends GetView<PostController> {
                     hint: "Masukkan nama barang",
                     expands: false,
                     hintSecondary: "",
+                    textController: controller.judulController,
                   ),
                   TextField(
                     judul: "Deskripsi",
                     hint: "Masukkan deskripsi",
                     expands: true,
                     hintSecondary: "",
+                    textController: controller.deskripsiController,
                   ),
                   radioCategory(),
                   if (controller.category.value.isNotEmpty) ...[
@@ -52,6 +53,7 @@ class PostView extends GetView<PostController> {
                       hint: "Masukkan kronologi",
                       expands: true,
                       hintSecondary: "",
+                      textController: controller.kronologiController,
                     ),
                     TextFieldDate(
                       judul: "Tanggal",
@@ -66,6 +68,7 @@ class PostView extends GetView<PostController> {
                         hint: "Masukkan ${controller.mediaSosial.value}",
                         expands: false,
                         hintSecondary: "",
+                        textController: controller.mediaSosialController,
                       ),
                     if (controller.category.value == "Found" &&
                         controller.mediaSosial.value != "")
@@ -75,24 +78,120 @@ class PostView extends GetView<PostController> {
                         expands: true,
                         hintSecondary:
                             "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
+                        textController: controller.pertanyaanController,
                       ),
+                    if (controller.mediaSosial.value != "")
+                      Container(
+                        margin: const EdgeInsets.only(top: 16),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: lightGreyColor,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 200,
+                              child: Column(
+                                children: [
+                                  Obx(
+                                    () => Expanded(
+                                      flex: 9,
+                                      child: (controller.selectedImages.length >
+                                              0)
+                                          ? listSelectedImage()
+                                          : Container(
+                                              padding: EdgeInsets.only(top: 16),
+                                              child: Icon(
+                                                Icons.image,
+                                                size: 75,
+                                                color: whiteColor,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) {
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListTile(
+                                                leading: new Icon(Icons.photo),
+                                                title: new Text('Gallery'),
+                                                onTap: () {
+                                                  controller.pickImage(
+                                                      ImageSource.gallery);
+                                                },
+                                              ),
+                                              ListTile(
+                                                leading:
+                                                    new Icon(Icons.camera_alt),
+                                                title: new Text('Camera'),
+                                                onTap: () {
+                                                  controller.pickImage(
+                                                      ImageSource.camera);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: primaryColor),
+                                        child: Center(
+                                          child: Text(
+                                            "Upload gambar",
+                                            style: textWhiteMedium,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                   ],
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 16),
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: primaryColor),
-                      child: Center(
-                        child: Text(
-                          "Kirim",
-                          style: textWhiteMedium,
+                  if (controller.mediaSosial.value != "")
+                    Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            controller.tambahPost();
+                          }
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 16),
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: primaryColor),
+                          child: Center(
+                            child: Text(
+                              "Kirim",
+                              style: textWhiteMedium,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -106,7 +205,8 @@ class PostView extends GetView<PostController> {
       {required String judul,
       required String hint,
       required bool expands,
-      required String hintSecondary}) {
+      required String hintSecondary,
+      required TextEditingController textController}) {
     return Container(
       margin: const EdgeInsets.only(top: 16),
       child: Column(
@@ -122,8 +222,9 @@ class PostView extends GetView<PostController> {
           ),
           (expands == true)
               ? ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 130),
+                  constraints: const BoxConstraints(maxHeight: 130),
                   child: TextFormField(
+                    controller: textController,
                     textAlignVertical: TextAlignVertical.top,
                     maxLines: null,
                     expands: true,
@@ -144,6 +245,7 @@ class PostView extends GetView<PostController> {
                   ),
                 )
               : TextFormField(
+                  controller: textController,
                   textAlignVertical: TextAlignVertical.top,
                   decoration: InputDecoration(
                     hintText: hint,
@@ -331,6 +433,56 @@ class PostView extends GetView<PostController> {
                 style: textBlackSmall,
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget listSelectedImage() {
+    return ListView.builder(
+      itemCount: controller.selectedImages.length,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, i) => Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            width: 115,
+            decoration: BoxDecoration(
+              color: blackColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Image.file(
+              File(
+                controller.selectedImages.value[i].path,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              controller.selectedImages
+                  .remove(controller.selectedImages.value[i]);
+              controller.selectedImagesPath
+                  .remove(controller.selectedImagesPath.value[i]);
+            },
+            child: SizedBox(
+              width: 135,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: CircleAvatar(
+                  backgroundColor: primaryColor,
+                  radius: 12,
+                  child: Center(
+                    child: Icon(
+                      Icons.close,
+                      color: whiteColor,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

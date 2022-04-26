@@ -94,8 +94,14 @@ class HomeView extends GetView<HomeController> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
                     color: greyColor,
+                    borderRadius: BorderRadius.circular(10),
+                    image: const DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        "assets/images/surtr.jpg",
+                      ),
+                    ),
                   ),
                   width: 130,
                   height: 130,
@@ -181,7 +187,12 @@ class HomeView extends GetView<HomeController> {
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: greyColor,
+                      image: const DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          "assets/images/surtr.jpg",
+                        ),
+                      ),
                     ),
                     width: 130,
                     height: 130,
@@ -269,14 +280,9 @@ class HomeView extends GetView<HomeController> {
             "Iqbal Arrafi",
             style: textBlackSmall,
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            height: 65,
-            width: 65,
-            decoration: BoxDecoration(
-              color: primaryColor,
-              shape: BoxShape.circle,
-            ),
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: AssetImage("assets/images/surtr.jpg"),
           ),
           Text(
             "waifu saya, fu hua",
