@@ -1,15 +1,16 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/data/models/post_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  @override
-  HomeController get controller => super.controller;
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -42,10 +43,32 @@ class HomeView extends GetView<HomeController> {
                       color: primaryColor,
                       child: SizedBox(
                         height: 150,
-                        child: ListView.builder(
-                          itemCount: 5,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, i) => cardLaporan(i),
+                        child: FutureBuilder(
+                          future: controller.tampilPostLaporanAnda(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: whiteColor,
+                                ),
+                              );
+                            } else {
+                              if (controller.laporanAnda.length == 0) {
+                                return Center(
+                                  child: Text("Kosong lur"),
+                                );
+                              }
+                            }
+                            return Obx(
+                              () => ListView.builder(
+                                itemCount: controller.laporanAnda.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, i) => cardLaporan(
+                                    post: controller.laporanAnda[i], index: i),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -62,24 +85,44 @@ class HomeView extends GetView<HomeController> {
             ],
           ),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-              (context, i) => cardLaporanIkuti(
-                    index: i,
-                  ),
-              childCount: 10),
+        FutureBuilder(
+          future: controller.tampilPostFollowing(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (context, i) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                    childCount: 1),
+              );
+            } else {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                    (context, i) => cardLaporanIkuti(
+                          index: i,
+                        ),
+                    childCount: controller.laporanDiikuti.length),
+              );
+            }
+          },
         ),
       ],
     );
   }
 
-  Widget cardLaporan(int i) {
+  Widget cardLaporan({required Post post, required int index}) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(Routes.DETAIL_LAPORAN);
+        Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
       },
       child: Container(
-        margin: EdgeInsets.only(left: 16, right: (i == 4) ? 20 : 0),
+        margin: EdgeInsets.only(
+            left: 16,
+            right: (index == controller.laporanAnda.length - 1 &&
+                    controller.laporanAnda.length != 1)
+                ? 20
+                : 0),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         width: 330,
         decoration: BoxDecoration(
@@ -96,10 +139,10 @@ class HomeView extends GetView<HomeController> {
                   decoration: BoxDecoration(
                     color: greyColor,
                     borderRadius: BorderRadius.circular(10),
-                    image: const DecorationImage(
+                    image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: AssetImage(
-                        "assets/images/surtr.jpg",
+                      image: NetworkImage(
+                        post.imgUrl![0],
                       ),
                     ),
                   ),
@@ -117,12 +160,12 @@ class HomeView extends GetView<HomeController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Laptop Gaming",
+                            post.title.toString().capitalizeFirst!,
                             style: textTitleCard,
                           ),
                           const SizedBox(height: 1),
                           Text(
-                            "11 November 2022",
+                            post.date.toString(),
                             style: textGreyCard,
                           ),
                           const SizedBox(height: 5),
@@ -136,7 +179,7 @@ class HomeView extends GetView<HomeController> {
                               color: primaryColor,
                             ),
                             child: Text(
-                              "Lost",
+                              post.typePost!,
                               style: textWhiteMedium,
                             ),
                           ),

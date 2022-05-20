@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "124150990113",
+    "project_id": "telu-lost-and-found",
+    "storage_bucket": "telu-lost-and-found.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124150990113:android:ad218f8161a30b44efaa60",
+        "android_client_info": {
+          "package_name": "com.example.lost_n_found"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124150990113-d5i0ip2o8hul7r9kcurn4rcfhsnnr79k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa5uUwgtRiug0X6i7xDS3eF6RSE5l2Bsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124150990113-d5i0ip2o8hul7r9kcurn4rcfhsnnr79k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,31 @@
+{
+    "id": "5f28ec20-11fe-47cb-a23c-04b426ec7e83",
+    "userId": "37b306e4-8e4b-4999-a16f-c2996c61cfb8",
+    "typePost": "Found",
+    "title": "a",
+    "description": "a",
+    "chronology": "a",
+    "socialMediaType": "WhatsApp",
+    "socialMedia": "a",
+    "imgUrl": [
+      "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/image_picker3572370445026067563.jpg?alt=media&token=89d2e3c0-eb6f-4736-88ad-5340f6139e7c"
+    ],
+    "date": "17 May 2022",
+    "activeStatus": true,
+    "deleteStatus": false,
+    "createdAt": "2022-05-16T17:43:41.437Z",
+    "updatedAt": "2022-05-16T17:43:41.438Z",
+    "Questions": [
+      {
+        "id": "d01b4970-fcf4-4a0f-8139-ead7c486feae",
+        "userId": "37b306e4-8e4b-4999-a16f-c2996c61cfb8",
+        "postId": "5f28ec20-11fe-47cb-a23c-04b426ec7e83",
+        "typeQuestion": "PostQuestion",
+        "question": "a",
+        "statusQuestion": "Waiting",
+        "createdAt": "2022-05-16T17:43:42.633Z",
+        "updatedAt": "2022-05-16T17:43:42.634Z",
+        "Answers": []
+      }
+    ]
+}

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,14 +10,11 @@ import '../controllers/post_controller.dart';
 class PostView extends GetView<PostController> {
   final _formKey = GlobalKey<FormState>();
   @override
-  PostController get controller => super.controller;
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Post laporan',
+          (controller.post.value.id == null) ? 'Post laporan' : 'Edit laporan',
           style: textAppBar,
         ),
         backgroundColor: primaryColor,
@@ -99,17 +95,31 @@ class PostView extends GetView<PostController> {
                                   Obx(
                                     () => Expanded(
                                       flex: 9,
-                                      child: (controller.selectedImages.length >
-                                              0)
-                                          ? listSelectedImage()
-                                          : Container(
-                                              padding: EdgeInsets.only(top: 16),
-                                              child: Icon(
-                                                Icons.image,
-                                                size: 75,
-                                                color: whiteColor,
-                                              ),
-                                            ),
+                                      child: (controller.post.value.id == null)
+                                          ? (controller
+                                                  .selectedImages.isNotEmpty)
+                                              ? listSelectedImage()
+                                              : Container(
+                                                  padding:
+                                                      EdgeInsets.only(top: 16),
+                                                  child: Icon(
+                                                    Icons.image,
+                                                    size: 75,
+                                                    color: whiteColor,
+                                                  ),
+                                                )
+                                          : (controller.selectedImagesEdit
+                                                  .isNotEmpty)
+                                              ? listSelectedImage()
+                                              : Container(
+                                                  padding:
+                                                      EdgeInsets.only(top: 16),
+                                                  child: Icon(
+                                                    Icons.image,
+                                                    size: 75,
+                                                    color: whiteColor,
+                                                  ),
+                                                ),
                                     ),
                                   ),
                                   GestureDetector(
@@ -121,20 +131,36 @@ class PostView extends GetView<PostController> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
                                               ListTile(
+                                                tileColor: Colors.white,
                                                 leading: new Icon(Icons.photo),
                                                 title: new Text('Gallery'),
                                                 onTap: () {
-                                                  controller.pickImage(
-                                                      ImageSource.gallery);
+                                                  if (controller
+                                                          .post.value.id ==
+                                                      null) {
+                                                    controller.pickImageNormal(
+                                                        ImageSource.gallery);
+                                                  } else {
+                                                    controller.pickImageEdit(
+                                                        ImageSource.gallery);
+                                                  }
                                                 },
                                               ),
                                               ListTile(
+                                                tileColor: Colors.white,
                                                 leading:
                                                     new Icon(Icons.camera_alt),
                                                 title: new Text('Camera'),
                                                 onTap: () {
-                                                  controller.pickImage(
-                                                      ImageSource.camera);
+                                                  if (controller
+                                                          .post.value.id ==
+                                                      null) {
+                                                    controller.pickImageNormal(
+                                                        ImageSource.camera);
+                                                  } else {
+                                                    controller.pickImageEdit(
+                                                        ImageSource.camera);
+                                                  }
                                                 },
                                               ),
                                             ],
@@ -173,7 +199,24 @@ class PostView extends GetView<PostController> {
                       child: GestureDetector(
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
-                            controller.tambahPost();
+                            if (controller.post.value.id == null) {
+                              if (controller.selectedImages.isNotEmpty) {
+                                print("tambah post");
+                                controller.tambahPost();
+                              } else {
+                                controller
+                                    .errorMsg("Gambar tidak boleh kosong!");
+                              }
+                            } else {
+                              if (controller
+                                  .selectedImagesPathEdit.isNotEmpty) {
+                                print("edit post");
+                                controller.editPost();
+                              } else {
+                                controller
+                                    .errorMsg("Gambar tidak boleh kosong!");
+                              }
+                            }
                           }
                         },
                         child: Container(
@@ -441,30 +484,34 @@ class PostView extends GetView<PostController> {
 
   Widget listSelectedImage() {
     return ListView.builder(
-      itemCount: controller.selectedImages.length,
+      itemCount: (controller.post.value.id == null)
+          ? controller.selectedImages.length
+          : controller.selectedImagesEdit.length,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, i) => Stack(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            width: 115,
-            decoration: BoxDecoration(
-              color: blackColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Image.file(
-              File(
-                controller.selectedImages.value[i].path,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              width: 115,
+              decoration: BoxDecoration(
+                color: blackColor,
+                borderRadius: BorderRadius.circular(10),
               ),
-            ),
-          ),
+              child: (controller.post.value.id == null)
+                  ? Image.file(
+                      File(
+                        controller.selectedImages.value[i].path,
+                      ),
+                    )
+                  : controller.selectedImagesEdit.value[i]),
           GestureDetector(
             onTap: () {
-              controller.selectedImages
-                  .remove(controller.selectedImages.value[i]);
-              controller.selectedImagesPath
-                  .remove(controller.selectedImagesPath.value[i]);
+              if (controller.post.value.id == null) {
+                controller.deleteImage(i);
+              } else {
+                controller.deleteImageEdit(i);
+              }
             },
             child: SizedBox(
               width: 135,

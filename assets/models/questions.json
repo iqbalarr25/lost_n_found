@@ -1,0 +1,8 @@
+{
+    "id": "string",
+    "userId": "string",
+    "postId": "string",
+    "typeQuestion": "UserQuestion",
+    "question": "string",
+    "statusQuestion": "Waiting"
+}

@@ -1,4 +1,5 @@
 {
+    "id": "string",
     "userId": "string",
     "typePost": "Lost",
     "title": "string",
@@ -10,5 +11,8 @@
         "string"
     ],
     "date": "string",
-    "activeStatus": true
+    "activeStatus": true,
+    "deleteStatus": true
 }
+
+

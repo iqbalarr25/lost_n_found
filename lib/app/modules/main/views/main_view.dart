@@ -17,9 +17,6 @@ class MainView extends GetView<MainController> {
   ];
 
   @override
-  MainController get controller => super.controller;
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() => pages[controller.selectedIndex.value]),
@@ -64,7 +61,7 @@ class MainView extends GetView<MainController> {
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
               blurRadius: 10,
-              offset: const Offset(0, -4), // Shadow position
+              offset: const Offset(0, -4),
             ),
           ],
         ),
