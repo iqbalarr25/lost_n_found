@@ -167,48 +167,34 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   const SizedBox(height: 10),
                   if (controller.detailLaporan.value.userId ==
                       AuthController.userId) ...[
-                    textTitleBody(
-                      title: "Balasan",
-                      body: FutureBuilder(
-                        future:
-                            (controller.detailLaporan.value.typePost == "Found")
-                                ? controller.tampilJawaban()
-                                : controller.tampilPertanyaan(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else {
-                            return Column(
-                              children: (controller
-                                          .detailLaporan.value.typePost ==
-                                      "Found")
-                                  ? (controller.detailLaporan.value
-                                          .questions![0].answers!.isNotEmpty)
-                                      ? controller.detailLaporan.value
-                                          .questions![0].answers!
-                                          .map((element) =>
-                                              buildCardBalasanAnswer(element))
-                                          .toList()
-                                      : [
-                                          Text("Belum ada balasan",
-                                              style: textGreyDetailLaporan)
-                                        ]
-                                  : (controller.detailLaporan.value.questions!
-                                          .isNotEmpty)
-                                      ? controller
-                                          .detailLaporan.value.questions!
-                                          .map((element) =>
-                                              buildCardBalasanQuestion(element))
-                                          .toList()
-                                      : [
-                                          Text("Belum ada balasan",
-                                              style: textGreyDetailLaporan)
-                                        ],
-                            );
-                          }
-                        },
+                    Obx(
+                      () => textTitleBody(
+                        title: "Balasan",
+                        body: Column(
+                          children: (controller.detailLaporan.value.typePost ==
+                                  "Found")
+                              ? (controller.detailLaporan.value.questions![0]
+                                      .answers!.isNotEmpty)
+                                  ? controller.detailLaporan.value.questions![0]
+                                      .answers!
+                                      .map((element) =>
+                                          buildCardBalasanAnswer(element))
+                                      .toList()
+                                  : [
+                                      Text("Belum ada balasan",
+                                          style: textGreyDetailLaporan)
+                                    ]
+                              : (controller.detailLaporan.value.questions!
+                                      .isNotEmpty)
+                                  ? controller.detailLaporan.value.questions!
+                                      .map((element) =>
+                                          buildCardBalasanQuestion(element))
+                                      .toList()
+                                  : [
+                                      Text("Belum ada balasan",
+                                          style: textGreyDetailLaporan)
+                                    ],
+                        ),
                       ),
                     ),
                   ],
@@ -261,59 +247,68 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
   }
 
   Widget buildCardBalasanAnswer(Answers answers) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: Material(
-        borderRadius: BorderRadius.circular(50),
-        elevation: 3,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
-          height: 55,
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 50,
-                child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/surtr.jpg"),
+    return GestureDetector(
+      onTap: () => openDialogKonfirmasiBalasan(answers),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        child: Material(
+          borderRadius: BorderRadius.circular(50),
+          elevation: 3,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
+            height: 55,
+            decoration: BoxDecoration(
+              color: (answers.statusAnswer == "Accepted")
+                  ? greenColor
+                  : primaryColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage("assets/images/surtr.jpg"),
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Iqbal Arrafi",
-                      style: textWhiteSmallNormal,
-                    ),
-                    Text(
-                      answers.answer!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textWhiteSmallBalasan,
-                    ),
-                  ],
+                Expanded(
+                  flex: 8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Iqbal Arrafi",
+                        style: (answers.statusAnswer == "Accepted")
+                            ? textBlackSmallNormal
+                            : textWhiteSmallNormal,
+                      ),
+                      Text(
+                        answers.answer!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: (answers.statusAnswer == "Accepted")
+                            ? textBlackSmallBalasan
+                            : textWhiteSmallBalasan,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(right: 10),
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(25),
+                Container(
+                  margin: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Text(
+                    "Detail",
+                    style: textRedMini,
+                  ),
                 ),
-                child: Text(
-                  "Detail",
-                  style: textRedMini,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -321,59 +316,62 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
   }
 
   Widget buildCardBalasanQuestion(Questions questions) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      child: Material(
-        borderRadius: BorderRadius.circular(50),
-        elevation: 3,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
-          height: 55,
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 50,
-                child: CircleAvatar(
-                  backgroundImage: AssetImage("assets/images/surtr.jpg"),
+    return GestureDetector(
+      onTap: () => openDialogMenjawabBalasan(questions),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        child: Material(
+          borderRadius: BorderRadius.circular(50),
+          elevation: 3,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
+            height: 55,
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 50,
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage("assets/images/surtr.jpg"),
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 8,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Iqbal Arrafi",
-                      style: textWhiteSmallNormal,
-                    ),
-                    Text(
-                      questions.question!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textWhiteSmallBalasan,
-                    ),
-                  ],
+                Expanded(
+                  flex: 8,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Iqbal Arrafi",
+                        style: textWhiteSmallNormal,
+                      ),
+                      Text(
+                        questions.question!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: textWhiteSmallBalasan,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(right: 10),
-                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.circular(25),
+                Container(
+                  margin: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Text(
+                    "Detail",
+                    style: textRedMini,
+                  ),
                 ),
-                child: Text(
-                  "Detail",
-                  style: textRedMini,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -413,29 +411,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               style: textBlackSmallNormal,
             ),
             const SizedBox(height: 15),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 130),
-              child: TextFormField(
-                controller: controller.balasanController,
-                textAlignVertical: TextAlignVertical.top,
-                maxLines: null,
-                expands: true,
-                decoration: InputDecoration(
-                  hintText: "Masukkan pertanyaan",
-                  isDense: true,
-                  hintStyle: textHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: primaryColor),
-                  ),
-                ),
-                validator:
-                    RequiredValidator(errorText: "Pertanyaan harus diisi!"),
-              ),
-            ),
+            textFormField(hint: "Masukkan pertanyaan"),
             const SizedBox(height: 2),
             Align(
               alignment: Alignment.centerLeft,
@@ -486,37 +462,16 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           children: [
             const SizedBox(height: 15),
             Text(
-              "1. Apa background dari laptop",
+              controller.detailLaporan.value.questions![0].question!,
               style: textBlackSmallNormal,
             ),
             const SizedBox(height: 15),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 130),
-              child: TextFormField(
-                controller: controller.balasanController,
-                textAlignVertical: TextAlignVertical.top,
-                maxLines: null,
-                expands: true,
-                decoration: InputDecoration(
-                  hintText: "Masukkan jawaban",
-                  isDense: true,
-                  hintStyle: textHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: primaryColor),
-                  ),
-                ),
-                validator: RequiredValidator(errorText: "Jawaban harus diisi!"),
-              ),
-            ),
+            textFormField(hint: "Masukkan jawaban"),
             const SizedBox(height: 15),
             GestureDetector(
               onTap: () {
                 if (_formKey.currentState!.validate()) {
-                  print("Kirim");
+                  controller.kirimJawaban();
                 }
               },
               child: Container(
@@ -533,6 +488,145 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                 ),
               ),
             ),
+            const SizedBox(width: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future openDialogMenjawabBalasan(Questions questions) async {
+    final _formKey = GlobalKey<FormState>();
+
+    Get.defaultDialog(
+      title: "Pertanyaan",
+      titleStyle: textBlackBig,
+      titlePadding: const EdgeInsets.only(top: 25),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            const SizedBox(height: 5),
+            Text(
+              questions.question!,
+              style: textBlackSmallNormal,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Iqbal Arrafi",
+              style: textBlackSmall,
+            ),
+            const SizedBox(height: 10),
+            CircleAvatar(
+              radius: 35,
+              backgroundImage: AssetImage("assets/images/surtr.jpg"),
+            ),
+            const SizedBox(height: 10),
+            textFormField(hint: "Masukkan jawaban"),
+            const SizedBox(height: 15),
+            GestureDetector(
+              onTap: () {
+                if (_formKey.currentState!.validate()) {
+                  controller.kirimJawabanBalasan(questions);
+                }
+              },
+              child: Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Center(
+                  child: Text(
+                    "Kirim",
+                    style: textWhiteMedium,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future openDialogKonfirmasiBalasan(Answers answers) async {
+    final _formKey = GlobalKey<FormState>();
+
+    Get.defaultDialog(
+      title: "Jawaban",
+      titleStyle: textBlackBig,
+      titlePadding: const EdgeInsets.only(top: 25),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+            Text(
+              answers.answer!,
+              style: textBlackSmallNormal,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Iqbal Arrafi",
+              style: textBlackSmall,
+            ),
+            const SizedBox(height: 10),
+            CircleAvatar(
+              radius: 35,
+              backgroundImage: AssetImage("assets/images/surtr.jpg"),
+            ),
+            const SizedBox(height: 10),
+            (answers.statusAnswer == "Accepted")
+                ? const SizedBox()
+                : Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () => controller.interaksiJawabanBalasan(
+                              answers, false),
+                          child: Container(
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Tolak",
+                                style: textWhiteMedium,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () =>
+                              controller.interaksiJawabanBalasan(answers, true),
+                          child: Container(
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: greenColor,
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Terima",
+                                style: textWhiteMedium,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
             const SizedBox(width: 10),
           ],
         ),
@@ -575,6 +669,30 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           ),
           const SizedBox(width: 10),
         ],
+      ),
+    );
+  }
+
+  Widget textFormField({required String hint, required}) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 130),
+      child: TextFormField(
+        controller: controller.balasanController,
+        textAlignVertical: TextAlignVertical.top,
+        maxLines: null,
+        decoration: InputDecoration(
+          hintText: hint,
+          isDense: true,
+          hintStyle: textHint,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: primaryColor),
+          ),
+        ),
+        validator: RequiredValidator(errorText: "Jawaban harus diisi!"),
       ),
     );
   }

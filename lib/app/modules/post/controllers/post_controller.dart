@@ -167,6 +167,10 @@ class PostController extends GetxController {
             var body = json.decode(response.body) as Map<String, dynamic>;
             var statusCode = response.statusCode;
 
+            if (category.value == "Found") {
+              editQuestion();
+            }
+
             print("STATUS CODE : $statusCode");
             print(body);
 
@@ -210,6 +214,10 @@ class PostController extends GetxController {
 
         var body = json.decode(response.body) as Map<String, dynamic>;
         var statusCode = response.statusCode;
+
+        if (category.value == "Found") {
+          editQuestion();
+        }
 
         print("STATUS CODE : $statusCode");
         print(body);
@@ -268,17 +276,33 @@ class PostController extends GetxController {
     }
   }
 
+  Future editQuestion() async {
+    Uri uri = Uri.parse(
+        AuthController.url + "questions/" + post.value.questions![0].id!);
+    var response = await http.patch(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Accept": "application/json",
+        'Authorization': 'Bearer ' + AuthController.token,
+      },
+      body: json.encode({
+        "question": pertanyaanController.text,
+      }),
+    );
+  }
+
   Future pickImageNormal(ImageSource imageSource) async {
     try {
       final image = await ImagePicker().pickImage(source: imageSource);
       if (image == null) return;
 
-      selectedImages.value.add(File(image.path));
-      this.selectedImages.refresh();
-      selectedImagesPath.value.add(basename(image.path));
-      this.selectedImagesPath.refresh();
-      print(selectedImages.value);
-      print(selectedImagesPath.value.toString() + "post normal");
+      selectedImages.add(File(image.path));
+      selectedImages.refresh();
+      selectedImagesPath.add(basename(image.path));
+      selectedImagesPath.refresh();
+      print(selectedImages);
+      print(selectedImagesPath.toString() + "post normal");
     } on PlatformException catch (e) {
       print("Failed to pick image: $e");
     }
@@ -290,22 +314,22 @@ class PostController extends GetxController {
       if (image == null) return;
 
       selectedImagesEdit.add(Image.file(File(image.path)));
-      this.selectedImagesEdit.refresh();
-      selectedImages.value.add(File(image.path));
-      this.selectedImages.refresh();
-      selectedImagesPathEdit.value.add(basename(image.path));
-      this.selectedImagesPathEdit.refresh();
-      print(selectedImages.value);
-      print(selectedImagesPathEdit.value.toString() + "post edit");
+      selectedImagesEdit.refresh();
+      selectedImages.add(File(image.path));
+      selectedImages.refresh();
+      selectedImagesPathEdit.add(basename(image.path));
+      selectedImagesPathEdit.refresh();
+      print(selectedImages);
+      print(selectedImagesPathEdit.toString() + "post edit");
     } on PlatformException catch (e) {
       print("Failed to pick image: $e");
     }
   }
 
   void deleteImage(int index) {
-    selectedImages.remove(selectedImages.value[index]);
+    selectedImages.remove(selectedImages[index]);
     selectedImages.refresh();
-    selectedImagesPath.remove(selectedImagesPath.value[index]);
+    selectedImagesPath.remove(selectedImagesPath[index]);
     selectedImages.refresh();
   }
 
@@ -373,8 +397,8 @@ class PostController extends GetxController {
         selectedImagesPath.add(element);
         selectedImagesEdit.add(Image.network(element));
       });
-      print(selectedImagesPath.value);
-      print(selectedImagesEdit.value);
+      print(selectedImagesPath);
+      print(selectedImagesEdit);
     }
     super.onInit();
   }

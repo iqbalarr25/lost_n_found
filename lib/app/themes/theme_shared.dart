@@ -14,6 +14,8 @@ TextStyle textWhiteMedium = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 16, fontWeight: FontWeight.w600);
 TextStyle textWhiteSmallNormal = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 14, fontWeight: FontWeight.w400);
+TextStyle textBlackSmallBalasan = GoogleFonts.poppins()
+    .copyWith(color: blackColor, fontSize: 12, fontWeight: FontWeight.w400);
 TextStyle textWhiteSmallBalasan = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 12, fontWeight: FontWeight.w400);
 TextStyle textBlackBig = GoogleFonts.poppins()

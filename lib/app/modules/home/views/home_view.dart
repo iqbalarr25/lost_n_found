@@ -56,7 +56,10 @@ class HomeView extends GetView<HomeController> {
                             } else {
                               if (controller.laporanAnda.length == 0) {
                                 return Center(
-                                  child: Text("Kosong lur"),
+                                  child: Text(
+                                    "Belum mempunyai laporan :(",
+                                    style: textWhiteSmallNormal,
+                                  ),
                                 );
                               }
                             }

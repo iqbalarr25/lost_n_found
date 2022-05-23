@@ -18,63 +18,65 @@ class MainView extends GetView<MainController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Obx(() => pages[controller.selectedIndex.value]),
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Get.toNamed(Routes.POST);
-        },
-        child: Container(
-          padding: const EdgeInsets.only(
-            top: 5,
-            bottom: 5,
-            left: 7,
-            right: 15,
-          ),
+    return Obx(
+      () => Scaffold(
+        body: pages[controller.selectedIndex.value],
+        floatingActionButton: (controller.selectedIndex.value != 2)
+            ? GestureDetector(
+                onTap: () {
+                  Get.toNamed(Routes.POST);
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(
+                    top: 5,
+                    bottom: 5,
+                    left: 7,
+                    right: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: primaryColor,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.add_circle,
+                        color: whiteColor,
+                        size: 32,
+                      ),
+                      const SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        "Post",
+                        style: textWhiteMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : SizedBox(),
+        bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: primaryColor,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.add_circle,
-                color: whiteColor,
-                size: 32,
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                "Post",
-                style: textWhiteMedium,
+            color: whiteColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -4),
               ),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: whiteColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -4),
-            ),
-          ],
-        ),
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            GestureDetector(
-              onTap: () {
-                controller.selectedIndex.value = 0;
-              },
-              child: Obx(
-                () => Column(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  controller.selectedIndex.value = 0;
+                },
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -98,13 +100,11 @@ class MainView extends GetView<MainController> {
                   ],
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                controller.selectedIndex.value = 1;
-              },
-              child: Obx(
-                () => Column(
+              GestureDetector(
+                onTap: () {
+                  controller.selectedIndex.value = 1;
+                },
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -128,13 +128,11 @@ class MainView extends GetView<MainController> {
                   ],
                 ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                controller.selectedIndex.value = 2;
-              },
-              child: Obx(
-                () => Column(
+              GestureDetector(
+                onTap: () {
+                  controller.selectedIndex.value = 2;
+                },
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -158,8 +156,8 @@ class MainView extends GetView<MainController> {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

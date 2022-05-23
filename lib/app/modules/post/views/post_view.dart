@@ -21,222 +21,213 @@ class PostView extends GetView<PostController> {
       ),
       body: Form(
         key: _formKey,
-        child: SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.only(right: 16, left: 16),
-            child: Obx(
-              () => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    judul: "Judul barang",
-                    hint: "Masukkan nama barang",
-                    expands: false,
-                    hintSecondary: "",
-                    textController: controller.judulController,
-                  ),
-                  TextField(
-                    judul: "Deskripsi",
-                    hint: "Masukkan deskripsi",
+        child: Container(
+          margin: const EdgeInsets.only(right: 16, left: 16),
+          child: Obx(
+            () => ListView(
+              children: [
+                textField(
+                  judul: "Judul barang",
+                  hint: "Masukkan nama barang",
+                  expands: false,
+                  hintSecondary: "",
+                  textController: controller.judulController,
+                ),
+                textField(
+                  judul: "Deskripsi",
+                  hint: "Masukkan deskripsi",
+                  expands: true,
+                  hintSecondary: "",
+                  textController: controller.deskripsiController,
+                ),
+                radioCategory(),
+                if (controller.category.value.isNotEmpty) ...[
+                  textField(
+                    judul: "Kronologi",
+                    hint: "Masukkan kronologi",
                     expands: true,
                     hintSecondary: "",
-                    textController: controller.deskripsiController,
+                    textController: controller.kronologiController,
                   ),
-                  radioCategory(),
-                  if (controller.category.value.isNotEmpty) ...[
-                    TextField(
-                      judul: "Kronologi",
-                      hint: "Masukkan kronologi",
-                      expands: true,
-                      hintSecondary: "",
-                      textController: controller.kronologiController,
-                    ),
-                    TextFieldDate(
-                      judul: "Tanggal",
-                      hint: "Masukkan tanggal",
+                  TextFieldDate(
+                    judul: "Tanggal",
+                    hint: "Masukkan tanggal",
+                    expands: false,
+                    context: context,
+                  ),
+                  radioMediaSosial(),
+                  if (controller.mediaSosial.value != "")
+                    textField(
+                      judul: controller.mediaSosial.value,
+                      hint: "Masukkan ${controller.mediaSosial.value}",
                       expands: false,
-                      context: context,
+                      hintSecondary: "",
+                      textController: controller.mediaSosialController,
                     ),
-                    radioMediaSosial(),
-                    if (controller.mediaSosial.value != "")
-                      TextField(
-                        judul: controller.mediaSosial.value,
-                        hint: "Masukkan ${controller.mediaSosial.value}",
-                        expands: false,
-                        hintSecondary: "",
-                        textController: controller.mediaSosialController,
-                      ),
-                    if (controller.category.value == "Found" &&
-                        controller.mediaSosial.value != "")
-                      TextField(
-                        judul: "Pertanyaan",
-                        hint: "Masukkan pertanyaan validasi",
-                        expands: true,
-                        hintSecondary:
-                            "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
-                        textController: controller.pertanyaanController,
-                      ),
-                    if (controller.mediaSosial.value != "")
-                      Container(
-                        margin: const EdgeInsets.only(top: 16),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: lightGreyColor,
-                              ),
+                  if (controller.category.value == "Found" &&
+                      controller.mediaSosial.value != "")
+                    textField(
+                      judul: "Pertanyaan",
+                      hint: "Masukkan pertanyaan validasi",
+                      expands: true,
+                      hintSecondary:
+                          "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
+                      textController: controller.pertanyaanController,
+                    ),
+                  if (controller.mediaSosial.value != "")
+                    Container(
+                      margin: const EdgeInsets.only(top: 16),
+                      child: Stack(
+                        children: [
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: lightGreyColor,
                             ),
-                            SizedBox(
-                              height: 200,
-                              child: Column(
-                                children: [
-                                  Obx(
-                                    () => Expanded(
-                                      flex: 9,
-                                      child: (controller.post.value.id == null)
-                                          ? (controller
-                                                  .selectedImages.isNotEmpty)
-                                              ? listSelectedImage()
-                                              : Container(
-                                                  padding:
-                                                      EdgeInsets.only(top: 16),
-                                                  child: Icon(
-                                                    Icons.image,
-                                                    size: 75,
-                                                    color: whiteColor,
-                                                  ),
-                                                )
-                                          : (controller.selectedImagesEdit
-                                                  .isNotEmpty)
-                                              ? listSelectedImage()
-                                              : Container(
-                                                  padding:
-                                                      EdgeInsets.only(top: 16),
-                                                  child: Icon(
-                                                    Icons.image,
-                                                    size: 75,
-                                                    color: whiteColor,
-                                                  ),
+                          ),
+                          SizedBox(
+                            height: 200,
+                            child: Column(
+                              children: [
+                                Obx(
+                                  () => Expanded(
+                                    flex: 9,
+                                    child: (controller.post.value.id == null)
+                                        ? (controller.selectedImages.isNotEmpty)
+                                            ? listSelectedImage()
+                                            : Container(
+                                                padding:
+                                                    EdgeInsets.only(top: 16),
+                                                child: Icon(
+                                                  Icons.image,
+                                                  size: 75,
+                                                  color: whiteColor,
                                                 ),
-                                    ),
+                                              )
+                                        : (controller
+                                                .selectedImagesEdit.isNotEmpty)
+                                            ? listSelectedImage()
+                                            : Container(
+                                                padding:
+                                                    EdgeInsets.only(top: 16),
+                                                child: Icon(
+                                                  Icons.image,
+                                                  size: 75,
+                                                  color: whiteColor,
+                                                ),
+                                              ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              ListTile(
-                                                tileColor: Colors.white,
-                                                leading: new Icon(Icons.photo),
-                                                title: new Text('Gallery'),
-                                                onTap: () {
-                                                  if (controller
-                                                          .post.value.id ==
-                                                      null) {
-                                                    controller.pickImageNormal(
-                                                        ImageSource.gallery);
-                                                  } else {
-                                                    controller.pickImageEdit(
-                                                        ImageSource.gallery);
-                                                  }
-                                                },
-                                              ),
-                                              ListTile(
-                                                tileColor: Colors.white,
-                                                leading:
-                                                    new Icon(Icons.camera_alt),
-                                                title: new Text('Camera'),
-                                                onTap: () {
-                                                  if (controller
-                                                          .post.value.id ==
-                                                      null) {
-                                                    controller.pickImageNormal(
-                                                        ImageSource.camera);
-                                                  } else {
-                                                    controller.pickImageEdit(
-                                                        ImageSource.camera);
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: primaryColor),
-                                        child: Center(
-                                          child: Text(
-                                            "Upload gambar",
-                                            style: textWhiteMedium,
-                                          ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            ListTile(
+                                              tileColor: Colors.white,
+                                              leading: new Icon(Icons.photo),
+                                              title: new Text('Gallery'),
+                                              onTap: () {
+                                                if (controller.post.value.id ==
+                                                    null) {
+                                                  controller.pickImageNormal(
+                                                      ImageSource.gallery);
+                                                } else {
+                                                  controller.pickImageEdit(
+                                                      ImageSource.gallery);
+                                                }
+                                              },
+                                            ),
+                                            ListTile(
+                                              tileColor: Colors.white,
+                                              leading:
+                                                  new Icon(Icons.camera_alt),
+                                              title: new Text('Camera'),
+                                              onTap: () {
+                                                if (controller.post.value.id ==
+                                                    null) {
+                                                  controller.pickImageNormal(
+                                                      ImageSource.camera);
+                                                } else {
+                                                  controller.pickImageEdit(
+                                                      ImageSource.camera);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          color: primaryColor),
+                                      child: Center(
+                                        child: Text(
+                                          "Upload gambar",
+                                          style: textWhiteMedium,
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )
-                  ],
-                  if (controller.mediaSosial.value != "")
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          if (_formKey.currentState!.validate()) {
-                            if (controller.post.value.id == null) {
-                              if (controller.selectedImages.isNotEmpty) {
-                                print("tambah post");
-                                controller.tambahPost();
-                              } else {
-                                controller
-                                    .errorMsg("Gambar tidak boleh kosong!");
-                              }
+                          ),
+                        ],
+                      ),
+                    )
+                ],
+                if (controller.mediaSosial.value != "")
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          if (controller.post.value.id == null) {
+                            if (controller.selectedImages.isNotEmpty) {
+                              print("tambah post");
+                              controller.tambahPost();
                             } else {
-                              if (controller
-                                  .selectedImagesPathEdit.isNotEmpty) {
-                                print("edit post");
-                                controller.editPost();
-                              } else {
-                                controller
-                                    .errorMsg("Gambar tidak boleh kosong!");
-                              }
+                              controller.errorMsg("Gambar tidak boleh kosong!");
+                            }
+                          } else {
+                            if (controller.selectedImagesPathEdit.isNotEmpty ||
+                                controller.selectedImagesEdit.isNotEmpty) {
+                              print("edit post");
+                              controller.editPost();
+                            } else {
+                              controller.errorMsg("Gambar tidak boleh kosong!");
                             }
                           }
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 16),
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: primaryColor),
-                          child: Center(
-                            child: Text(
-                              "Kirim",
-                              style: textWhiteMedium,
-                            ),
+                        }
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: primaryColor),
+                        child: Center(
+                          child: Text(
+                            "Kirim",
+                            style: textWhiteMedium,
                           ),
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -244,7 +235,7 @@ class PostView extends GetView<PostController> {
     );
   }
 
-  Widget TextField(
+  Widget textField(
       {required String judul,
       required String hint,
       required bool expands,
