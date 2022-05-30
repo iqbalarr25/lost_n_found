@@ -17,12 +17,12 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
       body: FutureBuilder(
           future: controller.tampilDetailLaporan(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return buildDetailLaporan();
+            } else {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else {
-              return buildDetailLaporan();
             }
           }),
     );
@@ -246,7 +246,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Widget buildCardBalasanAnswer(Answers answers) {
+  Widget buildCardBalasanAnswer(MyAnswers answers) {
     return GestureDetector(
       onTap: () => openDialogKonfirmasiBalasan(answers),
       child: Container(
@@ -266,10 +266,14 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 50,
                   child: CircleAvatar(
-                    backgroundImage: AssetImage("assets/images/surtr.jpg"),
+                    backgroundColor: primaryColor,
+                    backgroundImage: (answers.user!.isBlank!)
+                        ? NetworkImage(answers.user!.imgUrl!)
+                        : const AssetImage("assets/images/iqbal.jpg")
+                            as ImageProvider,
                   ),
                 ),
                 Expanded(
@@ -279,7 +283,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Iqbal Arrafi",
+                        answers.user!.name!.capitalizeFirst!,
                         style: (answers.statusAnswer == "Accepted")
                             ? textBlackSmallNormal
                             : textWhiteSmallNormal,
@@ -315,7 +319,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Widget buildCardBalasanQuestion(Questions questions) {
+  Widget buildCardBalasanQuestion(MyQuestions questions) {
     return GestureDetector(
       onTap: () => openDialogMenjawabBalasan(questions),
       child: Container(
@@ -333,10 +337,14 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 50,
                   child: CircleAvatar(
-                    backgroundImage: AssetImage("assets/images/surtr.jpg"),
+                    backgroundColor: primaryColor,
+                    backgroundImage: (questions.user!.isBlank!)
+                        ? NetworkImage(questions.user!.imgUrl!)
+                        : const AssetImage("assets/images/iqbal.jpg")
+                            as ImageProvider,
                   ),
                 ),
                 Expanded(
@@ -346,7 +354,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Iqbal Arrafi",
+                        questions.user!.name!.capitalizeFirst!,
                         style: textWhiteSmallNormal,
                       ),
                       Text(
@@ -495,7 +503,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Future openDialogMenjawabBalasan(Questions questions) async {
+  Future openDialogMenjawabBalasan(MyQuestions questions) async {
     final _formKey = GlobalKey<FormState>();
 
     Get.defaultDialog(
@@ -514,13 +522,17 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             ),
             const SizedBox(height: 10),
             Text(
-              "Iqbal Arrafi",
+              questions.user!.name!.capitalizeFirst!,
               style: textBlackSmall,
             ),
             const SizedBox(height: 10),
             CircleAvatar(
+              backgroundColor: primaryColor,
               radius: 35,
-              backgroundImage: AssetImage("assets/images/surtr.jpg"),
+              backgroundImage: (questions.user!.isBlank!)
+                  ? NetworkImage(questions.user!.imgUrl!)
+                  : const AssetImage("assets/images/iqbal.jpg")
+                      as ImageProvider,
             ),
             const SizedBox(height: 10),
             textFormField(hint: "Masukkan jawaban"),
@@ -552,7 +564,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Future openDialogKonfirmasiBalasan(Answers answers) async {
+  Future openDialogKonfirmasiBalasan(MyAnswers answers) async {
     final _formKey = GlobalKey<FormState>();
 
     Get.defaultDialog(
@@ -571,13 +583,17 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             ),
             const SizedBox(height: 10),
             Text(
-              "Iqbal Arrafi",
+              answers.user!.name!.capitalizeFirst!,
               style: textBlackSmall,
             ),
             const SizedBox(height: 10),
             CircleAvatar(
+              backgroundColor: primaryColor,
               radius: 35,
-              backgroundImage: AssetImage("assets/images/surtr.jpg"),
+              backgroundImage: (answers.user!.isBlank!)
+                  ? NetworkImage(answers.user!.imgUrl!)
+                  : const AssetImage("assets/images/iqbal.jpg")
+                      as ImageProvider,
             ),
             const SizedBox(height: 10),
             (answers.statusAnswer == "Accepted")

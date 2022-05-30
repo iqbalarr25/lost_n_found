@@ -13,7 +13,7 @@ import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class DetailLaporanController extends GetxController {
   TextEditingController balasanController = TextEditingController();
-  var post = Post().obs;
+  var post = MyPost().obs;
   var detailLaporan = MyPost().obs;
   var currentPos = 0.obs;
 
@@ -22,12 +22,16 @@ class DetailLaporanController extends GetxController {
   Future tampilDetailLaporan() async {
     print("PROSES TAMPIL LAPORAN");
     Uri uri;
-    if (post.value.typePost == "Found") {
-      uri = Uri.parse(
-          AuthController.url + "posts/my-post/found/" + post.value.id!);
+    if (post.value.userId == AuthController.userId) {
+      if (post.value.typePost == "Found") {
+        uri = Uri.parse(
+            AuthController.url + "posts/my-post/found/" + post.value.id!);
+      } else {
+        uri = Uri.parse(
+            AuthController.url + "posts/my-post/lost/" + post.value.id!);
+      }
     } else {
-      uri = Uri.parse(
-          AuthController.url + "posts/my-post/lost/" + post.value.id!);
+      uri = Uri.parse(AuthController.url + "posts/" + post.value.id!);
     }
 
     try {
@@ -104,7 +108,7 @@ class DetailLaporanController extends GetxController {
           middleText: "Telah berhasil menghapus laporan.",
         ).then((value) {
           Get.reloadAll();
-          Get.toNamed(Routes.MAIN, arguments: 0);
+          Get.offAllNamed(Routes.MAIN, arguments: 0);
         });
       } else {
         throw "Error : $statusCode";
@@ -161,7 +165,7 @@ class DetailLaporanController extends GetxController {
           middleText: "Telah berhasil mengirim pertanyaan.",
         ).then((value) {
           Get.reloadAll();
-          Get.toNamed(Routes.MAIN, arguments: 0);
+          Get.offAllNamed(Routes.MAIN, arguments: 0);
         });
       } else {
         throw "Error : $statusCode";
@@ -217,7 +221,7 @@ class DetailLaporanController extends GetxController {
           middleText: "Telah berhasil mengirim jawaban.",
         ).then((value) {
           Get.reloadAll();
-          Get.toNamed(Routes.MAIN, arguments: 0);
+          Get.offAllNamed(Routes.MAIN, arguments: 0);
         });
       } else {
         throw "Error : $statusCode";
@@ -232,7 +236,7 @@ class DetailLaporanController extends GetxController {
     }
   }
 
-  Future kirimJawabanBalasan(Questions questions) async {
+  Future kirimJawabanBalasan(MyQuestions questions) async {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
@@ -307,7 +311,7 @@ class DetailLaporanController extends GetxController {
     }
   }
 
-  Future interaksiJawabanBalasan(Answers answers, bool accepted) async {
+  Future interaksiJawabanBalasan(MyAnswers answers, bool accepted) async {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
@@ -397,10 +401,8 @@ class DetailLaporanController extends GetxController {
 
   @override
   void onInit() {
-    if (Get.arguments != null && Get.arguments != 0) {
-      post.value = Get.arguments;
-    }
     super.onInit();
+    post.value = Get.arguments;
   }
 
   @override

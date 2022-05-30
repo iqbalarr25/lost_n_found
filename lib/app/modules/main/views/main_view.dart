@@ -21,7 +21,7 @@ class MainView extends GetView<MainController> {
     return Obx(
       () => Scaffold(
         body: pages[controller.selectedIndex.value],
-        floatingActionButton: (controller.selectedIndex.value != 2)
+        floatingActionButton: (controller.selectedIndex.value == 1)
             ? GestureDetector(
                 onTap: () {
                   Get.toNamed(Routes.POST);
@@ -68,93 +68,32 @@ class MainView extends GetView<MainController> {
               ),
             ],
           ),
-          height: 60,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  controller.selectedIndex.value = 0;
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Icon(
-                        Icons.home,
-                        color: (controller.selectedIndex.value == 0)
-                            ? primaryColor
-                            : greyColor,
-                        size: 35,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        "Home",
-                        style: (controller.selectedIndex.value == 0)
-                            ? textBottomNavBarActive
-                            : textBottomNavBar,
-                      ),
-                    ),
-                  ],
+          height: 65,
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            onTap: ((value) => controller.selectedIndex.value = value),
+            currentIndex: controller.selectedIndex.value,
+            selectedItemColor: primaryColor,
+            unselectedIconTheme: const IconThemeData(size: 25),
+            selectedIconTheme: const IconThemeData(size: 30),
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
                 ),
+                label: "Home",
               ),
-              GestureDetector(
-                onTap: () {
-                  controller.selectedIndex.value = 1;
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Icon(
-                        Icons.map,
-                        color: (controller.selectedIndex.value == 1)
-                            ? primaryColor
-                            : greyColor,
-                        size: 35,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        "News",
-                        style: (controller.selectedIndex.value == 1)
-                            ? textBottomNavBarActive
-                            : textBottomNavBar,
-                      ),
-                    ),
-                  ],
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.map,
                 ),
+                label: "News",
               ),
-              GestureDetector(
-                onTap: () {
-                  controller.selectedIndex.value = 2;
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Icon(
-                        Icons.perm_identity,
-                        color: (controller.selectedIndex.value == 2)
-                            ? primaryColor
-                            : greyColor,
-                        size: 35,
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        "Profile",
-                        style: (controller.selectedIndex.value == 2)
-                            ? textBottomNavBarActive
-                            : textBottomNavBar,
-                      ),
-                    ),
-                  ],
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.perm_identity,
                 ),
+                label: "Profile",
               ),
             ],
           ),

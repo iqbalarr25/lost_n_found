@@ -30,7 +30,7 @@ dev_dependencies:
 
 flutter: 
   assets:
-    - assets/images/surtr.jpg
+    - assets/images/
   uses-material-design: true
   
 

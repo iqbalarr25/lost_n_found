@@ -92,8 +92,6 @@ class PostController extends GetxController {
           var body = json.decode(response.body) as Map<String, dynamic>;
           var statusCode = response.statusCode;
 
-          postId.value = body['data']['id'];
-
           if (category.value == "Found") {
             tambahQuestion();
           }
@@ -108,7 +106,7 @@ class PostController extends GetxController {
               middleText: "Telah berhasil menambahkan laporan.",
             ).then((value) {
               Get.reloadAll();
-              Get.toNamed(Routes.MAIN, arguments: 0);
+              Get.offAllNamed(Routes.MAIN, arguments: 0);
             });
           } else {
             throw "Error : $statusCode";
@@ -185,7 +183,7 @@ class PostController extends GetxController {
                 middleText: "Telah berhasil mengedit laporan.",
               ).then((value) {
                 Get.reloadAll();
-                Get.toNamed(Routes.MAIN, arguments: 0);
+                Get.offAllNamed(Routes.MAIN, arguments: 0);
               });
             } else {
               throw "Error : $statusCode";
