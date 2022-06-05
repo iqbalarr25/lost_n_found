@@ -170,10 +170,8 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget cardLaporan({required MyPost post, required int index}) {
-    return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
-      },
+    return InkWell(
+      onTap: () => Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post),
       child: Container(
         margin: EdgeInsets.only(
             left: 16,
@@ -275,7 +273,7 @@ class HomeView extends GetView<HomeController> {
             ? post.questions![0].answers!
                 .map((e) => (e.statusAnswer == "Waiting" ||
                         e.statusAnswer == "Answered")
-                    ? GestureDetector(
+                    ? InkWell(
                         onTap: () {
                           if (post.questions![0].statusQuestion! == "Waiting") {
                             Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
@@ -393,7 +391,7 @@ class HomeView extends GetView<HomeController> {
                 .map(
                   (e) => (e.answers![0].statusAnswer == "Waiting" ||
                           e.answers![0].statusAnswer == "Answered")
-                      ? GestureDetector(
+                      ? InkWell(
                           onTap: () {
                             if (post.questions![0].statusQuestion! ==
                                 "Answered") {

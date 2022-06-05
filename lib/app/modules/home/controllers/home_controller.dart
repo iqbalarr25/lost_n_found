@@ -128,9 +128,7 @@ class HomeController extends GetxController {
 
       uri = (isAccepted)
           ? Uri.parse(AuthController.url + "posts/lost/set-finish")
-          : Uri.parse(AuthController.url +
-              "answers/" +
-              post.questions![0].answers![0].id!);
+          : Uri.parse(AuthController.url + "posts/lost/set-reject");
       http.Response response;
       if (isAccepted) {
         response = await http.post(
@@ -147,14 +145,17 @@ class HomeController extends GetxController {
           }),
         );
       } else {
-        response = await http.patch(
+        response = await http.post(
           uri,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
             'Authorization': 'Bearer ' + AuthController.token,
           },
-          body: json.encode({"statusAnswer": "Rejected"}),
+          body: json.encode({
+            "questionId": questions.id,
+            "answerId": questions.answers![0].id
+          }),
         );
       }
 
@@ -169,7 +170,13 @@ class HomeController extends GetxController {
         ).then((value) async {
           Get.back();
           Get.back();
-          openDialogKontak(post, context);
+          if (isAccepted) {
+            openDialogKontak(post, context);
+          } else {
+            isLoading.value = true;
+            await (tampilPostFollowingFuture = tampilPostFollowing());
+            isLoading.value = false;
+          }
         });
       } else {
         throw "Error : $statusCode";
