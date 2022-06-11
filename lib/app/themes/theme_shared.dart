@@ -8,6 +8,7 @@ Color lightGreyColor = "E6E6E6".toColor();
 Color darkGreyColor = "909090".toColor();
 Color greenColor = "19D709".toColor();
 Color greenDarkColor = "0F7A26".toColor();
+Color searchColor = "FFE9E9".toColor();
 
 TextStyle textAppBar = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 18, fontWeight: FontWeight.w900);
@@ -19,6 +20,8 @@ TextStyle textBlackSmallBalasan = GoogleFonts.poppins()
     .copyWith(color: blackColor, fontSize: 12, fontWeight: FontWeight.w400);
 TextStyle textWhiteSmallBalasan = GoogleFonts.poppins()
     .copyWith(color: whiteColor, fontSize: 12, fontWeight: FontWeight.w400);
+TextStyle textBlackSuperBig = GoogleFonts.poppins()
+    .copyWith(color: blackColor, fontSize: 20, fontWeight: FontWeight.w600);
 TextStyle textBlackBig = GoogleFonts.poppins()
     .copyWith(color: blackColor, fontSize: 18, fontWeight: FontWeight.w600);
 TextStyle textBlackMedium = GoogleFonts.poppins()

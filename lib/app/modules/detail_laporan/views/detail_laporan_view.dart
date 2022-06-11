@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'package:get/get.dart';
-import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/answers_model.dart';
 import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
@@ -18,7 +17,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           future: controller.tampilDetailLaporan(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return buildDetailLaporan();
+              return buildDetailLaporan(context);
             } else {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -28,7 +27,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Widget buildDetailLaporan() {
+  Widget buildDetailLaporan(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -37,7 +36,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
         ),
         actions: [
           if (controller.detailLaporan.value.userId ==
-              AuthController.userId) ...[
+              controller.box.read("dataUser")["userId"]) ...[
             IconButton(
               onPressed: () {
                 Get.toNamed(Routes.POST,
@@ -54,162 +53,252 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           ],
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Obx(
+        () => Stack(
           children: [
-            Stack(
-              alignment: Alignment.bottomCenter,
-              children: [
-                CarouselSlider.builder(
-                  itemCount: controller.listPaths.length,
-                  itemBuilder: (context, itemIndex, pageViewIndex) =>
-                      Image.network(controller.listPaths[itemIndex]),
-                  options: CarouselOptions(
-                    height: 230,
-                    onPageChanged: (index, reason) {
-                      controller.currentPos.value = index;
-                    },
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: controller.listPaths.map((url) {
-                    int index = controller.listPaths.indexOf(url);
-                    return Obx(
-                      () => Container(
-                        width: 8.0,
-                        height: 8.0,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: controller.currentPos.value == index
-                              ? primaryColor
-                              : whiteColor,
+            Obx(
+              () => SingleChildScrollView(
+                physics: (controller.isZoomImage.value)
+                    ? const NeverScrollableScrollPhysics()
+                    : const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            controller.isZoomImage.value =
+                                !controller.isZoomImage.value;
+                          },
+                          child: CarouselSlider.builder(
+                            itemCount: controller.listPaths.length,
+                            itemBuilder: (context, itemIndex, pageViewIndex) =>
+                                Image.network(controller.listPaths[itemIndex]),
+                            options: CarouselOptions(
+                              autoPlay: (controller.listPaths.length != 1)
+                                  ? true
+                                  : false,
+                              height: 230,
+                              onPageChanged: (index, reason) {
+                                controller.currentPos.value = index;
+                              },
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: controller.listPaths.map((url) {
+                            int index = controller.listPaths.indexOf(url);
+                            return Obx(
+                              () => Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 2.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: controller.currentPos.value == index
+                                      ? primaryColor
+                                      : whiteColor,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                    Material(
+                      elevation: 3,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15, horizontal: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              controller
+                                  .detailLaporan.value.title!.capitalizeFirst!,
+                              style: textBlackBig,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                controller.detailLaporan.value.typePost!,
+                                style: textWhiteMedium,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-            Material(
-              elevation: 3,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      controller.detailLaporan.value.title!.capitalizeFirst!,
-                      style: textBlackBig,
                     ),
                     Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        controller.detailLaporan.value.typePost!,
-                        style: textWhiteMedium,
+                      margin:
+                          const EdgeInsets.only(right: 20, left: 20, top: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          textTitleBody(
+                            title: "Deskripsi",
+                            body: Text(
+                              controller.detailLaporan.value.description!
+                                  .capitalizeFirst!,
+                              style: textGreyDetailLaporan,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          textTitleBody(
+                            title: "Kronologi",
+                            body: Text(
+                              controller.detailLaporan.value.chronology!
+                                  .capitalizeFirst!,
+                              style: textGreyDetailLaporan,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          textTitleBody(
+                            title: "Tanggal",
+                            body: Text(
+                              controller.detailLaporan.value.date!,
+                              style: textGreyDetailLaporan,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (controller.detailLaporan.value.typePost ==
+                              "Found")
+                            textTitleBody(
+                              title: "Pertanyaan",
+                              body: Text(
+                                controller.detailLaporan.value.questions![0]
+                                    .question!,
+                                style: textGreyDetailLaporan,
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          const SizedBox(height: 10),
+                          if (controller.detailLaporan.value.userId ==
+                              controller.box.read("dataUser")["userId"]) ...[
+                            Obx(
+                              () => textTitleBody(
+                                title: "Balasan",
+                                body: Column(
+                                  children: (controller
+                                              .detailLaporan.value.typePost ==
+                                          "Found")
+                                      ? (controller
+                                              .detailLaporan
+                                              .value
+                                              .questions![0]
+                                              .answers!
+                                              .isNotEmpty)
+                                          ? controller.detailLaporan.value
+                                              .questions![0].answers!
+                                              .map((element) =>
+                                                  buildCardBalasanAnswer(
+                                                      element))
+                                              .toList()
+                                          : [
+                                              Text("Belum ada balasan",
+                                                  style: textGreyDetailLaporan)
+                                            ]
+                                      : (controller.detailLaporan.value
+                                              .questions!.isNotEmpty)
+                                          ? controller
+                                              .detailLaporan.value.questions!
+                                              .map((element) =>
+                                                  buildCardBalasanQuestion(
+                                                      element))
+                                              .toList()
+                                          : [
+                                              Text("Belum ada balasan",
+                                                  style: textGreyDetailLaporan)
+                                            ],
+                                ),
+                              ),
+                            ),
+                          ],
+                          (controller.detailLaporan.value.userId !=
+                                  controller.box.read("dataUser")["userId"])
+                              ? const SizedBox(height: 60)
+                              : const SizedBox(height: 10),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(right: 20, left: 20, top: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textTitleBody(
-                    title: "Deskripsi",
-                    body: Text(
-                      controller
-                          .detailLaporan.value.description!.capitalizeFirst!,
-                      style: textGreyDetailLaporan,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  textTitleBody(
-                    title: "Kronologi",
-                    body: Text(
-                      controller
-                          .detailLaporan.value.chronology!.capitalizeFirst!,
-                      style: textGreyDetailLaporan,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  textTitleBody(
-                    title: "Tanggal",
-                    body: Text(
-                      controller.detailLaporan.value.date!,
-                      style: textGreyDetailLaporan,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  if (controller.detailLaporan.value.typePost == "Found")
-                    textTitleBody(
-                      title: "Pertanyaan",
-                      body: Text(
-                        controller.detailLaporan.value.questions![0].question!,
-                        style: textGreyDetailLaporan,
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                  const SizedBox(height: 10),
-                  if (controller.detailLaporan.value.userId ==
-                      AuthController.userId) ...[
-                    Obx(
-                      () => textTitleBody(
-                        title: "Balasan",
-                        body: Column(
-                          children: (controller.detailLaporan.value.typePost ==
-                                  "Found")
-                              ? (controller.detailLaporan.value.questions![0]
-                                      .answers!.isNotEmpty)
-                                  ? controller.detailLaporan.value.questions![0]
-                                      .answers!
-                                      .map((element) =>
-                                          buildCardBalasanAnswer(element))
-                                      .toList()
-                                  : [
-                                      Text("Belum ada balasan",
-                                          style: textGreyDetailLaporan)
-                                    ]
-                              : (controller.detailLaporan.value.questions!
-                                      .isNotEmpty)
-                                  ? controller.detailLaporan.value.questions!
-                                      .map((element) =>
-                                          buildCardBalasanQuestion(element))
-                                      .toList()
-                                  : [
-                                      Text("Belum ada balasan",
-                                          style: textGreyDetailLaporan)
-                                    ],
+            if (controller.isZoomImage.value) ...[
+              GestureDetector(
+                onTap: () => controller.isZoomImage.value =
+                    !controller.isZoomImage.value,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: blackColor.withOpacity(0.6),
+                ),
+              ),
+              Center(
+                child: Container(
+                  color: primaryColor,
+                  padding: const EdgeInsets.only(top: 30, bottom: 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CarouselSlider.builder(
+                        itemCount: controller.listPaths.length,
+                        itemBuilder: (context, itemIndex, pageViewIndex) =>
+                            InteractiveViewer(
+                          panEnabled: true,
+                          child: Image.network(
+                            controller.listPaths[itemIndex],
+                          ),
+                        ),
+                        options: CarouselOptions(
+                          height: MediaQuery.of(context).size.height * 0.50,
+                          onPageChanged: (index, reason) {
+                            controller.currentPos.value = index;
+                          },
                         ),
                       ),
-                    ),
-                  ],
-                  (controller.detailLaporan.value.userId !=
-                          AuthController.userId)
-                      ? const SizedBox(height: 60)
-                      : const SizedBox(height: 10),
-                ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: controller.listPaths.map((url) {
+                          int index = controller.listPaths.indexOf(url);
+                          return Obx(
+                            () => Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 2.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.currentPos.value == index
+                                    ? whiteColor
+                                    : greyColor,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ]
           ],
         ),
       ),
       bottomSheet: (controller.detailLaporan.value.userId !=
-              AuthController.userId)
+              controller.box.read("dataUser")["userId"])
           ? BottomSheet(
               elevation: 75,
               backgroundColor: Colors.transparent,
@@ -272,7 +361,8 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     backgroundColor: primaryColor,
                     backgroundImage: (answers.user!.isBlank!)
                         ? NetworkImage(answers.user!.imgUrl!)
-                        : const AssetImage("assets/images/iqbal.jpg")
+                        : const NetworkImage(
+                                "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15")
                             as ImageProvider,
                   ),
                 ),
@@ -289,7 +379,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                             : textWhiteSmallNormal,
                       ),
                       Text(
-                        answers.answer!,
+                        answers.answer!.capitalizeFirst!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: (answers.statusAnswer == "Accepted")
@@ -343,7 +433,8 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     backgroundColor: primaryColor,
                     backgroundImage: (questions.user!.isBlank!)
                         ? NetworkImage(questions.user!.imgUrl!)
-                        : const AssetImage("assets/images/iqbal.jpg")
+                        : const NetworkImage(
+                                "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15")
                             as ImageProvider,
                   ),
                 ),
@@ -531,7 +622,8 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               radius: 35,
               backgroundImage: (questions.user!.isBlank!)
                   ? NetworkImage(questions.user!.imgUrl!)
-                  : const AssetImage("assets/images/iqbal.jpg")
+                  : const NetworkImage(
+                          "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15")
                       as ImageProvider,
             ),
             const SizedBox(height: 10),
@@ -578,8 +670,9 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           children: [
             const SizedBox(height: 15),
             Text(
-              answers.answer!,
+              answers.answer!.capitalizeFirst!,
               style: textBlackSmallNormal,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             Text(
@@ -592,7 +685,8 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               radius: 35,
               backgroundImage: (answers.user!.isBlank!)
                   ? NetworkImage(answers.user!.imgUrl!)
-                  : const AssetImage("assets/images/iqbal.jpg")
+                  : const NetworkImage(
+                          "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15")
                       as ImageProvider,
             ),
             const SizedBox(height: 10),

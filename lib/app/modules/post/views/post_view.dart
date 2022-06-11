@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,30 +27,41 @@ class PostView extends GetView<PostController> {
           child: Obx(
             () => ListView(
               children: [
-                textField(
+                buildTextField(
                   judul: "Judul barang",
                   hint: "Masukkan nama barang",
                   expands: false,
                   hintSecondary: "",
                   textController: controller.judulController,
+                  validator: MultiValidator([
+                    RequiredValidator(errorText: "Judul barang harus diisi"),
+                    MaxLengthValidator(14,
+                        errorText:
+                            "Judul barang tidak boleh lebih dari 14 karakter")
+                  ]),
+                  maxlength: 14,
                 ),
-                textField(
+                buildTextField(
                   judul: "Deskripsi",
                   hint: "Masukkan deskripsi",
                   expands: true,
                   hintSecondary: "",
                   textController: controller.deskripsiController,
+                  validator:
+                      RequiredValidator(errorText: "Deskripsi harus diisi"),
                 ),
                 radioCategory(),
                 if (controller.category.value.isNotEmpty) ...[
-                  textField(
+                  buildTextField(
                     judul: "Kronologi",
                     hint: "Masukkan kronologi",
                     expands: true,
                     hintSecondary: "",
                     textController: controller.kronologiController,
+                    validator:
+                        RequiredValidator(errorText: "Kronologi harus diisi"),
                   ),
-                  TextFieldDate(
+                  buildTextFieldDate(
                     judul: "Tanggal",
                     hint: "Masukkan tanggal",
                     expands: false,
@@ -57,22 +69,27 @@ class PostView extends GetView<PostController> {
                   ),
                   radioMediaSosial(),
                   if (controller.mediaSosial.value != "")
-                    textField(
+                    buildTextField(
                       judul: controller.mediaSosial.value,
                       hint: "Masukkan ${controller.mediaSosial.value}",
                       expands: false,
                       hintSecondary: "",
                       textController: controller.mediaSosialController,
+                      validator: RequiredValidator(
+                          errorText:
+                              "${controller.mediaSosial.value} harus diisi"),
                     ),
                   if (controller.category.value == "Found" &&
                       controller.mediaSosial.value != "")
-                    textField(
+                    buildTextField(
                       judul: "Pertanyaan",
                       hint: "Masukkan pertanyaan validasi",
                       expands: true,
                       hintSecondary:
                           "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
                       textController: controller.pertanyaanController,
+                      validator: RequiredValidator(
+                          errorText: "Pertanyaan validasi harus diisi"),
                     ),
                   if (controller.mediaSosial.value != "")
                     Container(
@@ -188,6 +205,17 @@ class PostView extends GetView<PostController> {
                       ),
                     )
                 ],
+                if (controller.isImageEmpty.value) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20, top: 5),
+                    child: Text(
+                      "Gambar tidak boleh kosong!",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 223, 25, 11),
+                          fontSize: 12),
+                    ),
+                  ),
+                ],
                 if (controller.mediaSosial.value != "")
                   Center(
                     child: GestureDetector(
@@ -198,7 +226,7 @@ class PostView extends GetView<PostController> {
                               print("tambah post");
                               controller.tambahPost();
                             } else {
-                              controller.errorMsg("Gambar tidak boleh kosong!");
+                              controller.isImageEmpty.value = true;
                             }
                           } else {
                             if (controller.selectedImagesPathEdit.isNotEmpty ||
@@ -206,7 +234,7 @@ class PostView extends GetView<PostController> {
                               print("edit post");
                               controller.editPost();
                             } else {
-                              controller.errorMsg("Gambar tidak boleh kosong!");
+                              controller.isImageEmpty.value = true;
                             }
                           }
                         }
@@ -235,12 +263,15 @@ class PostView extends GetView<PostController> {
     );
   }
 
-  Widget textField(
+  Widget buildTextField(
       {required String judul,
       required String hint,
       required bool expands,
       required String hintSecondary,
-      required TextEditingController textController}) {
+      required TextEditingController textController,
+      TextInputType? inputType,
+      int? maxlength,
+      String? Function(String?)? validator}) {
     return Container(
       margin: const EdgeInsets.only(top: 16),
       child: Column(
@@ -274,8 +305,9 @@ class PostView extends GetView<PostController> {
                         borderSide: BorderSide(color: primaryColor),
                       ),
                     ),
-                    validator:
-                        RequiredValidator(errorText: judul + " harus diisi!"),
+                    validator: validator,
+                    keyboardType: inputType,
+                    maxLength: maxlength,
                   ),
                 )
               : TextFormField(
@@ -295,6 +327,8 @@ class PostView extends GetView<PostController> {
                   ),
                   validator:
                       RequiredValidator(errorText: judul + " harus diisi!"),
+                  keyboardType: inputType,
+                  maxLength: maxlength,
                 ),
           SizedBox(height: 2),
           (hintSecondary != "")
@@ -308,7 +342,7 @@ class PostView extends GetView<PostController> {
     );
   }
 
-  Widget TextFieldDate(
+  Widget buildTextFieldDate(
       {required String judul,
       required String hint,
       required bool expands,

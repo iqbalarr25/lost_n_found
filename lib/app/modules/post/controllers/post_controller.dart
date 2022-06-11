@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -16,6 +17,7 @@ import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
 class PostController extends GetxController {
+  final box = GetStorage();
   final List<String> mediaSosials = ["WhatsApp", "Instagram", "Line"];
   final List<String> categorys = ["Lost", "Found"];
 
@@ -42,13 +44,17 @@ class PostController extends GetxController {
   var selectedImagesOnDeletePath = <String>[].obs;
 
   var date = DateTime.now().obs;
+  var isImageEmpty = false.obs;
 
   Future tambahPost() async {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -72,10 +78,10 @@ class PostController extends GetxController {
             headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
               "Accept": "application/json",
-              'Authorization': 'Bearer ' + AuthController.token,
+              'Authorization': 'Bearer ' + box.read("dataUser")["token"],
             },
             body: json.encode({
-              "userId": AuthController.userId,
+              "userId": box.read("dataUser")["userId"],
               "typePost": category.value,
               "title": judulController.text,
               "description": deskripsiController.text,
@@ -93,6 +99,7 @@ class PostController extends GetxController {
           var statusCode = response.statusCode;
 
           if (category.value == "Found") {
+            postId.value = body['data']['id'];
             tambahQuestion();
           }
 
@@ -125,8 +132,11 @@ class PostController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -148,7 +158,7 @@ class PostController extends GetxController {
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
                 "Accept": "application/json",
-                'Authorization': 'Bearer ' + AuthController.token,
+                'Authorization': 'Bearer ' + box.read("dataUser")["token"],
               },
               body: json.encode({
                 "typePost": category.value,
@@ -196,7 +206,7 @@ class PostController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
           body: json.encode({
             "typePost": category.value,
@@ -235,59 +245,67 @@ class PostController extends GetxController {
       }
     } catch (e) {
       print(e);
-      Get.defaultDialog(
-        title: "TERJADI KESALAHAN",
-        middleText:
-            "Tidak dapat mengedit laporan, hubungi customer service kami.",
-      );
+      errorMsg("Tidak dapat mengedit laporan. Hubungi customer service kami.");
     }
   }
 
   Future tambahQuestion() async {
-    Uri uri = Uri.parse(AuthController.url + "questions");
-    var response = await http.post(
-      uri,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Accept": "application/json",
-        'Authorization': 'Bearer ' + AuthController.token,
-      },
-      body: json.encode({
-        "userId": AuthController.userId,
-        "postId": postId.value,
-        "typeQuestion": "PostQuestion",
-        "question": pertanyaanController.text,
-        "statusQuestion": "Waiting",
-      }),
-    );
+    try {
+      Uri uri = Uri.parse(AuthController.url + "questions");
+      var response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Accept": "application/json",
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+        },
+        body: json.encode({
+          "userId": box.read("dataUser")["userId"],
+          "postId": postId.value,
+          "typeQuestion": "PostQuestion",
+          "question": pertanyaanController.text,
+          "statusQuestion": "Waiting",
+        }),
+      );
 
-    var bodyQuestion = json.decode(response.body) as Map<String, dynamic>;
-    var statusCode = response.statusCode;
+      var bodyQuestion = json.decode(response.body) as Map<String, dynamic>;
+      var statusCode = response.statusCode;
 
-    print("STATUS CODE : $statusCode");
-    print(bodyQuestion);
+      print("STATUS CODE : $statusCode");
+      print(bodyQuestion);
 
-    if (statusCode == 201) {
-      print("BERHASIL MENAMBAHKAN QUESTION");
-    } else {
-      throw "Error : $statusCode";
+      if (statusCode == 201) {
+        print("BERHASIL MENAMBAHKAN QUESTION");
+      } else {
+        throw "Error : $statusCode";
+      }
+    } catch (e) {
+      print(e);
+      errorMsg(
+          "Tidak dapat menambahkan pertanyaan. Hubungi customer service kami.");
     }
   }
 
   Future editQuestion() async {
-    Uri uri = Uri.parse(
-        AuthController.url + "questions/" + post.value.questions![0].id!);
-    var response = await http.patch(
-      uri,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "Accept": "application/json",
-        'Authorization': 'Bearer ' + AuthController.token,
-      },
-      body: json.encode({
-        "question": pertanyaanController.text,
-      }),
-    );
+    try {
+      Uri uri = Uri.parse(
+          AuthController.url + "questions/" + post.value.questions![0].id!);
+      var response = await http.patch(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Accept": "application/json",
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+        },
+        body: json.encode({
+          "question": pertanyaanController.text,
+        }),
+      );
+    } catch (e) {
+      print(e);
+      errorMsg(
+          "Tidak dapat mengedit pertanyaan. Hubungi customer service kami.");
+    }
   }
 
   Future pickImageNormal(ImageSource imageSource) async {
@@ -351,15 +369,20 @@ class PostController extends GetxController {
   }
 
   Future pickDate(BuildContext context) async {
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: date.value,
-      firstDate: DateTime(DateTime.now().year - 1),
-      lastDate: DateTime.now(),
-    );
-    if (newDate == null) return;
-    date.value = newDate;
-    dateController.text = DateFormat('dd MMMM yyyy').format(newDate);
+    try {
+      final newDate = await showDatePicker(
+        context: context,
+        initialDate: date.value,
+        firstDate: DateTime(DateTime.now().year - 1),
+        lastDate: DateTime.now(),
+      );
+      if (newDate == null) return;
+      date.value = newDate;
+      dateController.text = DateFormat('dd MMMM yyyy').format(newDate);
+    } catch (e) {
+      print(e);
+      errorMsg("Tidak dapat memilih tanggal. Hubungi customer service kami.");
+    }
   }
 
   void radioButtonMediaSosialOnChanged(String value) {
@@ -374,7 +397,7 @@ class PostController extends GetxController {
     Get.defaultDialog(
       title: "TERJADI KESALAHAN",
       middleText: msg,
-    );
+    ).then((value) => Get.offAllNamed(Routes.MAIN));
   }
 
   @override

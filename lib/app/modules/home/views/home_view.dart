@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -215,9 +217,14 @@ class HomeView extends GetView<HomeController> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            post.title.toString().capitalizeFirst!,
-                            style: textTitleCard,
+                          SizedBox(
+                            width: 130,
+                            child: Text(
+                              post.title!.capitalizeFirst!,
+                              style: textTitleCard,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           const SizedBox(height: 1),
                           Text(
@@ -272,11 +279,14 @@ class HomeView extends GetView<HomeController> {
         children: (post.typePost == "Found")
             ? post.questions![0].answers!
                 .map((e) => (e.statusAnswer == "Waiting" ||
-                        e.statusAnswer == "Answered")
+                        e.statusAnswer == "Accepted")
                     ? InkWell(
                         onTap: () {
                           if (post.questions![0].statusQuestion! == "Waiting") {
                             Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+                          } else {
+                            controller.followingFoundFinish(
+                                post, post.questions![0], context);
                           }
                         },
                         child: SizedBox(
@@ -328,9 +338,16 @@ class HomeView extends GetView<HomeController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  post.title!,
-                                                  style: textTitleCard,
+                                                SizedBox(
+                                                  width: 117,
+                                                  child: Text(
+                                                    post.title!
+                                                        .capitalizeFirst!,
+                                                    style: textTitleCard,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
                                                 ),
                                                 const SizedBox(height: 1),
                                                 Text(
@@ -360,7 +377,7 @@ class HomeView extends GetView<HomeController> {
                                             Text(
                                               "Status: " + e.statusAnswer!,
                                               style:
-                                                  (e.statusAnswer == "Answered")
+                                                  (e.statusAnswer == "Accepted")
                                                       ? textGreenDarkCard
                                                       : textGreyCard,
                                             ),
@@ -389,8 +406,8 @@ class HomeView extends GetView<HomeController> {
                 .obs
             : post.questions!
                 .map(
-                  (e) => (e.answers![0].statusAnswer == "Waiting" ||
-                          e.answers![0].statusAnswer == "Answered")
+                  (e) => (e.statusQuestion == "Waiting" ||
+                          e.statusQuestion == "Answered")
                       ? InkWell(
                           onTap: () {
                             if (post.questions![0].statusQuestion! ==
@@ -404,7 +421,7 @@ class HomeView extends GetView<HomeController> {
                             }
                           },
                           child: SizedBox(
-                            width: 330,
+                            width: 330, 
                             child: Card(
                               elevation: 1,
                               child: Container(
@@ -541,7 +558,8 @@ class HomeView extends GetView<HomeController> {
           CircleAvatar(
             backgroundColor: primaryColor,
             radius: 30,
-            backgroundImage: AssetImage("assets/images/iqbal.jpg"),
+            backgroundImage: const NetworkImage(
+                "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15"),
           ),
           const SizedBox(height: 10),
           Text(

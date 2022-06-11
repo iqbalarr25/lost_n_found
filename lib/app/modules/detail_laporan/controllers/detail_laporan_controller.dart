@@ -1,5 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -12,23 +13,25 @@ import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class DetailLaporanController extends GetxController {
+  final box = GetStorage();
   TextEditingController balasanController = TextEditingController();
   var post = MyPost().obs;
   var detailLaporan = MyPost().obs;
   var currentPos = 0.obs;
+  var isZoomImage = false.obs;
 
   List<String> listPaths = [];
 
   Future tampilDetailLaporan() async {
     print("PROSES TAMPIL LAPORAN");
     Uri uri;
-    if (post.value.userId == AuthController.userId) {
+    if (post.value.userId == box.read("dataUser")["userId"]) {
       if (post.value.typePost == "Found") {
         uri = Uri.parse(
-            AuthController.url + "posts/my-post/found/" + post.value.id!);
+            AuthController.url + "posts/found/my-post/" + post.value.id!);
       } else {
         uri = Uri.parse(
-            AuthController.url + "posts/my-post/lost/" + post.value.id!);
+            AuthController.url + "posts/lost/my-post/" + post.value.id!);
       }
     } else {
       uri = Uri.parse(AuthController.url + "posts/" + post.value.id!);
@@ -40,7 +43,7 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
       );
 
@@ -75,8 +78,11 @@ class DetailLaporanController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -90,7 +96,7 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
         body: json.encode({"activeStatus": false, "deleteStatus": true}),
       );
@@ -127,8 +133,11 @@ class DetailLaporanController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -141,10 +150,10 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
         body: json.encode({
-          "userId": AuthController.userId,
+          "userId": box.read("dataUser")["userId"],
           "postId": post.value.id,
           "typeQuestion": "UserQuestion",
           "question": balasanController.text,
@@ -161,6 +170,7 @@ class DetailLaporanController extends GetxController {
       if (statusCode == 201) {
         print("BERHASIL menambahkan pertanyaan");
         defaultDialog = Get.defaultDialog(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 6),
           title: "BERHASIL",
           middleText: "Telah berhasil mengirim pertanyaan.",
         ).then((value) {
@@ -175,7 +185,7 @@ class DetailLaporanController extends GetxController {
       Get.defaultDialog(
         title: "TERJADI KESALAHAN",
         middleText:
-            "Tidak dapat menghapus laporan, hubungi customer service kami.",
+            "Tidak dapat mengirim pertanyaan, hubungi customer service kami.",
       );
     }
   }
@@ -184,8 +194,11 @@ class DetailLaporanController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -198,11 +211,11 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
         body: json.encode({
           "questionId": detailLaporan.value.questions![0].id,
-          "userId": AuthController.userId,
+          "userId": box.read("dataUser")["userId"],
           "answer": balasanController.text,
           "statusAnswer": "Waiting"
         }),
@@ -231,7 +244,7 @@ class DetailLaporanController extends GetxController {
       Get.defaultDialog(
         title: "TERJADI KESALAHAN",
         middleText:
-            "Tidak dapat menghapus laporan, hubungi customer service kami.",
+            "Tidak dapat mengirim jawaban, hubungi customer service kami.",
       );
     }
   }
@@ -240,8 +253,11 @@ class DetailLaporanController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
@@ -254,11 +270,11 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
         body: json.encode({
           "questionId": questions.id,
-          "userId": AuthController.userId,
+          "userId": box.read("dataUser")["userId"],
           "answer": balasanController.text,
           "statusAnswer": "Waiting"
         }),
@@ -279,7 +295,7 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
           body: json.encode({"statusQuestion": "Answered"}),
         );
@@ -306,7 +322,7 @@ class DetailLaporanController extends GetxController {
       Get.defaultDialog(
         title: "TERJADI KESALAHAN",
         middleText:
-            "Tidak dapat menghapus laporan, hubungi customer service kami.",
+            "Tidak dapat mengirim jawaban, hubungi customer service kami.",
       );
     }
   }
@@ -315,44 +331,47 @@ class DetailLaporanController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(AuthController.url + "answers");
+    Uri uri;
     try {
       print("BERHASIL menambahkan jawaban");
 
       uri = (accepted)
-          ? Uri.parse(AuthController.url +
-              "answers/" +
-              answers.id! +
-              "/questions/" +
-              detailLaporan.value.questions![0].id! +
-              "/accept")
-          : Uri.parse(AuthController.url + "answers/" + answers.id!);
+          ? Uri.parse(AuthController.url + "posts/found/accept")
+          : Uri.parse(AuthController.url + "posts/found/reject");
       var response;
       if (accepted) {
-        response = await http.get(
+        response = await http.post(
           uri,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
+          body: json.encode({
+            "postId": detailLaporan.value.id,
+            "questionId": detailLaporan.value.questions![0].id!,
+            "answerId": answers.id!
+          }),
         );
       } else {
-        response = await http.patch(
+        response = await http.post(
           uri,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
-          body: json.encode({"statusAnswer": "Rejected"}),
+          body: json.encode({"answerId": answers.id!}),
         );
       }
       if (!accepted) {
@@ -362,8 +381,9 @@ class DetailLaporanController extends GetxController {
       var body = json.decode(response.body) as Map<String, dynamic>;
       var statusCode = response.statusCode;
 
-      if (statusCode == 200) {
+      if (statusCode == 200 || statusCode == 201) {
         defaultDialog = Get.defaultDialog(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 6),
           title: "BERHASIL",
           middleText: (accepted)
               ? "Telah berhasil menerima jawaban\nSilahkan tunggu penjawab melakukan kontak"
@@ -395,6 +415,7 @@ class DetailLaporanController extends GetxController {
       title: "TERJADI KESALAHAN",
       middleText: msg,
     );
+    Get.offAllNamed(Routes.MAIN);
   }
 
   final count = 0.obs;
@@ -402,7 +423,9 @@ class DetailLaporanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    post.value = Get.arguments;
+    if (Get.arguments != 0 && Get.arguments != null) {
+      post.value = Get.arguments;
+    }
   }
 
   @override

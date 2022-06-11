@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,6 +11,7 @@ import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class HomeController extends GetxController {
+  final box = GetStorage();
   var isLoading = false.obs;
   late Future<RxList<MyPost>>? tampilPostLaporanAndaFuture;
   late Future<RxList<MyPost>>? tampilPostFollowingFuture;
@@ -27,7 +29,7 @@ class HomeController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
       );
 
@@ -57,7 +59,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print(e);
       errorMsg(
-          "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
+          "Tidak dapat menampilkan laporan anda. Hubungi customer service kami.");
     }
     return laporanAnda;
   }
@@ -72,7 +74,7 @@ class HomeController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + AuthController.token,
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
       );
 
@@ -105,7 +107,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print(e);
       errorMsg(
-          "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
+          "Tidak dapat menampilkan laporan yang anda ikuti. Hubungi customer service kami.");
     }
     return laporanDiikuti;
   }
@@ -115,20 +117,23 @@ class HomeController extends GetxController {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
           padding: const EdgeInsets.all(15),
-          color: whiteColor,
           child: const CircularProgressIndicator(),
         ),
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(AuthController.url + "answers");
+    Uri uri;
     try {
       print("BERHASIL menambahkan jawaban");
 
       uri = (isAccepted)
-          ? Uri.parse(AuthController.url + "posts/lost/set-finish")
-          : Uri.parse(AuthController.url + "posts/lost/set-reject");
+          ? Uri.parse(AuthController.url + "posts/lost/finish")
+          : Uri.parse(AuthController.url + "posts/lost/reject");
       http.Response response;
       if (isAccepted) {
         response = await http.post(
@@ -136,7 +141,7 @@ class HomeController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
           body: json.encode({
             "postId": post.id,
@@ -150,7 +155,7 @@ class HomeController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + AuthController.token,
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
           },
           body: json.encode({
             "questionId": questions.id,
@@ -252,12 +257,62 @@ class HomeController extends GetxController {
       ),
     ).then((value) async {
       if (isCopy.value) {
-        Get.snackbar("Behasil", "Kontak berhasil disalin!");
+        Get.snackbar("Behasil", "Kontak berhasil disalin!",
+            snackPosition: SnackPosition.BOTTOM);
       }
       isLoading.value = true;
       await (tampilPostFollowingFuture = tampilPostFollowing());
       isLoading.value = false;
     });
+  }
+
+  Future followingFoundFinish(
+      MyPost post, MyQuestions questions, BuildContext context) async {
+    print("lagi coba");
+    var defaultDialog = Get.dialog(
+      Center(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
+          padding: const EdgeInsets.all(15),
+          child: const CircularProgressIndicator(),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+    try {
+      Uri uri = Uri.parse(AuthController.url + "posts/found/finish");
+      var response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Accept": "application/json",
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+        },
+        body: json.encode({
+          "postId": post.id,
+          "questionId": questions.id,
+          "answerId": questions.answers![0].id
+        }),
+      );
+      var statusCode = response.statusCode;
+
+      if (statusCode == 201) {
+        Get.back();
+        openDialogKontak(post, context);
+      } else {
+        throw "Error : $statusCode";
+      }
+    } catch (e) {
+      print(e);
+      Get.defaultDialog(
+        title: "TERJADI KESALAHAN",
+        middleText:
+            "Gagal melakukan interaksi balasan, hubungi customer service kami.",
+      );
+    }
   }
 
   void errorMsg(String msg) {
@@ -280,6 +335,7 @@ class HomeController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    print(box.read("dataUser"));
   }
 
   @override

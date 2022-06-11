@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:lost_n_found/app/modules/login/bindings/login_binding.dart';
+import 'package:lost_n_found/app/modules/login/views/login_view.dart';
 import 'package:lost_n_found/app/modules/main/bindings/main_binding.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
@@ -16,7 +19,8 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   HttpOverrides.global = MyHttpOverrides();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  await GetStorage.init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,14 +28,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
+
     return GetMaterialApp(
-      initialBinding: MainBinding(),
+      initialBinding:
+          (box.read('dataUser') == null) ? LoginBinding() : MainBinding(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
-      home: MainView(),
+      home: (box.read('dataUser') == null) ? LoginView() : MainView(),
       theme: ThemeData(
         bottomSheetTheme:
-            BottomSheetThemeData(backgroundColor: Colors.transparent),
+            const BottomSheetThemeData(backgroundColor: Colors.transparent),
         primaryColor: primaryColor,
         colorScheme: ColorScheme.light(primary: primaryColor),
       ),

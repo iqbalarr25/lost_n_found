@@ -1,7 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/data/models/post_model.dart';
+import 'package:lost_n_found/app/routes/app_pages.dart';
 
+import '../../../themes/theme_app.dart';
 import '../controllers/history_controller.dart';
 
 class HistoryView extends GetView<HistoryController> {
@@ -9,13 +13,210 @@ class HistoryView extends GetView<HistoryController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('HistoryView'),
-        centerTitle: true,
+        backgroundColor: primaryColor,
+        title: Text(
+          "History",
+          style: textAppBar,
+        ),
       ),
-      body: Center(
-        child: Text(
-          'HistoryView is working',
-          style: TextStyle(fontSize: 20),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await (controller.tampilPostLaporanHistoryFuture =
+              controller.tampilPostLaporanHistory());
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              buildSearchTextField(),
+              Expanded(
+                child: Obx(
+                  () => MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: (!controller.isLoading.value)
+                        ? FutureBuilder<RxList<MyPost>>(
+                            future: controller.tampilPostLaporanHistoryFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (controller.laporanHistory.isNotEmpty) {
+                                  return ListView.builder(
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    itemCount: controller.laporanHistory.length,
+                                    itemBuilder: (context, index) =>
+                                        buildCardHistory(
+                                            controller.laporanHistory[index],
+                                            context),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        "Belum ada history",
+                                        style: textRedMini,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          )
+                        : const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSearchTextField() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 15),
+      child: CupertinoSearchTextField(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: searchColor,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 10),
+        prefixInsets: EdgeInsets.only(left: 20, right: 10),
+        suffixIcon: const Icon(Icons.close),
+        suffixMode: OverlayVisibilityMode.editing,
+        suffixInsets: EdgeInsets.only(right: 10),
+        itemColor: Colors.black,
+      ),
+    );
+  }
+
+  Widget buildCardHistory(MyPost post, BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      child: GestureDetector(
+        onTap: () {
+          if (post.typePost == "Lost") {
+            if (post.questions![0].answers![0].statusAnswer == "Finished") {
+              controller.openDialogKontak(post, context);
+            } else {
+              Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+            }
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          width: 360,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 1,
+                blurRadius: 2,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: greyColor,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                          post.imgUrl![0],
+                        ),
+                      ),
+                    ),
+                    width: 130,
+                    height: 130,
+                  ),
+                  const SizedBox(width: 10)
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 7),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              child: Text(
+                                post.title!.capitalizeFirst!,
+                                style: textTitleCard,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              post.date!,
+                              style: textGreyCard,
+                            ),
+                            const SizedBox(height: 5),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: primaryColor,
+                              ),
+                              child: Text(
+                                post.typePost!,
+                                style: textWhiteMedium,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Text(
+                        "Status: " +
+                            post.questions![0].answers![0].statusAnswer!,
+                        style: (post.questions![0].answers![0].statusAnswer! ==
+                                "Finished")
+                            ? textGreenDarkCard
+                            : textGreyCard,
+                      ),
+                      const SizedBox(width: 15),
+                      Text(
+                        (post.questions![0].answers![0].statusAnswer ==
+                                "Finished")
+                            ? "Cek kontak"
+                            : "Detail",
+                        style: textRedMini,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
