@@ -170,8 +170,8 @@ class HomeController extends GetxController {
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
           middleText: (isAccepted)
-              ? "Telah berhasil menerima jawaban\nSilahkan kontak pelapor barang"
-              : "Telah berhasil menolak balasan.",
+              ? "Berhasil menerima jawaban\nSilahkan kontak pelapor barang"
+              : "Berhasil menolak balasan.",
         ).then((value) async {
           Get.back();
           Get.back();

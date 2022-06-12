@@ -101,7 +101,7 @@ class ProfileController extends GetxController {
         print("BERHASIL MENGEDIT PROFILE");
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
-          middleText: "Telah berhasil mengedit laporan.",
+          middleText: "Berhasil mengedit profile.",
         ).then((value) {
           Get.back();
           Get.back();

@@ -193,19 +193,22 @@ class HomeView extends GetView<HomeController> {
           children: [
             Row(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: greyColor,
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        post.imgUrl![0],
+                Hero(
+                  tag: "${post.imgUrl![0]}",
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: greyColor,
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                          post.imgUrl![0],
+                        ),
                       ),
                     ),
+                    width: 130,
+                    height: 130,
                   ),
-                  width: 130,
-                  height: 130,
                 ),
                 const SizedBox(width: 10),
                 Container(
@@ -421,7 +424,7 @@ class HomeView extends GetView<HomeController> {
                             }
                           },
                           child: SizedBox(
-                            width: 330, 
+                            width: 330,
                             child: Card(
                               elevation: 1,
                               child: Container(
@@ -558,8 +561,7 @@ class HomeView extends GetView<HomeController> {
           CircleAvatar(
             backgroundColor: primaryColor,
             radius: 30,
-            backgroundImage: const NetworkImage(
-                "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15"),
+            backgroundImage: const AssetImage("assets/images/avatar.jpg"),
           ),
           const SizedBox(height: 10),
           Text(

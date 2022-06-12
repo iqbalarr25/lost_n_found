@@ -110,11 +110,19 @@ class ProfileView extends GetView<ProfileController> {
                                       children: [
                                         const SizedBox(height: 30),
                                         CircleAvatar(
-                                          backgroundColor: primaryColor,
-                                          radius: 90,
-                                          backgroundImage: const NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Favatar.jpg?alt=media&token=c01c3914-2907-43ed-b81f-c00d11294b15"),
-                                        ),
+                                            backgroundColor: primaryColor,
+                                            radius: 90,
+                                            backgroundImage: (controller
+                                                        .dataUser
+                                                        .value
+                                                        .imgUrl ==
+                                                    null)
+                                                ? const AssetImage(
+                                                    "assets/images/avatar.jpg")
+                                                : NetworkImage(controller
+                                                    .dataUser
+                                                    .value
+                                                    .imgUrl) as ImageProvider),
                                         const SizedBox(height: 10),
                                         Text(
                                             controller.dataUser.value.name!
@@ -179,14 +187,14 @@ class ProfileView extends GetView<ProfileController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Image.network(
-                                              "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2FLogoTelkom.png?alt=media&token=db9cde83-69fe-42ec-bc0c-12b9fbb28b6c",
+                                            Image.asset(
+                                              "assets/images/logo_telkom_mini.png",
                                               width: 70,
                                               height: 70,
                                               color: Colors.red[900],
                                             ),
-                                            Image.network(
-                                              "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Fmytelu.png?alt=media&token=47cccf7b-ec63-4247-a1fe-691b2bd09af5",
+                                            Image.asset(
+                                              "assets/images/mytelu.png",
                                               width: 70,
                                               height: 70,
                                             ),
@@ -281,6 +289,7 @@ class ProfileView extends GetView<ProfileController> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
+                        labelText: "Nama",
                         hintText: "Nama",
                         hintStyle: textGreyMediumNormal,
                       ),
@@ -296,6 +305,7 @@ class ProfileView extends GetView<ProfileController> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
+                        labelText: "NIM",
                         hintText: "NIM",
                         hintStyle: textGreyMediumNormal,
                       ),
@@ -312,6 +322,7 @@ class ProfileView extends GetView<ProfileController> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
+                        labelText: "Nomor",
                         hintText: "Nomor",
                         hintStyle: textGreyMediumNormal,
                       ),

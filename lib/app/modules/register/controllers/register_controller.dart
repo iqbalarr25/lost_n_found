@@ -59,7 +59,7 @@ class RegisterController extends GetxController {
         print("BERHASIL REGISTER");
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
-          middleText: "Telah berhasil menambahkan akun.",
+          middleText: "Berhasil menambahkan akun.",
         ).then((value) {
           Get.reloadAll();
           Get.toNamed(Routes.LOGIN);

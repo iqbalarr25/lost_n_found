@@ -110,7 +110,7 @@ class PostController extends GetxController {
             print("BERHASIL MENAMBAHKAN LAPORAN");
             defaultDialog = Get.defaultDialog(
               title: "BERHASIL",
-              middleText: "Telah berhasil menambahkan laporan.",
+              middleText: "Bberhasil menambahkan laporan.",
             ).then((value) {
               Get.reloadAll();
               Get.offAllNamed(Routes.MAIN, arguments: 0);
@@ -190,7 +190,7 @@ class PostController extends GetxController {
               print("BERHASIL Edit Laporan yang ber-ID : $post.value.id");
               defaultDialog = Get.defaultDialog(
                 title: "BERHASIL",
-                middleText: "Telah berhasil mengedit laporan.",
+                middleText: "Berhasil mengedit laporan.",
               ).then((value) {
                 Get.reloadAll();
                 Get.offAllNamed(Routes.MAIN, arguments: 0);
@@ -234,7 +234,7 @@ class PostController extends GetxController {
           print("BERHASIL Edit Laporan yang ber-ID : $post.value.id");
           defaultDialog = Get.defaultDialog(
             title: "BERHASIL",
-            middleText: "Telah berhasil mengedit laporan.",
+            middleText: "Berhasil mengedit laporan.",
           ).then((value) {
             Get.reloadAll();
             Get.toNamed(Routes.MAIN, arguments: 0);
@@ -310,7 +310,8 @@ class PostController extends GetxController {
 
   Future pickImageNormal(ImageSource imageSource) async {
     try {
-      final image = await ImagePicker().pickImage(source: imageSource);
+      final image = await ImagePicker()
+          .pickImage(source: imageSource, maxWidth: 1000, maxHeight: 1000);
       if (image == null) return;
 
       selectedImages.add(File(image.path));
@@ -326,7 +327,8 @@ class PostController extends GetxController {
 
   Future pickImageEdit(ImageSource imageSource) async {
     try {
-      final image = await ImagePicker().pickImage(source: imageSource);
+      final image = await ImagePicker()
+          .pickImage(source: imageSource, maxWidth: 1000, maxHeight: 1000);
       if (image == null) return;
 
       selectedImagesEdit.add(Image.file(File(image.path)));

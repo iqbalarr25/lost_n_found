@@ -19,8 +19,8 @@ class RegisterView extends GetView<RegisterController> {
               BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: Stack(
             children: [
-              Image.network(
-                "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2Fbg_login.jpeg?alt=media&token=36e2ecdc-6079-469b-812b-0ae597da4fdf",
+              Image.asset(
+                "assets/images/bg_login.jpeg",
                 fit: BoxFit.cover,
                 height: double.infinity,
                 alignment: Alignment.center,
@@ -34,8 +34,8 @@ class RegisterView extends GetView<RegisterController> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Expanded(
-                        child: Image.network(
-                          "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/app%2FLogoTelkom.png?alt=media&token=db9cde83-69fe-42ec-bc0c-12b9fbb28b6c",
+                        child: Image.asset(
+                          "assets/images/logo_telkom.png",
                         ),
                       ),
                       SingleChildScrollView(

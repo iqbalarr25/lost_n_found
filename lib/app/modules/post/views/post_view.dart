@@ -35,9 +35,11 @@ class PostView extends GetView<PostController> {
                   textController: controller.judulController,
                   validator: MultiValidator([
                     RequiredValidator(errorText: "Judul barang harus diisi"),
-                    MaxLengthValidator(14,
-                        errorText:
-                            "Judul barang tidak boleh lebih dari 14 karakter")
+                    MaxLengthValidator(
+                      14,
+                      errorText:
+                          "Judul barang tidak boleh lebih dari 14 karakter",
+                    ),
                   ]),
                   maxlength: 14,
                 ),
@@ -47,8 +49,15 @@ class PostView extends GetView<PostController> {
                   expands: true,
                   hintSecondary: "",
                   textController: controller.deskripsiController,
-                  validator:
-                      RequiredValidator(errorText: "Deskripsi harus diisi"),
+                  validator: MultiValidator([
+                    RequiredValidator(
+                        errorText: "Deskripsi barang harus diisi"),
+                    MaxLengthValidator(
+                      200,
+                      errorText:
+                          "Deskripsi barang tidak boleh lebih dari 200 karakter",
+                    ),
+                  ]),
                 ),
                 radioCategory(),
                 if (controller.category.value.isNotEmpty) ...[
@@ -58,8 +67,14 @@ class PostView extends GetView<PostController> {
                     expands: true,
                     hintSecondary: "",
                     textController: controller.kronologiController,
-                    validator:
-                        RequiredValidator(errorText: "Kronologi harus diisi"),
+                    validator: MultiValidator([
+                      RequiredValidator(errorText: "Kronologi harus diisi"),
+                      MaxLengthValidator(
+                        200,
+                        errorText:
+                            "Kronologi tidak boleh lebih dari 200 karakter",
+                      ),
+                    ]),
                   ),
                   buildTextFieldDate(
                     judul: "Tanggal",
@@ -75,9 +90,14 @@ class PostView extends GetView<PostController> {
                       expands: false,
                       hintSecondary: "",
                       textController: controller.mediaSosialController,
-                      validator: RequiredValidator(
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: "Pertanyaan harus diisi"),
+                        MaxLengthValidator(
+                          50,
                           errorText:
-                              "${controller.mediaSosial.value} harus diisi"),
+                              "${controller.mediaSosial.value} tidak boleh lebih dari 50 karakter",
+                        ),
+                      ]),
                     ),
                   if (controller.category.value == "Found" &&
                       controller.mediaSosial.value != "")
@@ -88,8 +108,14 @@ class PostView extends GetView<PostController> {
                       hintSecondary:
                           "*hint: Pertanyaan seputar barang dapat bersifat unik dan tidak tercantum pada deskripsi/kronologi",
                       textController: controller.pertanyaanController,
-                      validator: RequiredValidator(
-                          errorText: "Pertanyaan validasi harus diisi"),
+                      validator: MultiValidator([
+                        RequiredValidator(errorText: "Pertanyaan harus diisi"),
+                        MaxLengthValidator(
+                          100,
+                          errorText:
+                              "Pertanyaan tidak boleh lebih dari 100 karakter",
+                        ),
+                      ]),
                     ),
                   if (controller.mediaSosial.value != "")
                     Container(
@@ -146,8 +172,8 @@ class PostView extends GetView<PostController> {
                                           children: <Widget>[
                                             ListTile(
                                               tileColor: Colors.white,
-                                              leading: new Icon(Icons.photo),
-                                              title: new Text('Gallery'),
+                                              leading: const Icon(Icons.photo),
+                                              title: const Text('Gallery'),
                                               onTap: () {
                                                 if (controller.post.value.id ==
                                                     null) {
@@ -162,8 +188,8 @@ class PostView extends GetView<PostController> {
                                             ListTile(
                                               tileColor: Colors.white,
                                               leading:
-                                                  new Icon(Icons.camera_alt),
-                                              title: new Text('Camera'),
+                                                  const Icon(Icons.camera_alt),
+                                              title: const Text('Camera'),
                                               onTap: () {
                                                 if (controller.post.value.id ==
                                                     null) {

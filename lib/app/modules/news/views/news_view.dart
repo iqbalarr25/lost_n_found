@@ -84,9 +84,13 @@ class NewsView extends GetView<NewsController> {
                                 return Obx(
                                   () => ListView.builder(
                                     controller: controller.scrollControllerLost,
-                                    physics: const ClampingScrollPhysics(),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
                                     itemCount: (controller
-                                            .searchTextLost.text.isEmpty)
+                                                .searchTextLost.text.isEmpty &&
+                                            controller.laporanNewsLost.length %
+                                                    5 ==
+                                                0)
                                         ? controller.laporanNewsLost.length + 1
                                         : controller.laporanNewsLost.length,
                                     itemBuilder: (context, index) {
@@ -174,9 +178,13 @@ class NewsView extends GetView<NewsController> {
                                   () => ListView.builder(
                                     controller:
                                         controller.scrollControllerFound,
-                                    physics: const ClampingScrollPhysics(),
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
                                     itemCount: (controller
-                                            .searchTextFound.text.isEmpty)
+                                                .searchTextFound.text.isEmpty &&
+                                            controller.laporanNewsFound.length %
+                                                    5 ==
+                                                0)
                                         ? controller.laporanNewsFound.length + 1
                                         : controller.laporanNewsFound.length,
                                     itemBuilder: (context, index) {

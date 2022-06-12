@@ -20,9 +20,9 @@ class DetailLaporanController extends GetxController {
   var currentPos = 0.obs;
   var isZoomImage = false.obs;
 
-  List<String> listPaths = [];
+  late Future<Rx<MyPost>> tampilDetailLaporanFuture;
 
-  Future tampilDetailLaporan() async {
+  Future<Rx<MyPost>> tampilDetailLaporan() async {
     print("PROSES TAMPIL LAPORAN");
     Uri uri;
     if (post.value.userId == box.read("dataUser")["userId"]) {
@@ -59,10 +59,7 @@ class DetailLaporanController extends GetxController {
         if (body['data'] != null) {
           detailLaporan.value =
               MyPost.fromJson(body['data'] as Map<String, dynamic>);
-          print(detailLaporan.value);
-          detailLaporan.value.imgUrl!.forEach((element) {
-            listPaths.add(element);
-          });
+          print(detailLaporan);
         }
       } else {
         throw "Error : $statusCode";
@@ -72,6 +69,7 @@ class DetailLaporanController extends GetxController {
       errorMsg(
           "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
     }
+    return detailLaporan;
   }
 
   Future deleteLaporan() async {
@@ -88,8 +86,7 @@ class DetailLaporanController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    Uri uri =
-        Uri.parse(AuthController.url + "posts/" + detailLaporan.value.id!);
+    Uri uri = Uri.parse(AuthController.url + "posts/" + post.value.id!);
     try {
       var response = await http.patch(
         uri,
@@ -108,10 +105,10 @@ class DetailLaporanController extends GetxController {
       print(body);
 
       if (statusCode == 200) {
-        print("BERHASIL Hapus Laporan yang ber-ID : $detailLaporan.value.id");
+        print("BERHASIL Hapus Laporan yang ber-ID : $post.value.id");
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
-          middleText: "Telah berhasil menghapus laporan.",
+          middleText: "Berhasil menghapus laporan.",
         ).then((value) {
           Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
@@ -172,7 +169,7 @@ class DetailLaporanController extends GetxController {
         defaultDialog = Get.defaultDialog(
           contentPadding: const EdgeInsets.symmetric(horizontal: 6),
           title: "BERHASIL",
-          middleText: "Telah berhasil mengirim pertanyaan.",
+          middleText: "Berhasil mengirim pertanyaan.",
         ).then((value) {
           Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
@@ -231,7 +228,7 @@ class DetailLaporanController extends GetxController {
         print("BERHASIL menambahkan jawaban");
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
-          middleText: "Telah berhasil mengirim jawaban.",
+          middleText: "Berhasil mengirim jawaban.",
         ).then((value) {
           Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
@@ -306,7 +303,7 @@ class DetailLaporanController extends GetxController {
         if (statusCode == 200) {
           defaultDialog = Get.defaultDialog(
             title: "BERHASIL",
-            middleText: "Telah berhasil mengirim jawaban.",
+            middleText: "Berhasil mengirim jawaban.",
           ).then((value) {
             Get.reloadAll();
             Get.toNamed(Routes.MAIN, arguments: 0);
@@ -386,8 +383,8 @@ class DetailLaporanController extends GetxController {
           contentPadding: const EdgeInsets.symmetric(horizontal: 6),
           title: "BERHASIL",
           middleText: (accepted)
-              ? "Telah berhasil menerima jawaban\nSilahkan tunggu penjawab melakukan kontak"
-              : "Telah berhasil menolak balasan.",
+              ? "Berhasil menerima jawaban\nSilahkan tunggu penjawab melakukan kontak"
+              : "Berhasil menolak balasan.",
         ).then((value) {
           if (accepted) {
             Get.reloadAll();
@@ -426,6 +423,7 @@ class DetailLaporanController extends GetxController {
     if (Get.arguments != 0 && Get.arguments != null) {
       post.value = Get.arguments;
     }
+    tampilDetailLaporanFuture = tampilDetailLaporan();
   }
 
   @override
