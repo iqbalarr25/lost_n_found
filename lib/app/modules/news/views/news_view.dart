@@ -301,19 +301,22 @@ class NewsView extends GetView<NewsController> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: greyColor,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          post.imgUrl![0],
+                  Hero(
+                    tag: post.imgUrl![0],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: greyColor,
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                            post.imgUrl![0],
+                          ),
                         ),
                       ),
+                      width: 130,
+                      height: 130,
                     ),
-                    width: 130,
-                    height: 130,
                   ),
                   const SizedBox(width: 10),
                   Container(

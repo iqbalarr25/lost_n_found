@@ -194,7 +194,7 @@ class HomeView extends GetView<HomeController> {
             Row(
               children: [
                 Hero(
-                  tag: "${post.imgUrl![0]}",
+                  tag: post.imgUrl![0],
                   child: Container(
                     decoration: BoxDecoration(
                       color: greyColor,
@@ -312,19 +312,22 @@ class HomeView extends GetView<HomeController> {
                                 children: [
                                   Row(
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                              post.imgUrl![0],
+                                      Hero(
+                                        tag: post.imgUrl![0],
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                post.imgUrl![0],
+                                              ),
                                             ),
                                           ),
+                                          width: 130,
+                                          height: 130,
                                         ),
-                                        width: 130,
-                                        height: 130,
                                       ),
                                       const SizedBox(width: 10),
                                       Container(
@@ -443,19 +446,22 @@ class HomeView extends GetView<HomeController> {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                post.imgUrl![0],
+                                        Hero(
+                                          tag: post.imgUrl![0],
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                  post.imgUrl![0],
+                                                ),
                                               ),
                                             ),
+                                            width: 130,
+                                            height: 130,
                                           ),
-                                          width: 130,
-                                          height: 130,
                                         ),
                                         const SizedBox(width: 10),
                                         Container(

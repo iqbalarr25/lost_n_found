@@ -66,8 +66,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                             itemCount: controller.post.value.imgUrl!.length,
                             itemBuilder: (context, itemIndex, pageViewIndex) =>
                                 Hero(
-                              tag:
-                                  "${controller.post.value.imgUrl![itemIndex]}",
+                              tag: controller.post.value.imgUrl![itemIndex],
                               child: Image.network(
                                 controller.post.value.imgUrl![itemIndex],
                               ),
