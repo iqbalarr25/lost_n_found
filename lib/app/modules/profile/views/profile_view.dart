@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'package:get/get.dart';
+import 'package:get_cli/commands/commands_list.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lost_n_found/app/data/models/user_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
@@ -109,20 +111,90 @@ class ProfileView extends GetView<ProfileController> {
                                     Column(
                                       children: [
                                         const SizedBox(height: 30),
-                                        CircleAvatar(
-                                            backgroundColor: primaryColor,
+                                        Obx(
+                                          () => CircleAvatar(
                                             radius: 90,
-                                            backgroundImage: (controller
-                                                        .dataUser
-                                                        .value
-                                                        .imgUrl ==
-                                                    null)
-                                                ? const AssetImage(
-                                                    "assets/images/avatar.jpg")
-                                                : NetworkImage(controller
-                                                    .dataUser
-                                                    .value
-                                                    .imgUrl) as ImageProvider),
+                                            backgroundColor: whiteColor,
+                                            backgroundImage: const AssetImage(
+                                                "assets/images/avatar.jpg"),
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              radius: 90,
+                                              backgroundImage: (controller
+                                                          .dataUser
+                                                          .value
+                                                          .imgUrl ==
+                                                      null)
+                                                  ? const AssetImage(
+                                                      "assets/images/avatar.jpg")
+                                                  : NetworkImage(
+                                                      controller.dataUser.value
+                                                          .imgUrl,
+                                                    ) as ImageProvider,
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: primaryColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.camera_alt,
+                                                      color: whiteColor,
+                                                    ),
+                                                    onPressed: () {
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: <Widget>[
+                                                              ListTile(
+                                                                tileColor:
+                                                                    Colors
+                                                                        .white,
+                                                                leading: const Icon(
+                                                                    Icons
+                                                                        .photo),
+                                                                title: const Text(
+                                                                    'Gallery'),
+                                                                onTap: () {
+                                                                  controller.pickImageNormal(
+                                                                      ImageSource
+                                                                          .gallery);
+                                                                },
+                                                              ),
+                                                              ListTile(
+                                                                tileColor:
+                                                                    Colors
+                                                                        .white,
+                                                                leading: const Icon(
+                                                                    Icons
+                                                                        .camera_alt),
+                                                                title: const Text(
+                                                                    'Camera'),
+                                                                onTap: () {
+                                                                  controller.pickImageNormal(
+                                                                      ImageSource
+                                                                          .camera);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                         const SizedBox(height: 10),
                                         Text(
                                             controller.dataUser.value.name!

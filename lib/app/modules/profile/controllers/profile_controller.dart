@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
@@ -75,7 +79,6 @@ class ProfileController extends GetxController {
     );
     Uri uri = Uri.parse(
         AuthController.url + "users/" + box.read("dataUser")["userId"]);
-    print("PROSES TAMPIL POSTING");
     try {
       var response = await http.patch(
         uri,
@@ -112,7 +115,69 @@ class ProfileController extends GetxController {
       }
     } catch (e) {
       print(e);
-      errorMsg("Tidak dapat membuka profil. Hubungi customer service kami.");
+      errorMsg("Tidak dapat mengedit profil. Hubungi customer service kami.");
+    }
+  }
+
+  Future pickImageNormal(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker()
+          .pickImage(source: imageSource, maxWidth: 1000, maxHeight: 1000);
+      if (image == null) return;
+      var defaultDialog = Get.dialog(
+        Center(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: whiteColor,
+            ),
+            padding: const EdgeInsets.all(15),
+            child: const CircularProgressIndicator(),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+      Uri uri = Uri.parse(
+          AuthController.url + "users/" + box.read("dataUser")["userId"]);
+
+      Reference ref = FirebaseStorage.instance.ref().child(image.path);
+      UploadTask task = ref.putFile(
+        File(image.path),
+      );
+      final imageUrl = await (await task).ref.getDownloadURL();
+
+      try {
+        var response = await http.patch(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({"imgUrl": imageUrl}),
+        );
+
+        var body = json.decode(response.body) as Map<String, dynamic>;
+        var statusCode = response.statusCode;
+
+        print("STATUS CODE : $statusCode");
+        print(body);
+
+        if (statusCode == 200) {
+          FirebaseStorage.instance.refFromURL(dataUser.value.imgUrl).delete();
+          print("BERHASIL MENGGANTI PROFILE PICTURE");
+          tampilDataUserFuture = tampilDataUser();
+          Get.back();
+        } else {
+          throw "Error : $statusCode";
+        }
+      } catch (e) {
+        print(e);
+        errorMsg(
+            "Tidak dapat mengganti profil picture. Hubungi customer service kami.");
+      }
+    } on PlatformException catch (e) {
+      print("Failed to pick image: $e");
     }
   }
 
