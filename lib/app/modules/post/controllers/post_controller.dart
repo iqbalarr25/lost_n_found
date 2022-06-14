@@ -110,7 +110,7 @@ class PostController extends GetxController {
             print("BERHASIL MENAMBAHKAN LAPORAN");
             defaultDialog = Get.defaultDialog(
               title: "BERHASIL",
-              middleText: "Bberhasil menambahkan laporan.",
+              middleText: "Berhasil menambahkan laporan.",
             ).then((value) {
               Get.reloadAll();
               Get.offAllNamed(Routes.MAIN, arguments: 0);

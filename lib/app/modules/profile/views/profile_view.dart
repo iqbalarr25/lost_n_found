@@ -196,10 +196,15 @@ class ProfileView extends GetView<ProfileController> {
                                           ),
                                         ),
                                         const SizedBox(height: 10),
-                                        Text(
+                                        FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: Text(
                                             controller.dataUser.value.name!
-                                                .capitalizeFirst!,
-                                            style: textBlackSuperBig),
+                                                .capitalize!,
+                                            style: textBlackSuperBig,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
                                         const SizedBox(height: 10),
                                         Text(
                                           "2 post created",

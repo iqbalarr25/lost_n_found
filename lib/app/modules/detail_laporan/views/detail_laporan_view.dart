@@ -274,8 +274,14 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     itemBuilder: (context, index) => InteractiveViewer(
                       panEnabled: true,
                       alignPanAxis: true,
-                      child:
-                          Image.network(controller.post.value.imgUrl![index]),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Image.network(
+                          controller.post.value.imgUrl![index],
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -346,10 +352,15 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   width: 50,
                   child: CircleAvatar(
                     backgroundColor: primaryColor,
-                    backgroundImage: (answers.user!.isBlank!)
-                        ? NetworkImage(answers.user!.imgUrl!)
-                        : const AssetImage("assets/images/avatar.jpg")
-                            as ImageProvider,
+                    backgroundImage:
+                        const AssetImage("assets/images/avatar.jpg"),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: (!answers.user!.isBlank!)
+                          ? NetworkImage(answers.user!.imgUrl!)
+                          : const AssetImage("assets/images/avatar.jpg")
+                              as ImageProvider,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -358,11 +369,13 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        answers.user!.name!.capitalizeFirst!,
-                        style: (answers.statusAnswer == "Accepted")
-                            ? textBlackSmallNormal
-                            : textWhiteSmallNormal,
+                      FittedBox(
+                        child: Text(
+                          answers.user!.name!.capitalizeFirst!,
+                          style: (answers.statusAnswer == "Accepted")
+                              ? textBlackSmallNormal
+                              : textWhiteSmallNormal,
+                        ),
                       ),
                       Text(
                         answers.answer!.capitalizeFirst!,
@@ -417,10 +430,15 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   width: 50,
                   child: CircleAvatar(
                     backgroundColor: primaryColor,
-                    backgroundImage: (questions.user!.isBlank!)
-                        ? NetworkImage(questions.user!.imgUrl!)
-                        : const AssetImage("assets/images/avatar.jpg")
-                            as ImageProvider,
+                    backgroundImage:
+                        const AssetImage("assets/images/avatar.jpg"),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      backgroundImage: (!questions.user!.isBlank!)
+                          ? NetworkImage(questions.user!.imgUrl!)
+                          : const AssetImage("assets/images/avatar.jpg")
+                              as ImageProvider,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -429,9 +447,12 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        questions.user!.name!.capitalizeFirst!,
-                        style: textWhiteSmallNormal,
+                      FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          questions.user!.name!.capitalizeFirst!,
+                          style: textWhiteSmallNormal,
+                        ),
                       ),
                       Text(
                         questions.question!,
@@ -597,18 +618,26 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               style: textBlackSmallNormal,
             ),
             const SizedBox(height: 10),
-            Text(
-              questions.user!.name!.capitalizeFirst!,
-              style: textBlackSmall,
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                questions.user!.name!.capitalizeFirst!,
+                style: textBlackSmall,
+              ),
             ),
             const SizedBox(height: 10),
             CircleAvatar(
-              backgroundColor: primaryColor,
               radius: 35,
-              backgroundImage: (questions.user!.isBlank!)
-                  ? NetworkImage(questions.user!.imgUrl!)
-                  : const AssetImage("assets/images/avatar.jpg")
-                      as ImageProvider,
+              backgroundColor: primaryColor,
+              backgroundImage: const AssetImage("assets/images/avatar.jpg"),
+              child: CircleAvatar(
+                radius: 35,
+                backgroundColor: Colors.transparent,
+                backgroundImage: (!questions.user!.isBlank!)
+                    ? NetworkImage(questions.user!.imgUrl!)
+                    : const AssetImage("assets/images/avatar.jpg")
+                        as ImageProvider,
+              ),
             ),
             const SizedBox(height: 10),
             textFormField(hint: "Masukkan jawaban"),
@@ -659,18 +688,26 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
-            Text(
-              answers.user!.name!.capitalizeFirst!,
-              style: textBlackSmall,
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                answers.user!.name!.capitalizeFirst!,
+                style: textBlackSmall,
+              ),
             ),
             const SizedBox(height: 10),
             CircleAvatar(
-              backgroundColor: primaryColor,
               radius: 35,
-              backgroundImage: (answers.user!.isBlank!)
-                  ? NetworkImage(answers.user!.imgUrl!)
-                  : const AssetImage("assets/images/avatar.jpg")
-                      as ImageProvider,
+              backgroundColor: primaryColor,
+              backgroundImage: const AssetImage("assets/images/avatar.jpg"),
+              child: CircleAvatar(
+                radius: 35,
+                backgroundColor: Colors.transparent,
+                backgroundImage: (!answers.user!.isBlank!)
+                    ? NetworkImage(answers.user!.imgUrl!)
+                    : const AssetImage("assets/images/avatar.jpg")
+                        as ImageProvider,
+              ),
             ),
             const SizedBox(height: 10),
             (answers.statusAnswer == "Accepted")

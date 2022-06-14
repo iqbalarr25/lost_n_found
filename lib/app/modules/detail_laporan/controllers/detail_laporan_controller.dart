@@ -20,6 +20,8 @@ class DetailLaporanController extends GetxController {
   var currentPos = 0.obs;
   var isZoomImage = false.obs;
 
+  var isLoading = false.obs;
+
   late Future<Rx<MyPost>> tampilDetailLaporanFuture;
 
   Future<Rx<MyPost>> tampilDetailLaporan() async {
@@ -33,43 +35,44 @@ class DetailLaporanController extends GetxController {
         uri = Uri.parse(
             AuthController.url + "posts/lost/my-post/" + post.value.id!);
       }
-    } else {
-      uri = Uri.parse(AuthController.url + "posts/" + post.value.id!);
-    }
+      try {
+        isLoading.value = true;
+        var response = await http.get(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+        );
 
-    try {
-      var response = await http.get(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-        },
-      );
+        var body = json.decode(response.body) as Map<String, dynamic>;
+        var statusCode = response.statusCode;
 
-      var body = json.decode(response.body) as Map<String, dynamic>;
-      var statusCode = response.statusCode;
+        print("STATUS CODE : $statusCode");
+        print(body);
 
-      print("STATUS CODE : $statusCode");
-      print(body);
+        if (statusCode == 200) {
+          print("BERHASIL MENAMPILKAN PERTANYAAN");
 
-      if (statusCode == 200) {
-        print("BERHASIL MENAMPILKAN PERTANYAAN");
-
-        if (body['data'] != null) {
-          detailLaporan.value =
-              MyPost.fromJson(body['data'] as Map<String, dynamic>);
-          print(detailLaporan);
+          if (body['data'] != null) {
+            detailLaporan.value =
+                MyPost.fromJson(body['data'] as Map<String, dynamic>);
+            print(detailLaporan);
+          }
+        } else {
+          throw "Error : $statusCode";
         }
-      } else {
-        throw "Error : $statusCode";
+      } catch (e) {
+        print(e);
+        errorMsg(
+            "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
       }
-    } catch (e) {
-      print(e);
-      errorMsg(
-          "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
+      isLoading.value = false;
+      return detailLaporan;
+    } else {
+      return detailLaporan = post;
     }
-    return detailLaporan;
   }
 
   Future deleteLaporan() async {
@@ -304,9 +307,10 @@ class DetailLaporanController extends GetxController {
           defaultDialog = Get.defaultDialog(
             title: "BERHASIL",
             middleText: "Berhasil mengirim jawaban.",
-          ).then((value) {
-            Get.reloadAll();
-            Get.toNamed(Routes.MAIN, arguments: 0);
+          ).then((value) async {
+            tampilDetailLaporanFuture = tampilDetailLaporan();
+            Get.back();
+            Get.back();
           });
         } else {
           throw "Error : $statusCode";
@@ -390,6 +394,7 @@ class DetailLaporanController extends GetxController {
             Get.reloadAll();
             Get.toNamed(Routes.MAIN);
           } else {
+            tampilDetailLaporanFuture = tampilDetailLaporan();
             Get.back();
             Get.back();
           }

@@ -38,86 +38,100 @@ class NewsController extends GetxController with GetTickerProviderStateMixin {
 
   Future<RxList<MyPost>>? tampilPostLaporanNews(int page) async {
     Uri uri;
-    if (page == 0) {
-      if (searchTextLost.text == "") {
-        uri = Uri.parse(AuthController.url +
-            "posts/lost/news?offset=$offsetLost&limit=$limitLost");
-      } else {
-        uri = Uri.parse(AuthController.url +
-            "posts/lost/lost/search?filter=${searchTextLost.text}");
-      }
-      if (offsetLost.value == 0) {
-        isLoadingLost.value = true;
-      } else {
-        isLoadingLostBottom.value = true;
-      }
-    } else {
-      if (searchTextFound.text == "") {
-        uri = Uri.parse(AuthController.url +
-            "posts/found/news?offset=$offsetFound&limit=$limitFound");
-      } else {
-        uri = Uri.parse(AuthController.url +
-            "posts/found/search?filter=${searchTextFound.text}");
-      }
-      if (offsetFound.value == 0) {
-        isLoadingFound.value = true;
-      } else {
-        isLoadingFoundBottom.value = true;
-      }
-    }
-    print("PROSES TAMPIL POSTING");
-    try {
-      var response = await http.get(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-        },
-      );
-
-      var body = json.decode(response.body) as Map<String, dynamic>;
-      var statusCode = response.statusCode;
-
-      print("STATUS CODE : $statusCode");
-      print(body);
-
-      if (statusCode == 200) {
-        print("BERHASIL MENAMPILKAN LAPORAN");
-
-        if (body['data'] != null) {
-          var laporanNews = body['data'] as List<dynamic>;
-          laporanNews.forEach(
-            (element) {
-              (page == 0)
-                  ? laporanNewsLost
-                      .add(MyPost.fromJson(element as Map<String, dynamic>))
-                  : laporanNewsFound
-                      .add(MyPost.fromJson(element as Map<String, dynamic>));
-            },
-          );
-          print("jumlah laporan hilang: " + laporanNewsLost.length.toString());
-          print("jumlah laporan temu: " + laporanNewsFound.length.toString());
+    if ((!isLoadingLost.value && page == 0) ||
+        (!isLoadingFound.value && page == 1)) {
+      if (page == 0) {
+        if (searchTextLost.text == "") {
+          uri = Uri.parse(AuthController.url +
+              "posts/lost/news?offset=$offsetLost&limit=$limitLost");
+        } else {
+          uri = Uri.parse(AuthController.url +
+              "posts/lost/lost/search?filter=${searchTextLost.text}");
         }
-
-        laporanNewsLost.refresh();
-        laporanNewsFound.refresh();
+        if (offsetLost.value == 0) {
+          isLoadingLost.value = true;
+        } else {
+          isLoadingLostBottom.value = true;
+        }
       } else {
-        throw "Error : $statusCode";
+        if (searchTextFound.text == "") {
+          uri = Uri.parse(AuthController.url +
+              "posts/found/news?offset=$offsetFound&limit=$limitFound");
+        } else {
+          uri = Uri.parse(AuthController.url +
+              "posts/found/search?filter=${searchTextFound.text}");
+        }
+        if (offsetFound.value == 0) {
+          isLoadingFound.value = true;
+        } else {
+          isLoadingFoundBottom.value = true;
+        }
       }
-    } catch (e) {
-      print(e);
-      errorMsg(
-          "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
-    }
-    if (page == 0) {
-      isLoadingLost.value = false;
-      if (offsetLost.value != 0) isLoadingLostBottom.value = false;
-      return laporanNewsLost;
+      print("PROSES TAMPIL POSTING");
+      try {
+        var response = await http.get(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+        );
+
+        var body = json.decode(response.body) as Map<String, dynamic>;
+        var statusCode = response.statusCode;
+
+        print("STATUS CODE : $statusCode");
+        print(body);
+
+        if (statusCode == 200) {
+          print("BERHASIL MENAMPILKAN LAPORAN");
+
+          if (body['data'] != null) {
+            var laporanNews = body['data'] as List<dynamic>;
+            laporanNews.forEach(
+              (element) {
+                (page == 0)
+                    ? laporanNewsLost
+                        .add(MyPost.fromJson(element as Map<String, dynamic>))
+                    : laporanNewsFound
+                        .add(MyPost.fromJson(element as Map<String, dynamic>));
+              },
+            );
+            print(
+                "jumlah laporan hilang: " + laporanNewsLost.length.toString());
+            print("jumlah laporan temu: " + laporanNewsFound.length.toString());
+          }
+
+          laporanNewsLost.refresh();
+          laporanNewsFound.refresh();
+        } else {
+          throw "Error : $statusCode";
+        }
+      } catch (e) {
+        print(e);
+        errorMsg(
+            "Tidak dapat menampilkan laporan. Hubungi customer service kami.");
+      }
+      if (page == 0) {
+        isLoadingLost.value = false;
+        if (offsetLost.value != 0) isLoadingLostBottom.value = false;
+        return laporanNewsLost;
+      } else {
+        isLoadingFound.value = false;
+        if (offsetFound.value != 0) isLoadingFoundBottom.value = false;
+        return laporanNewsFound;
+      }
     } else {
-      isLoadingFound.value = false;
-      if (offsetFound.value != 0) isLoadingFoundBottom.value = false;
-      return laporanNewsFound;
+      if (page == 0) {
+        isLoadingLost.value = false;
+        if (offsetLost.value != 0) isLoadingLostBottom.value = false;
+        return laporanNewsLost;
+      } else {
+        isLoadingFound.value = false;
+        if (offsetFound.value != 0) isLoadingFoundBottom.value = false;
+        return laporanNewsFound;
+      }
     }
   }
 

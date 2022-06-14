@@ -7,6 +7,7 @@ class MyAnswers {
   String? answer;
   String? statusAnswer;
   User? user;
+  String? hero;
 
   MyAnswers(
       {this.id,
@@ -14,7 +15,8 @@ class MyAnswers {
       this.userId,
       this.answer,
       this.statusAnswer,
-      this.user});
+      this.user,
+      this.hero});
 
   MyAnswers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -23,6 +25,7 @@ class MyAnswers {
     answer = json['answer'];
     statusAnswer = json['statusAnswer'];
     user = json['User'] != null ? User?.fromJson(json['User']) : null;
+    hero = null;
   }
 
   Map<String, dynamic> toJson() {

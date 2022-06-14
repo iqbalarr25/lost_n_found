@@ -200,6 +200,7 @@ class HomeController extends GetxController {
     var isCopy = false.obs;
 
     Get.defaultDialog(
+      barrierDismissible: true,
       title: "Kontak pelapor",
       titleStyle: textBlackBig,
       titlePadding: const EdgeInsets.only(top: 25),
@@ -211,13 +212,17 @@ class HomeController extends GetxController {
             "Iqbal Arrafi",
             style: textBlackSmall,
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            height: 65,
-            width: 65,
-            decoration: BoxDecoration(
-              color: primaryColor,
-              shape: BoxShape.circle,
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.white,
+            backgroundImage: const AssetImage("assets/images/avatar.jpg"),
+            child: CircleAvatar(
+              radius: 40,
+              backgroundColor: Colors.transparent,
+              backgroundImage: (post.user!.imgUrl != null)
+                  ? NetworkImage(post.user!.imgUrl)
+                  : const AssetImage("assets/images/avatar.jpg")
+                      as ImageProvider,
             ),
           ),
           Text(

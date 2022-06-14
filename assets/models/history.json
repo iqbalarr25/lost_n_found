@@ -1,0 +1,142 @@
+{
+    "followingFoundPosts": [],
+    "followingLostPosts": [
+      {
+        "id": "1d301987-ca74-4f9c-9b48-0beaf984d9c7",
+        "userId": "5a15592e-81f1-4526-99a7-8601164ea6f2",
+        "typePost": "Lost",
+        "title": "iseng",
+        "description": "isen",
+        "chronology": "iseng",
+        "socialMediaType": "WhatsApp",
+        "socialMedia": "iseng",
+        "imgUrl": [
+          "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/scaled_image_picker7708405711765151470.webp?alt=media&token=df033653-9bc6-4f2f-b3a3-c93a18dc00ad"
+        ],
+        "date": "07 June 2022",
+        "activeStatus": false,
+        "deleteStatus": false,
+        "createdAt": "2022-06-13T09:34:54.276Z",
+        "updatedAt": "2022-06-14T09:43:24.527Z",
+        "User": {
+          "email": "penjawab@gmail.com",
+          "name": "Penjawab Tamvan",
+          "imgUrl": "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/data%2Fuser%2F0%2Fcom.example.lost_n_found%2Fcache%2Fscaled_image_picker3974207880375218824.jpg?alt=media&token=aaa6953c-28cf-49ba-abd2-eac70a0fbb7c"
+        },
+        "Questions": [
+          {
+            "id": "4ff46031-09bf-42a1-bda7-6943559ae700",
+            "userId": "499abbc1-fd55-4c06-9f47-e561f74a3aec",
+            "postId": "1d301987-ca74-4f9c-9b48-0beaf984d9c7",
+            "typeQuestion": "UserQuestion",
+            "question": "Apa hapenya",
+            "statusQuestion": "Finished",
+            "createdAt": "2022-06-14T09:15:39.536Z",
+            "updatedAt": "2022-06-14T09:43:24.543Z",
+            "Answers": [
+              {
+                "id": "30260ed2-66f9-4ea6-98db-8f67abb8db65",
+                "questionId": "4ff46031-09bf-42a1-bda7-6943559ae700",
+                "userId": "5a15592e-81f1-4526-99a7-8601164ea6f2",
+                "answer": "gatau",
+                "statusAnswer": "Rejected",
+                "createdAt": "2022-06-14T09:21:09.431Z",
+                "updatedAt": "2022-06-14T10:20:35.756Z"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ownLostPosts": [
+      {
+        "id": "41b5cfa0-a20b-4400-beb4-32a830ce4ac0",
+        "userId": "499abbc1-fd55-4c06-9f47-e561f74a3aec",
+        "typePost": "Lost",
+        "title": "lost",
+        "description": "lost",
+        "chronology": "lost",
+        "socialMediaType": "WhatsApp",
+        "socialMedia": "lost",
+        "imgUrl": [
+          "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/scaled_image_picker6198000002653522123.jpg?alt=media&token=68ea2fca-6a19-4ddd-8aba-0250977e60dd"
+        ],
+        "date": "12 June 2022",
+        "activeStatus": false,
+        "deleteStatus": false,
+        "createdAt": "2022-06-12T11:27:16.863Z",
+        "updatedAt": "2022-06-14T10:20:35.718Z",
+        "User": {
+          "email": "iqbal@gmail.com",
+          "name": "Muhammad Iqbal Arrafi Azzaniyah Samsudin ",
+          "imgUrl": "https://firebasestorage.googleapis.com/v0/b/telu-lost-and-found.appspot.com/o/data%2Fuser%2F0%2Fcom.example.lost_n_found%2Fcache%2Fscaled_image_picker8563959576116842122.jpg?alt=media&token=71c45d01-c144-4139-98b9-52db9720b973"
+        },
+        "Questions": [
+          {
+            "id": "c6569116-da9a-40f7-9a17-3507475a2815",
+            "userId": "5a15592e-81f1-4526-99a7-8601164ea6f2",
+            "postId": "41b5cfa0-a20b-4400-beb4-32a830ce4ac0",
+            "typeQuestion": "UserQuestion",
+            "question": "hehe",
+            "statusQuestion": "Rejected",
+            "createdAt": "2022-06-12T14:02:28.161Z",
+            "updatedAt": "2022-06-14T10:20:35.729Z",
+            "Answers": [
+              {
+                "id": "c505847a-d397-4603-ad84-8fe916ad295a",
+                "questionId": "c6569116-da9a-40f7-9a17-3507475a2815",
+                "userId": "499abbc1-fd55-4c06-9f47-e561f74a3aec",
+                "answer": "hahahihi",
+                "statusAnswer": "Rejected",
+                "createdAt": "2022-06-14T10:10:40.450Z",
+                "updatedAt": "2022-06-14T10:20:35.756Z"
+              }
+            ]
+          },
+          {
+            "id": "46e6d2f1-2c71-435d-a3f5-ef71025396c9",
+            "userId": "5a15592e-81f1-4526-99a7-8601164ea6f2",
+            "postId": "41b5cfa0-a20b-4400-beb4-32a830ce4ac0",
+            "typeQuestion": "UserQuestion",
+            "question": "waifumu kek lonte mas hehe",
+            "statusQuestion": "Rejected",
+            "createdAt": "2022-06-13T01:27:18.237Z",
+            "updatedAt": "2022-06-14T10:20:35.729Z",
+            "Answers": [
+              {
+                "id": "c163db0d-a444-47e3-a00e-8f165ba54961",
+                "questionId": "46e6d2f1-2c71-435d-a3f5-ef71025396c9",
+                "userId": "499abbc1-fd55-4c06-9f47-e561f74a3aec",
+                "answer": "kasar",
+                "statusAnswer": "Rejected",
+                "createdAt": "2022-06-14T10:12:30.253Z",
+                "updatedAt": "2022-06-14T10:20:35.756Z"
+              }
+            ]
+          },
+          {
+            "id": "a09df291-0585-4542-93e6-7db412a9d9c9",
+            "userId": "28acc7ee-b535-4cb8-ac85-e6ef352f8eba",
+            "postId": "41b5cfa0-a20b-4400-beb4-32a830ce4ac0",
+            "typeQuestion": "UserQuestion",
+            "question": "Sebutkan nama waifu ini?",
+            "statusQuestion": "Finished",
+            "createdAt": "2022-06-12T12:00:39.530Z",
+            "updatedAt": "2022-06-14T10:20:35.737Z",
+            "Answers": [
+              {
+                "id": "537ef3f0-24f7-4d42-bf1e-c988950a2cd0",
+                "questionId": "a09df291-0585-4542-93e6-7db412a9d9c9",
+                "userId": "499abbc1-fd55-4c06-9f47-e561f74a3aec",
+                "answer": "siesta",
+                "statusAnswer": "Finished",
+                "createdAt": "2022-06-14T10:07:05.391Z",
+                "updatedAt": "2022-06-14T10:20:35.746Z"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ownFoundPosts": []
+  }

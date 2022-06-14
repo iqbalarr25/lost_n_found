@@ -251,8 +251,17 @@ class NewsView extends GetView<NewsController> {
       margin: const EdgeInsets.symmetric(vertical: 15),
       child: CupertinoSearchTextField(
         onSuffixTap: () {
-          searchText.text = "";
-          controller.refreshTab(controller.thisPage.value);
+          if (controller.thisPage.value == 0) {
+            if (!controller.isLoadingLost.value) {
+              searchText.text = "";
+              controller.refreshTab(0);
+            }
+          } else {
+            if (!controller.isLoadingFound.value) {
+              searchText.text = "";
+              controller.refreshTab(1);
+            }
+          }
         },
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

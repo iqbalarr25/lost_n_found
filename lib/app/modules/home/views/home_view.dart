@@ -80,15 +80,15 @@ class HomeView extends GetView<HomeController> {
                                           );
                                         } else {
                                           return ListView.builder(
-                                            itemCount:
-                                                controller.laporanAnda.length,
-                                            scrollDirection: Axis.horizontal,
-                                            itemBuilder: (context, i) =>
-                                                cardLaporan(
+                                              itemCount:
+                                                  controller.laporanAnda.length,
+                                              scrollDirection: Axis.horizontal,
+                                              itemBuilder: (context, i) {
+                                                return cardLaporan(
                                                     post: controller
                                                         .laporanAnda[i],
-                                                    index: i),
-                                          );
+                                                    index: i);
+                                              });
                                         }
                                       }
                                     },
@@ -299,22 +299,18 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 Row(
                                   children: [
-                                    Hero(
-                                      tag: post.imgUrl![0],
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                              post.imgUrl![0],
-                                            ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                            post.imgUrl![0],
                                           ),
                                         ),
-                                        width: 130,
-                                        height: 130,
                                       ),
+                                      width: 130,
+                                      height: 130,
                                     ),
                                     const SizedBox(width: 10),
                                     Container(
@@ -430,22 +426,19 @@ class HomeView extends GetView<HomeController> {
                                 children: [
                                   Row(
                                     children: [
-                                      Hero(
-                                        tag: post.imgUrl![0],
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                post.imgUrl![0],
-                                              ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                              post.imgUrl![0],
                                             ),
                                           ),
-                                          width: 130,
-                                          height: 130,
                                         ),
+                                        width: 130,
+                                        height: 130,
                                       ),
                                       const SizedBox(width: 10),
                                       Container(
@@ -538,7 +531,7 @@ class HomeView extends GetView<HomeController> {
         children: [
           const SizedBox(height: 10),
           Text(
-            post.questions![0].question!,
+            questions.question!,
             style: textBlackSmallNormal,
           ),
           const SizedBox(height: 15),
@@ -548,14 +541,22 @@ class HomeView extends GetView<HomeController> {
           ),
           const SizedBox(height: 10),
           CircleAvatar(
-            backgroundColor: primaryColor,
             radius: 30,
+            backgroundColor: Colors.white,
             backgroundImage: const AssetImage("assets/images/avatar.jpg"),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.transparent,
+              backgroundImage: (post.user!.imgUrl != null)
+                  ? NetworkImage(post.user!.imgUrl)
+                  : const AssetImage("assets/images/avatar.jpg")
+                      as ImageProvider,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
             questions.answers![0].answer!,
-            style: textGreyCard,
+            style: textGreyMediumNormal,
           ),
           const SizedBox(height: 15),
           Row(

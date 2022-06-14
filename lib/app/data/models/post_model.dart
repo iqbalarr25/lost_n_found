@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'questions_model.dart';
+import 'user_model.dart';
 
 class MyPost {
   String? id;
@@ -17,24 +18,29 @@ class MyPost {
   bool? deleteStatus;
   String? createdAt;
   String? updatedAt;
+  User? user;
   List<MyQuestions>? questions;
+  String? hero;
 
-  MyPost(
-      {this.id,
-      this.userId,
-      this.typePost,
-      this.title,
-      this.description,
-      this.chronology,
-      this.socialMediaType,
-      this.socialMedia,
-      this.imgUrl,
-      this.date,
-      this.activeStatus,
-      this.deleteStatus,
-      this.createdAt,
-      this.updatedAt,
-      this.questions});
+  MyPost({
+    this.id,
+    this.userId,
+    this.typePost,
+    this.title,
+    this.description,
+    this.chronology,
+    this.socialMediaType,
+    this.socialMedia,
+    this.imgUrl,
+    this.date,
+    this.activeStatus,
+    this.deleteStatus,
+    this.createdAt,
+    this.updatedAt,
+    this.user,
+    this.questions,
+    this.hero,
+  });
 
   MyPost.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -51,12 +57,14 @@ class MyPost {
     deleteStatus = json['deleteStatus'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
+    user = json['User'] != null ? User?.fromJson(json['User']) : null;
     if (json['Questions'] != null) {
       questions = <MyQuestions>[];
       json['Questions'].forEach((v) {
         questions?.add(MyQuestions.fromJson(v));
       });
     }
+    hero = imgUrl![0];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +83,9 @@ class MyPost {
     data['deleteStatus'] = deleteStatus;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
+    if (user != null) {
+      data['User'] = user?.toJson();
+    }
     if (questions != null) {
       data['Questions'] = questions?.map((v) => v.toJson()).toList();
     }

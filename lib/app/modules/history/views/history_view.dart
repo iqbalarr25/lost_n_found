@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:lost_n_found/app/data/models/post_model.dart';
+import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
 import '../../../themes/theme_app.dart';
@@ -35,19 +36,19 @@ class HistoryView extends GetView<HistoryController> {
                     removeTop: true,
                     context: context,
                     child: (!controller.isLoading.value)
-                        ? FutureBuilder<RxList<MyPost>>(
+                        ? FutureBuilder(
                             future: controller.tampilPostLaporanHistoryFuture,
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.done) {
-                                if (controller.laporanHistory.isNotEmpty) {
+                                if (controller.historyAllPost.isNotEmpty) {
                                   return ListView.builder(
                                     physics:
                                         const AlwaysScrollableScrollPhysics(),
-                                    itemCount: controller.laporanHistory.length,
+                                    itemCount: controller.historyAllPost.length,
                                     itemBuilder: (context, index) =>
                                         buildCardHistory(
-                                            controller.laporanHistory[index],
+                                            controller.historyAllPost[index],
                                             context),
                                   );
                                 } else {
@@ -102,8 +103,18 @@ class HistoryView extends GetView<HistoryController> {
       child: GestureDetector(
         onTap: () {
           if (post.typePost == "Lost") {
-            if (post.questions![0].answers![0].statusAnswer == "Finished") {
-              controller.openDialogKontak(post, context);
+            if (post.questions![post.questions!.length - 1].answers![0]
+                    .statusAnswer ==
+                "Finished") {
+              if (controller.box.read("dataUser")["userId"] == post.userId) {
+                print("user");
+                openDialogJawaban(
+                    post: post,
+                    questions: post.questions![post.questions!.length - 1],
+                    context: context);
+              } else {
+                controller.openDialogKontak(post, context);
+              }
             } else {
               Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
             }
@@ -195,22 +206,55 @@ class HistoryView extends GetView<HistoryController> {
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      Text(
-                        "Status: " +
-                            post.questions![0].answers![0].statusAnswer!,
-                        style: (post.questions![0].answers![0].statusAnswer! ==
-                                "Finished")
-                            ? textGreenDarkCard
-                            : textGreyCard,
-                      ),
+                      if (post.typePost == "Lost") ...[
+                        Text(
+                          "Status: " +
+                              post.questions![post.questions!.length - 1]
+                                  .statusQuestion!,
+                          style: (post.questions![post.questions!.length - 1]
+                                      .statusQuestion! ==
+                                  "Finished")
+                              ? textGreenDarkCard
+                              : textGreyCard,
+                        ),
+                      ] else ...[
+                        Text(
+                          "Status: " +
+                              post.questions![0].answers![0].statusAnswer!,
+                          style:
+                              (post.questions![0].answers![0].statusAnswer! ==
+                                      "Finished")
+                                  ? textGreenDarkCard
+                                  : textGreyCard,
+                        ),
+                      ],
                       const SizedBox(width: 15),
-                      Text(
-                        (post.questions![0].answers![0].statusAnswer ==
-                                "Finished")
-                            ? "Cek kontak"
-                            : "Detail",
-                        style: textRedMini,
-                      ),
+                      if (post.typePost == "Lost") ...[
+                        if (controller.box.read("dataUser")["userId"] ==
+                            post.userId) ...[
+                          Text(
+                            "Detail",
+                            style: textRedMini,
+                          ),
+                        ] else ...[
+                          Text(
+                            (post.questions![post.questions!.length - 1]
+                                        .statusQuestion! ==
+                                    "Finished")
+                                ? "Cek kontak"
+                                : "Detail",
+                            style: textRedMini,
+                          ),
+                        ],
+                      ] else ...[
+                        Text(
+                          (post.questions![0].answers![0].statusAnswer ==
+                                  "Finished")
+                              ? "Cek kontak"
+                              : "Detail",
+                          style: textRedMini,
+                        ),
+                      ],
                     ],
                   ),
                 ],
@@ -218,6 +262,52 @@ class HistoryView extends GetView<HistoryController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future openDialogJawaban(
+      {required MyPost post,
+      required MyQuestions questions,
+      required BuildContext context}) async {
+    Get.defaultDialog(
+      title: "Pertanyaan anda",
+      titleStyle: textBlackBig,
+      titlePadding: const EdgeInsets.only(top: 25),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+      content: Column(
+        children: [
+          const SizedBox(height: 10),
+          Text(
+            questions.question!,
+            style: textBlackSmallNormal,
+          ),
+          const SizedBox(height: 15),
+          Text(
+            "Iqbal Arrafi",
+            style: textBlackSmall,
+          ),
+          const SizedBox(height: 10),
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.white,
+            backgroundImage: const AssetImage("assets/images/avatar.jpg"),
+            child: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.transparent,
+              backgroundImage: (post.user!.imgUrl != null)
+                  ? NetworkImage(post.user!.imgUrl)
+                  : const AssetImage("assets/images/avatar.jpg")
+                      as ImageProvider,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            questions.answers![0].answer!,
+            style: textGreyMediumNormal,
+          ),
+          const SizedBox(height: 15),
+        ],
       ),
     );
   }

@@ -124,6 +124,7 @@ class ProfileController extends GetxController {
       final image = await ImagePicker()
           .pickImage(source: imageSource, maxWidth: 1000, maxHeight: 1000);
       if (image == null) return;
+      Get.back();
       var defaultDialog = Get.dialog(
         Center(
           child: Container(
@@ -164,7 +165,9 @@ class ProfileController extends GetxController {
         print(body);
 
         if (statusCode == 200) {
-          FirebaseStorage.instance.refFromURL(dataUser.value.imgUrl).delete();
+          if (dataUser.value.imgUrl != null) {
+            FirebaseStorage.instance.refFromURL(dataUser.value.imgUrl).delete();
+          }
           print("BERHASIL MENGGANTI PROFILE PICTURE");
           tampilDataUserFuture = tampilDataUser();
           Get.back();
