@@ -21,6 +21,8 @@ class DetailLaporanController extends GetxController {
   var isZoomImage = false.obs;
 
   var isLoading = false.obs;
+  var textBottomSheet = "".obs;
+  var isFollowedPost = false.obs;
 
   late Future<Rx<MyPost>> tampilDetailLaporanFuture;
 
@@ -143,23 +145,44 @@ class DetailLaporanController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(AuthController.url + "questions");
+    Uri uri;
+    if (!isFollowedPost.value) {
+      uri = Uri.parse(AuthController.url + "questions");
+    } else {
+      uri = Uri.parse(
+          AuthController.url + "questions/" + post.value.questions![0].id!);
+    }
     try {
-      var response = await http.post(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-        },
-        body: json.encode({
-          "userId": box.read("dataUser")["userId"],
-          "postId": post.value.id,
-          "typeQuestion": "UserQuestion",
-          "question": balasanController.text,
-          "statusQuestion": "Waiting"
-        }),
-      );
+      var response;
+      if (!isFollowedPost.value) {
+        response = await http.post(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({
+            "userId": box.read("dataUser")["userId"],
+            "postId": post.value.id,
+            "typeQuestion": "UserQuestion",
+            "question": balasanController.text,
+            "statusQuestion": "Waiting"
+          }),
+        );
+      } else {
+        response = await http.patch(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({
+            "question": balasanController.text,
+          }),
+        );
+      }
 
       var body = json.decode(response.body) as Map<String, dynamic>;
       var statusCode = response.statusCode;
@@ -167,7 +190,7 @@ class DetailLaporanController extends GetxController {
       print("STATUS CODE : $statusCode");
       print(body);
 
-      if (statusCode == 201) {
+      if (statusCode == 201 || statusCode == 200) {
         print("BERHASIL menambahkan pertanyaan");
         defaultDialog = Get.defaultDialog(
           contentPadding: const EdgeInsets.symmetric(horizontal: 6),
@@ -204,22 +227,44 @@ class DetailLaporanController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(AuthController.url + "answers");
+    Uri uri;
+    if (!isFollowedPost.value) {
+      uri = Uri.parse(AuthController.url + "answers");
+    } else {
+      uri = Uri.parse(AuthController.url +
+          "answers/" +
+          post.value.questions![0].answers![0].id!);
+    }
     try {
-      var response = await http.post(
-        uri,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-        },
-        body: json.encode({
-          "questionId": detailLaporan.value.questions![0].id,
-          "userId": box.read("dataUser")["userId"],
-          "answer": balasanController.text,
-          "statusAnswer": "Waiting"
-        }),
-      );
+      var response;
+      if (!isFollowedPost.value) {
+        response = await http.post(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({
+            "questionId": detailLaporan.value.questions![0].id,
+            "userId": box.read("dataUser")["userId"],
+            "answer": balasanController.text,
+            "statusAnswer": "Waiting"
+          }),
+        );
+      } else {
+        response = await http.patch(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({
+            "answer": balasanController.text,
+          }),
+        );
+      }
 
       var body = json.decode(response.body) as Map<String, dynamic>;
       var statusCode = response.statusCode;
@@ -227,7 +272,7 @@ class DetailLaporanController extends GetxController {
       print("STATUS CODE : $statusCode");
       print(body);
 
-      if (statusCode == 201) {
+      if (statusCode == 201 || statusCode == 200) {
         print("BERHASIL menambahkan jawaban");
         defaultDialog = Get.defaultDialog(
           title: "BERHASIL",
@@ -414,6 +459,31 @@ class DetailLaporanController extends GetxController {
     }
   }
 
+  void detailLaporanManager() {
+    if (post.value.userId != box.read("dataUser")["userId"]) {
+      if (!post.value.activeStatus!) {
+        textBottomSheet.value = "Laporan selesai";
+      } else if (post.value.typePost! == "Found") {
+        if (post.value.questions![0].answers![0].userId ==
+            box.read("dataUser")["userId"]) {
+          textBottomSheet.value = "Edit Jawaban Anda";
+          balasanController.text = post.value.questions![0].answers![0].answer!;
+          isFollowedPost.value = true;
+        } else {
+          textBottomSheet.value = "Saya Pemiliknya";
+        }
+      } else {
+        if (post.value.questions![0].userId == box.read("dataUser")["userId"]) {
+          textBottomSheet.value = "Edit Pertanyaan Anda";
+          balasanController.text = post.value.questions![0].question!;
+          isFollowedPost.value = true;
+        } else {
+          textBottomSheet.value = "Saya Menemukan";
+        }
+      }
+    }
+  }
+
   void errorMsg(String msg) {
     Get.defaultDialog(
       title: "TERJADI KESALAHAN",
@@ -431,6 +501,7 @@ class DetailLaporanController extends GetxController {
       post.value = Get.arguments;
     }
     tampilDetailLaporanFuture = tampilDetailLaporan();
+    detailLaporanManager();
   }
 
   @override

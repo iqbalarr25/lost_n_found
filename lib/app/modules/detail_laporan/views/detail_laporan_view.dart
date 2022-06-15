@@ -293,6 +293,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
       bottomSheet: (controller.post.value.userId !=
               controller.box.read("dataUser")["userId"])
           ? BottomSheet(
+              enableDrag: false,
               elevation: 75,
               backgroundColor: Colors.transparent,
               clipBehavior: Clip.hardEdge,
@@ -311,14 +312,14 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                       const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   height: 50,
                   decoration: BoxDecoration(
-                    color: primaryColor,
+                    color: (controller.detailLaporan.value.activeStatus!)
+                        ? primaryColor
+                        : greenColor,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Center(
                     child: Text(
-                      (controller.post.value.typePost! == "Found")
-                          ? "Saya Pemiliknya"
-                          : "Saya Menemukan",
+                      controller.textBottomSheet.value,
                       style: textWhiteMedium,
                     ),
                   ),
@@ -519,7 +520,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               style: textBlackSmallNormal,
             ),
             const SizedBox(height: 15),
-            textFormField(hint: "Masukkan pertanyaan"),
+            buildTextFormField(hint: "Masukkan pertanyaan"),
             const SizedBox(height: 2),
             Align(
               alignment: Alignment.centerLeft,
@@ -575,7 +576,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 15),
-            textFormField(hint: "Masukkan jawaban"),
+            buildTextFormField(hint: "Masukkan jawaban"),
             const SizedBox(height: 15),
             GestureDetector(
               onTap: () {
@@ -645,7 +646,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               ),
             ),
             const SizedBox(height: 10),
-            textFormField(hint: "Masukkan jawaban"),
+            buildTextFormField(hint: "Masukkan jawaban"),
             const SizedBox(height: 15),
             GestureDetector(
               onTap: () {
@@ -808,7 +809,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     );
   }
 
-  Widget textFormField({required String hint, required}) {
+  Widget buildTextFormField({required String hint, required}) {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 130),
       child: TextFormField(
