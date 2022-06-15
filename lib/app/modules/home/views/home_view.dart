@@ -266,144 +266,20 @@ class HomeView extends GetView<HomeController> {
 
   Widget cardLaporanIkuti(
       {required MyPost post, required BuildContext context}) {
-    return Column(
-      children: (post.typePost == "Found")
-          ? post.questions![0].answers!
-              .map((e) => (e.statusAnswer == "Waiting" ||
-                      e.statusAnswer == "Accepted")
-                  ? InkWell(
-                      onTap: () {
-                        if (post.questions![0].statusQuestion! == "Waiting") {
-                          Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
-                        } else {
-                          controller.followingFoundFinish(
-                              post, post.questions![0], context);
-                        }
-                      },
-                      child: SizedBox(
-                        width: 330,
-                        child: Card(
-                          elevation: 1,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 3),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: whiteColor,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(
-                                            post.imgUrl![0],
-                                          ),
-                                        ),
-                                      ),
-                                      width: 130,
-                                      height: 130,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Container(
-                                      height: 110,
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 117,
-                                                child: Text(
-                                                  post.title!.capitalizeFirst!,
-                                                  style: textTitleCard,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 1),
-                                              Text(
-                                                post.date!,
-                                                style: textGreyCard,
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                  vertical: 4,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: primaryColor,
-                                                ),
-                                                child: Text(
-                                                  post.typePost!,
-                                                  style: textWhiteMedium,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "Status: " + e.statusAnswer!,
-                                            style:
-                                                (e.statusAnswer == "Accepted")
-                                                    ? textGreenDarkCard
-                                                    : textGreyCard,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  color: whiteColor,
-                                  padding: const EdgeInsets.only(
-                                      bottom: 10, right: 7),
-                                  child: Text(
-                                    "Detail",
-                                    style: textRedMini,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : const SizedBox())
-              .toList()
-              .obs
-          : post.questions!
-              .map(
-                (e) => (e.statusQuestion == "Waiting" ||
-                        e.statusQuestion == "Answered")
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      child: Column(
+        children: (post.typePost == "Found")
+            ? post.questions![0].answers!
+                .map((e) => (e.statusAnswer == "Waiting" ||
+                        e.statusAnswer == "Accepted")
                     ? InkWell(
                         onTap: () {
-                          if (post.questions![0].statusQuestion! ==
-                              "Answered") {
-                            openDialogJawaban(
-                                post: post, questions: e, context: context);
-                          } else if (post.questions![0].statusQuestion! ==
-                              "Waiting") {
+                          if (post.questions![0].statusQuestion! == "Waiting") {
                             Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+                          } else {
+                            controller.followingFoundFinish(
+                                post, post.questions![0], context);
                           }
                         },
                         child: SizedBox(
@@ -455,9 +331,16 @@ class HomeView extends GetView<HomeController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  post.title!,
-                                                  style: textTitleCard,
+                                                SizedBox(
+                                                  width: 117,
+                                                  child: Text(
+                                                    post.title!
+                                                        .capitalizeFirst!,
+                                                    style: textTitleCard,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
                                                 ),
                                                 const SizedBox(height: 1),
                                                 Text(
@@ -485,11 +368,11 @@ class HomeView extends GetView<HomeController> {
                                               ],
                                             ),
                                             Text(
-                                              "Status: " + e.statusQuestion!,
-                                              style: (e.statusQuestion ==
-                                                      "Answered")
-                                                  ? textGreenDarkCard
-                                                  : textGreyCard,
+                                              "Status: " + e.statusAnswer!,
+                                              style:
+                                                  (e.statusAnswer == "Accepted")
+                                                      ? textGreenDarkCard
+                                                      : textGreyCard,
                                             ),
                                           ],
                                         ),
@@ -511,10 +394,135 @@ class HomeView extends GetView<HomeController> {
                           ),
                         ),
                       )
-                    : const SizedBox(),
-              )
-              .toList()
-              .obs,
+                    : const SizedBox())
+                .toList()
+                .obs
+            : post.questions!
+                .map(
+                  (e) => (e.statusQuestion == "Waiting" ||
+                          e.statusQuestion == "Answered")
+                      ? InkWell(
+                          onTap: () {
+                            if (post.questions![0].statusQuestion! ==
+                                "Answered") {
+                              openDialogJawaban(
+                                  post: post, questions: e, context: context);
+                            } else if (post.questions![0].statusQuestion! ==
+                                "Waiting") {
+                              Get.toNamed(Routes.DETAIL_LAPORAN,
+                                  arguments: post);
+                            }
+                          },
+                          child: SizedBox(
+                            width: 330,
+                            child: Card(
+                              elevation: 1,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 3, horizontal: 3),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: whiteColor,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                post.imgUrl![0],
+                                              ),
+                                            ),
+                                          ),
+                                          width: 130,
+                                          height: 130,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Container(
+                                          height: 110,
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 8),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    post.title!,
+                                                    style: textTitleCard,
+                                                  ),
+                                                  const SizedBox(height: 1),
+                                                  Text(
+                                                    post.date!,
+                                                    style: textGreyCard,
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4,
+                                                    ),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      color: primaryColor,
+                                                    ),
+                                                    child: Text(
+                                                      post.typePost!,
+                                                      style: textWhiteMedium,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                "Status: " + e.statusQuestion!,
+                                                style: (e.statusQuestion ==
+                                                        "Answered")
+                                                    ? textGreenDarkCard
+                                                    : textGreyCard,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      color: whiteColor,
+                                      padding: const EdgeInsets.only(
+                                          bottom: 10, right: 7),
+                                      child: Text(
+                                        "Detail",
+                                        style: textRedMini,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                )
+                .toList()
+                .obs,
+      ),
     );
   }
 
@@ -533,6 +541,7 @@ class HomeView extends GetView<HomeController> {
           Text(
             questions.question!,
             style: textBlackSmallNormal,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 15),
           Text(
@@ -557,6 +566,7 @@ class HomeView extends GetView<HomeController> {
           Text(
             questions.answers![0].answer!,
             style: textGreyMediumNormal,
+            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 15),
           Row(

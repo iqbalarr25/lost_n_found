@@ -37,9 +37,11 @@ class PostController extends GetxController {
 
   var selectedImages = <File>[].obs;
   var selectedImagesPath = <String>[].obs;
+  var selectedImagesPathPost = <String>[].obs;
 
   var selectedImagesEdit = <Widget>[].obs;
   var selectedImagesPathEdit = <String>[].obs;
+  var selectedImagesPathEditPost = <String>[].obs;
 
   var selectedImagesOnDeletePath = <String>[].obs;
 
@@ -60,66 +62,62 @@ class PostController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    var imageLength = selectedImagesPath.length;
     print("PROSES POSTING");
     Uri uri = Uri.parse(AuthController.url + "posts");
     try {
-      selectedImagesPath.forEach((element) async {
-        Reference ref = FirebaseStorage.instance.ref().child(element);
+      await Future.forEach(selectedImagesPath, (element) async {
+        Reference ref = FirebaseStorage.instance.ref().child(element as String);
         UploadTask task =
             ref.putFile(selectedImages[selectedImagesPath.indexOf(element)]);
         final imageUrl = await (await task).ref.getDownloadURL();
-        selectedImagesPath.add(imageUrl);
-
-        if (selectedImagesPath.length == imageLength * 2) {
-          selectedImagesPath.removeRange(0, imageLength);
-          var response = await http.post(
-            uri,
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-              "Accept": "application/json",
-              'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-            },
-            body: json.encode({
-              "userId": box.read("dataUser")["userId"],
-              "typePost": category.value,
-              "title": judulController.text,
-              "description": deskripsiController.text,
-              "chronology": kronologiController.text,
-              "socialMediaType": mediaSosial.value,
-              "socialMedia": mediaSosialController.text,
-              "imgUrl": selectedImagesPath,
-              "date": dateController.text,
-              "activeStatus": true,
-              "deleteStatus": false
-            }),
-          );
-
-          var body = json.decode(response.body) as Map<String, dynamic>;
-          var statusCode = response.statusCode;
-
-          if (category.value == "Found") {
-            postId.value = body['data']['id'];
-            tambahQuestion();
-          }
-
-          print("STATUS CODE : $statusCode");
-          print(body);
-
-          if (statusCode == 201) {
-            print("BERHASIL MENAMBAHKAN LAPORAN");
-            defaultDialog = Get.defaultDialog(
-              title: "BERHASIL",
-              middleText: "Berhasil menambahkan laporan.",
-            ).then((value) {
-              Get.reloadAll();
-              Get.offAllNamed(Routes.MAIN, arguments: 0);
-            });
-          } else {
-            throw "Error : $statusCode";
-          }
-        }
+        selectedImagesPathPost.add(imageUrl);
       });
+
+      var response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Accept": "application/json",
+          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+        },
+        body: json.encode({
+          "userId": box.read("dataUser")["userId"],
+          "typePost": category.value,
+          "title": judulController.text,
+          "description": deskripsiController.text,
+          "chronology": kronologiController.text,
+          "socialMediaType": mediaSosial.value,
+          "socialMedia": mediaSosialController.text,
+          "imgUrl": selectedImagesPathPost,
+          "date": dateController.text,
+          "activeStatus": true,
+          "deleteStatus": false
+        }),
+      );
+
+      var body = json.decode(response.body) as Map<String, dynamic>;
+      var statusCode = response.statusCode;
+
+      if (category.value == "Found") {
+        postId.value = body['data']['id'];
+        tambahQuestion();
+      }
+
+      print("STATUS CODE : $statusCode");
+      print(body);
+
+      if (statusCode == 201) {
+        print("BERHASIL MENAMBAHKAN LAPORAN");
+        defaultDialog = Get.defaultDialog(
+          title: "BERHASIL",
+          middleText: "Berhasil menambahkan laporan.",
+        ).then((value) {
+          Get.reloadAll();
+          Get.offAllNamed(Routes.MAIN, arguments: 0);
+        });
+      } else {
+        throw "Error : $statusCode";
+      }
     } catch (e) {
       errorMsg(
           "Tidak dapat menambahkan laporan. Hubungi customer service kami.");
@@ -127,8 +125,6 @@ class PostController extends GetxController {
   }
 
   Future editPost() async {
-    var imageLength = selectedImagesPath.length;
-    var imageLengthEdit = selectedImagesPathEdit.length;
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
@@ -142,64 +138,70 @@ class PostController extends GetxController {
       ),
       barrierDismissible: false,
     );
+
     Uri uri = Uri.parse(AuthController.url + "posts/" + post.value.id!);
     try {
       if (selectedImagesPathEdit.isNotEmpty) {
-        selectedImagesPathEdit.forEach((element) async {
-          Reference ref = FirebaseStorage.instance.ref().child(element);
+        await Future.forEach(selectedImagesPathEdit, (element) async {
+          Reference ref =
+              FirebaseStorage.instance.ref().child(element as String);
           UploadTask task = ref
               .putFile(selectedImages[selectedImagesPathEdit.indexOf(element)]);
           final imageUrl = await (await task).ref.getDownloadURL();
-          selectedImagesPath.add(imageUrl);
-
-          if (selectedImagesPath.length == imageLengthEdit + imageLength) {
-            var response = await http.patch(
-              uri,
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-                "Accept": "application/json",
-                'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-              },
-              body: json.encode({
-                "typePost": category.value,
-                "title": judulController.text,
-                "description": deskripsiController.text,
-                "chronology": kronologiController.text,
-                "socialMediaType": mediaSosial.value,
-                "socialMedia": mediaSosialController.text,
-                "imgUrl": selectedImagesPath,
-                "date": dateController.text,
-              }),
-            );
-
-            var body = json.decode(response.body) as Map<String, dynamic>;
-            var statusCode = response.statusCode;
-
-            if (category.value == "Found") {
-              editQuestion();
-            }
-
-            print("STATUS CODE : $statusCode");
-            print(body);
-
-            if (statusCode == 200) {
-              selectedImagesOnDeletePath.forEach((element) {
-                FirebaseStorage.instance.refFromURL(element).delete();
-                print("ini yang di delete" + element);
-              });
-              print("BERHASIL Edit Laporan yang ber-ID : $post.value.id");
-              defaultDialog = Get.defaultDialog(
-                title: "BERHASIL",
-                middleText: "Berhasil mengedit laporan.",
-              ).then((value) {
-                Get.reloadAll();
-                Get.offAllNamed(Routes.MAIN, arguments: 0);
-              });
-            } else {
-              throw "Error : $statusCode";
-            }
-          }
+          selectedImagesPathPost.add(imageUrl);
         });
+
+        selectedImagesPathPost.value = [
+          ...selectedImagesPath,
+          ...selectedImagesPathPost
+        ];
+        print("INI WOY" + selectedImagesPathPost.toString());
+
+        var response = await http.patch(
+          uri,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            "Accept": "application/json",
+            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          },
+          body: json.encode({
+            "typePost": category.value,
+            "title": judulController.text,
+            "description": deskripsiController.text,
+            "chronology": kronologiController.text,
+            "socialMediaType": mediaSosial.value,
+            "socialMedia": mediaSosialController.text,
+            "imgUrl": selectedImagesPathPost,
+            "date": dateController.text,
+          }),
+        );
+
+        var body = json.decode(response.body) as Map<String, dynamic>;
+        var statusCode = response.statusCode;
+
+        if (category.value == "Found") {
+          editQuestion();
+        }
+
+        print("STATUS CODE : $statusCode");
+        print(body);
+
+        if (statusCode == 200) {
+          selectedImagesOnDeletePath.forEach((element) {
+            FirebaseStorage.instance.refFromURL(element).delete();
+            print("ini yang di delete " + element);
+          });
+          print("BERHASIL Edit Laporan yang ber-ID : $post.value.id");
+          defaultDialog = Get.defaultDialog(
+            title: "BERHASIL",
+            middleText: "Berhasil mengedit laporan.",
+          ).then((value) {
+            Get.offAllNamed(Routes.MAIN, arguments: 0);
+            Get.reloadAll();
+          });
+        } else {
+          throw "Error : $statusCode";
+        }
       } else {
         var response = await http.patch(
           uri,
@@ -352,17 +354,23 @@ class PostController extends GetxController {
   }
 
   void deleteImageEdit(int index) {
-    if (selectedImagesPathEdit.isNotEmpty &&
+    if (selectedImagesPath.isEmpty) {
+      selectedImages.remove(selectedImages[index]);
+      selectedImagesPathEdit.remove(selectedImagesPathEdit[index]);
+      print("jalan 1");
+    } else if (selectedImagesPathEdit.isNotEmpty &&
         index >= selectedImagesPath.length) {
       selectedImagesOnDeletePath
           .add(selectedImagesPathEdit[index - selectedImagesPath.length]);
       selectedImagesPathEdit
           .remove(selectedImagesPathEdit[index - selectedImagesPath.length]);
       selectedImagesPathEdit.refresh();
+      print("jalan 2");
     } else {
       selectedImagesOnDeletePath.add(selectedImagesPath[index]);
       selectedImagesPath.remove(selectedImagesPath[index]);
       selectedImagesPath.refresh();
+      print("jalan 3");
     }
     selectedImagesEdit.remove(selectedImagesEdit[index]);
     selectedImagesEdit.refresh();

@@ -308,9 +308,11 @@ class DetailLaporanController extends GetxController {
             title: "BERHASIL",
             middleText: "Berhasil mengirim jawaban.",
           ).then((value) async {
-            tampilDetailLaporanFuture = tampilDetailLaporan();
             Get.back();
             Get.back();
+            isLoading.value = true;
+            await (tampilDetailLaporanFuture = tampilDetailLaporan());
+            isLoading.value = false;
           });
         } else {
           throw "Error : $statusCode";

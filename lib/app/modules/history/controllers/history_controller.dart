@@ -21,6 +21,10 @@ class HistoryController extends GetxController {
   var ownFoundPost = List<MyPost>.empty().obs;
   var ownLostPost = List<MyPost>.empty().obs;
 
+  var laporanSemuaSelected = true.obs;
+  var laporanAndaSelected = true.obs;
+  var laporanDiikutiSelected = true.obs;
+
   late Future<Rx<History>>? tampilPostLaporanHistoryFuture;
 
   Future<Rx<History>>? tampilPostLaporanHistory() async {
@@ -156,6 +160,38 @@ class HistoryController extends GetxController {
             snackPosition: SnackPosition.BOTTOM);
       }
     });
+  }
+
+  void filterBehaviour(
+      {bool? laporanSemuaSelected,
+      bool? laporanAndaSelected,
+      bool? laporanDiikutiSelected}) {
+    if (laporanSemuaSelected != null) {
+      if (!this.laporanAndaSelected.value ||
+          !this.laporanDiikutiSelected.value) {
+        this.laporanSemuaSelected.value = laporanSemuaSelected;
+        if (this.laporanSemuaSelected.value) {
+          this.laporanAndaSelected.value = true;
+          this.laporanDiikutiSelected.value = true;
+        }
+      }
+    }
+    if (laporanAndaSelected != null) {
+      this.laporanAndaSelected.value = laporanAndaSelected;
+      if (this.laporanAndaSelected.value && this.laporanDiikutiSelected.value) {
+        this.laporanSemuaSelected.value = true;
+      } else {
+        this.laporanSemuaSelected.value = false;
+      }
+    }
+    if (laporanDiikutiSelected != null) {
+      this.laporanDiikutiSelected.value = laporanDiikutiSelected;
+      if (this.laporanAndaSelected.value && this.laporanDiikutiSelected.value) {
+        this.laporanSemuaSelected.value = true;
+      } else {
+        this.laporanSemuaSelected.value = false;
+      }
+    }
   }
 
   void errorMsg(String msg) {

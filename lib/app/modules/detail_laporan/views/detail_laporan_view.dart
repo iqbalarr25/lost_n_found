@@ -298,10 +298,12 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               clipBehavior: Clip.hardEdge,
               builder: (context) => GestureDetector(
                 onTap: () {
-                  if (controller.detailLaporan.value.typePost! == "Found") {
-                    openDialogMenjawab();
-                  } else {
-                    openDialogAjukanPertanyaan();
+                  if (controller.detailLaporan.value.activeStatus!) {
+                    if (controller.detailLaporan.value.typePost! == "Found") {
+                      openDialogMenjawab();
+                    } else {
+                      openDialogAjukanPertanyaan();
+                    }
                   }
                 },
                 child: Container(
@@ -356,7 +358,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                         const AssetImage("assets/images/avatar.jpg"),
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      backgroundImage: (!answers.user!.isBlank!)
+                      backgroundImage: (answers.user!.imgUrl != null)
                           ? NetworkImage(answers.user!.imgUrl!)
                           : const AssetImage("assets/images/avatar.jpg")
                               as ImageProvider,
@@ -389,8 +391,9 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(right: 10),
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  margin: const EdgeInsets.only(right: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                     color: whiteColor,
                     borderRadius: BorderRadius.circular(25),
@@ -569,6 +572,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             Text(
               controller.detailLaporan.value.questions![0].question!,
               style: textBlackSmallNormal,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 15),
             textFormField(hint: "Masukkan jawaban"),
@@ -616,6 +620,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             Text(
               questions.question!,
               style: textBlackSmallNormal,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             FittedBox(
@@ -703,7 +708,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               child: CircleAvatar(
                 radius: 35,
                 backgroundColor: Colors.transparent,
-                backgroundImage: (!answers.user!.isBlank!)
+                backgroundImage: (answers.user!.imgUrl != null)
                     ? NetworkImage(answers.user!.imgUrl!)
                     : const AssetImage("assets/images/avatar.jpg")
                         as ImageProvider,

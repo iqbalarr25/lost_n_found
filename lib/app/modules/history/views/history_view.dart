@@ -12,6 +12,194 @@ import '../controllers/history_controller.dart';
 class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
+    return buildHistoryPageDevelopment(context);
+  }
+
+  Widget buildHistoryPageDevelopment(BuildContext context) {
+    return Scaffold(
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              sliver: SliverSafeArea(
+                top: false,
+                sliver: SliverAppBar(
+                  title: Text(
+                    "History",
+                    style: textAppBar,
+                  ),
+                  floating: true,
+                  pinned: true,
+                  snap: false,
+                  bottom: PreferredSize(
+                    child: SizedBox(
+                      height: 50,
+                      child: Obx(
+                        () => ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, top: 13, bottom: 13),
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.filterBehaviour(
+                                      laporanSemuaSelected: !controller
+                                          .laporanSemuaSelected.value);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: (controller
+                                                .laporanSemuaSelected.value)
+                                            ? Colors.red
+                                            : Colors.transparent),
+                                  ),
+                                  child: FittedBox(
+                                    child: Text(
+                                      "Semua",
+                                      style: (controller
+                                              .laporanSemuaSelected.value)
+                                          ? textRedSmallNormal
+                                          : textBlackSmallNormal,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, top: 13, bottom: 13),
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.filterBehaviour(
+                                      laporanAndaSelected: !controller
+                                          .laporanAndaSelected.value);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: (controller
+                                                .laporanAndaSelected.value)
+                                            ? Colors.red
+                                            : Colors.transparent),
+                                  ),
+                                  child: Text(
+                                    "Laporan Anda",
+                                    style:
+                                        (controller.laporanAndaSelected.value)
+                                            ? textRedSmallNormal
+                                            : textBlackSmallNormal,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                  left: 10, top: 13, bottom: 13),
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.filterBehaviour(
+                                      laporanDiikutiSelected: !controller
+                                          .laporanDiikutiSelected.value);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: whiteColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        color: (controller
+                                                .laporanDiikutiSelected.value)
+                                            ? Colors.red
+                                            : Colors.transparent),
+                                  ),
+                                  child: Text(
+                                    "Laporan Diikuti",
+                                    style: (controller
+                                            .laporanDiikutiSelected.value)
+                                        ? textRedSmallNormal
+                                        : textBlackSmallNormal,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    preferredSize: const Size.fromHeight(50),
+                  ),
+                ),
+              ),
+            ),
+          ];
+        },
+        body: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            children: [
+              buildSearchTextField(),
+              Expanded(
+                child: Obx(
+                  () => MediaQuery.removePadding(
+                    removeTop: true,
+                    context: context,
+                    child: (!controller.isLoading.value)
+                        ? FutureBuilder(
+                            future: controller.tampilPostLaporanHistoryFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                if (controller.historyAllPost.isNotEmpty) {
+                                  return ListView.builder(
+                                    physics:
+                                        const AlwaysScrollableScrollPhysics(),
+                                    itemCount: controller.historyAllPost.length,
+                                    itemBuilder: (context, index) =>
+                                        buildCardHistory(
+                                            controller.historyAllPost[index],
+                                            context),
+                                  );
+                                } else {
+                                  return Center(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        "Belum ada history",
+                                        style: textRedMini,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          )
+                        : const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildHistoryPage(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
