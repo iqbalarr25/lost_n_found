@@ -14,20 +14,19 @@ class MyQuestions {
   String? updatedAt;
   List<MyAnswers>? answers;
   User? user;
-  String? hero;
 
-  MyQuestions(
-      {this.id,
-      this.userId,
-      this.postId,
-      this.typeQuestion,
-      this.question,
-      this.statusQuestion,
-      this.createdAt,
-      this.updatedAt,
-      this.answers,
-      this.user,
-      this.hero});
+  MyQuestions({
+    this.id,
+    this.userId,
+    this.postId,
+    this.typeQuestion,
+    this.question,
+    this.statusQuestion,
+    this.createdAt,
+    this.updatedAt,
+    this.answers,
+    this.user,
+  });
 
   MyQuestions.fromJson(Map<String, dynamic> json) {
     id = json['id'];

@@ -192,44 +192,58 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                                     Obx(
                                       () => textTitleBody(
                                         title: "Balasan",
-                                        body: Column(
-                                          children: (controller.detailLaporan
-                                                      .value.typePost ==
-                                                  "Found")
-                                              ? (controller
-                                                      .detailLaporan
-                                                      .value
-                                                      .questions![0]
-                                                      .answers!
-                                                      .isNotEmpty)
-                                                  ? controller
-                                                      .detailLaporan
-                                                      .value
-                                                      .questions![0]
-                                                      .answers!
-                                                      .map((element) =>
-                                                          buildCardBalasanAnswer(
-                                                              element))
-                                                      .toList()
-                                                  : [
-                                                      Text("Belum ada balasan",
-                                                          style:
-                                                              textGreyDetailLaporan)
-                                                    ]
-                                              : (controller.detailLaporan.value
-                                                      .questions!.isNotEmpty)
-                                                  ? controller.detailLaporan
-                                                      .value.questions!
-                                                      .map((element) =>
-                                                          buildCardBalasanQuestion(
-                                                              element))
-                                                      .toList()
-                                                  : [
-                                                      Text("Belum ada balasan",
-                                                          style:
-                                                              textGreyDetailLaporan)
-                                                    ],
-                                        ),
+                                        body: (!controller.isLoading.value)
+                                            ? Column(
+                                                children: (controller
+                                                            .detailLaporan
+                                                            .value
+                                                            .typePost ==
+                                                        "Found")
+                                                    ? (controller
+                                                            .detailLaporan
+                                                            .value
+                                                            .questions![0]
+                                                            .answers!
+                                                            .isNotEmpty)
+                                                        ? controller
+                                                            .detailLaporan
+                                                            .value
+                                                            .questions![0]
+                                                            .answers!
+                                                            .map((element) =>
+                                                                buildCardBalasanAnswer(
+                                                                    element))
+                                                            .toList()
+                                                        : [
+                                                            Text(
+                                                                "Belum ada balasan",
+                                                                style:
+                                                                    textGreyDetailLaporan)
+                                                          ]
+                                                    : (controller
+                                                            .detailLaporan
+                                                            .value
+                                                            .questions!
+                                                            .isNotEmpty)
+                                                        ? controller
+                                                            .detailLaporan
+                                                            .value
+                                                            .questions!
+                                                            .map((element) =>
+                                                                buildCardBalasanQuestion(
+                                                                    element))
+                                                            .toList()
+                                                        : [
+                                                            Text(
+                                                                "Belum ada balasan",
+                                                                style:
+                                                                    textGreyDetailLaporan)
+                                                          ],
+                                              )
+                                            : const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
                                       ),
                                     ),
                                   ],
@@ -303,7 +317,13 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     if (controller.detailLaporan.value.typePost! == "Found") {
                       openDialogMenjawab();
                     } else {
-                      openDialogAjukanPertanyaan();
+                      if (controller.detailLaporan.value.questions![0]
+                              .statusQuestion ==
+                          "Answered") {
+                        Get.offAllNamed(Routes.MAIN, arguments: 0);
+                      } else {
+                        openDialogAjukanPertanyaan();
+                      }
                     }
                   }
                 },
@@ -318,9 +338,11 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Center(
-                    child: Text(
-                      controller.textBottomSheet.value,
-                      style: textWhiteMedium,
+                    child: FittedBox(
+                      child: Text(
+                        controller.textBottomSheet.value,
+                        style: textWhiteMedium,
+                      ),
                     ),
                   ),
                 ),
@@ -468,8 +490,9 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(right: 10),
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  margin: const EdgeInsets.only(right: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   decoration: BoxDecoration(
                     color: whiteColor,
                     borderRadius: BorderRadius.circular(25),

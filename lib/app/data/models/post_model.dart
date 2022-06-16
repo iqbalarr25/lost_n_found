@@ -20,7 +20,8 @@ class MyPost {
   String? updatedAt;
   User? user;
   List<MyQuestions>? questions;
-  String? hero;
+  int? totalQuestion;
+  int? totalAnswer;
 
   MyPost({
     this.id,
@@ -39,7 +40,8 @@ class MyPost {
     this.updatedAt,
     this.user,
     this.questions,
-    this.hero,
+    this.totalQuestion,
+    this.totalAnswer,
   });
 
   MyPost.fromJson(Map<String, dynamic> json) {
@@ -64,7 +66,8 @@ class MyPost {
         questions?.add(MyQuestions.fromJson(v));
       });
     }
-    hero = imgUrl![0];
+    totalQuestion = json['totalQuestion'];
+    totalAnswer = json['totalAnswer'];
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +92,8 @@ class MyPost {
     if (questions != null) {
       data['Questions'] = questions?.map((v) => v.toJson()).toList();
     }
+    data['totalQuestion'] = totalQuestion;
+    data['totalAnswer'] = totalAnswer;
     return data;
   }
 

@@ -11,7 +11,6 @@ class MainController extends GetxController {
     if (Get.arguments != null) {
       selectedIndex.value = args;
     }
-
     super.onInit();
   }
 
@@ -22,6 +21,4 @@ class MainController extends GetxController {
 
   @override
   void onClose() {}
-
-  void increment() => count.value++;
 }

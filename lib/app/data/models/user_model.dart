@@ -4,19 +4,22 @@ class User {
   String? name;
   String? password;
   String? role;
-  dynamic nim;
-  dynamic phone;
-  dynamic imgUrl;
+  String? nim;
+  String? phone;
+  String? imgUrl;
+  int? totalPost;
 
-  User(
-      {this.id,
-      this.email,
-      this.name,
-      this.password,
-      this.role,
-      this.nim,
-      this.phone,
-      this.imgUrl});
+  User({
+    this.id,
+    this.email,
+    this.name,
+    this.password,
+    this.role,
+    this.nim,
+    this.phone,
+    this.imgUrl,
+    this.totalPost,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -27,6 +30,7 @@ class User {
     nim = json['nim'];
     phone = json['phone'];
     imgUrl = json['imgUrl'];
+    totalPost = json['totalPost'];
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +43,7 @@ class User {
     data['nim'] = nim;
     data['phone'] = phone;
     data['imgUrl'] = imgUrl;
+    data['totalPost'] = totalPost;
     return data;
   }
 }

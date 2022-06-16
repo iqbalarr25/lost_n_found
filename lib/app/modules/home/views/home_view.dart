@@ -84,7 +84,7 @@ class HomeView extends GetView<HomeController> {
                                                   controller.laporanAnda.length,
                                               scrollDirection: Axis.horizontal,
                                               itemBuilder: (context, i) {
-                                                return cardLaporan(
+                                                return buildCardLaporanAnda(
                                                     post: controller
                                                         .laporanAnda[i],
                                                     index: i);
@@ -143,7 +143,7 @@ class HomeView extends GetView<HomeController> {
                             return Column(
                               children: controller.laporanDiikuti
                                   .map(
-                                    (element) => cardLaporanIkuti(
+                                    (element) => buildCardLaporanIkuti(
                                         post: element, context: context),
                                   )
                                   .toList(),
@@ -162,7 +162,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget cardLaporan({required MyPost post, required int index}) {
+  Widget buildCardLaporanAnda({required MyPost post, required int index}) {
     return InkWell(
       onTap: () => Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post),
       child: Container(
@@ -243,7 +243,9 @@ class HomeView extends GetView<HomeController> {
                         ],
                       ),
                       Text(
-                        "Penemu: 0",
+                        (post.typePost == "Found")
+                            ? "Penjawab: ${post.totalAnswer.toString()}"
+                            : "Penemu: ${post.totalQuestion.toString()}",
                         style: textGreyCard,
                       ),
                     ],
@@ -264,7 +266,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget cardLaporanIkuti(
+  Widget buildCardLaporanIkuti(
       {required MyPost post, required BuildContext context}) {
     return Container(
       margin: EdgeInsets.only(bottom: 8),
@@ -557,7 +559,7 @@ class HomeView extends GetView<HomeController> {
               radius: 30,
               backgroundColor: Colors.transparent,
               backgroundImage: (post.user!.imgUrl != null)
-                  ? NetworkImage(post.user!.imgUrl)
+                  ? NetworkImage(post.user!.imgUrl!)
                   : const AssetImage("assets/images/avatar.jpg")
                       as ImageProvider,
             ),

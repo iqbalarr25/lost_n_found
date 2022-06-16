@@ -114,7 +114,7 @@ class HistoryController extends GetxController {
               radius: 40,
               backgroundColor: Colors.transparent,
               backgroundImage: (post.user!.imgUrl != null)
-                  ? NetworkImage(post.user!.imgUrl)
+                  ? NetworkImage(post.user!.imgUrl!)
                   : const AssetImage("assets/images/avatar.jpg")
                       as ImageProvider,
             ),

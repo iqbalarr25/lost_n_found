@@ -294,7 +294,7 @@ class DetailLaporanController extends GetxController {
     }
   }
 
-  Future kirimJawabanBalasan(MyQuestions questions) async {
+  Future kirimJawabanBalasan(MyQuestions question) async {
     var defaultDialog = Get.dialog(
       Center(
         child: Container(
@@ -308,7 +308,7 @@ class DetailLaporanController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(AuthController.url + "answers");
+    Uri uri = Uri.parse(AuthController.url + "posts/lost/answer");
     try {
       var response = await http.post(
         uri,
@@ -318,10 +318,8 @@ class DetailLaporanController extends GetxController {
           'Authorization': 'Bearer ' + box.read("dataUser")["token"],
         },
         body: json.encode({
-          "questionId": questions.id,
-          "userId": box.read("dataUser")["userId"],
+          "questionId": question.id,
           "answer": balasanController.text,
-          "statusAnswer": "Waiting"
         }),
       );
 
@@ -334,34 +332,16 @@ class DetailLaporanController extends GetxController {
       if (statusCode == 201) {
         print("BERHASIL menambahkan jawaban");
 
-        uri = Uri.parse(AuthController.url + "questions/" + questions.id!);
-        var response = await http.patch(
-          uri,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
-          },
-          body: json.encode({"statusQuestion": "Answered"}),
-        );
-
-        body = json.decode(response.body) as Map<String, dynamic>;
-        statusCode = response.statusCode;
-
-        if (statusCode == 200) {
-          defaultDialog = Get.defaultDialog(
-            title: "BERHASIL",
-            middleText: "Berhasil mengirim jawaban.",
-          ).then((value) async {
-            Get.back();
-            Get.back();
-            isLoading.value = true;
-            await (tampilDetailLaporanFuture = tampilDetailLaporan());
-            isLoading.value = false;
-          });
-        } else {
-          throw "Error : $statusCode";
-        }
+        defaultDialog = Get.defaultDialog(
+          title: "BERHASIL",
+          middleText: "Berhasil mengirim jawaban.",
+        ).then((value) async {
+          Get.back();
+          Get.back();
+          isLoading.value = true;
+          await (tampilDetailLaporanFuture = tampilDetailLaporan());
+          isLoading.value = false;
+        });
       } else {
         throw "Error : $statusCode";
       }
@@ -474,9 +454,14 @@ class DetailLaporanController extends GetxController {
         }
       } else {
         if (post.value.questions![0].userId == box.read("dataUser")["userId"]) {
-          textBottomSheet.value = "Edit Pertanyaan Anda";
-          balasanController.text = post.value.questions![0].question!;
-          isFollowedPost.value = true;
+          if (post.value.questions![0].statusQuestion == "Answered") {
+            textBottomSheet.value = "Konfirmasi Jawaban Pelapor";
+            isFollowedPost.value = true;
+          } else {
+            textBottomSheet.value = "Edit Pertanyaan Anda";
+            balasanController.text = post.value.questions![0].question!;
+            isFollowedPost.value = true;
+          }
         } else {
           textBottomSheet.value = "Saya Menemukan";
         }

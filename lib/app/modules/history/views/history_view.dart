@@ -306,7 +306,7 @@ class HistoryView extends GetView<HistoryController> {
             } else {
               Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
             }
-          }
+          } else {}
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -393,6 +393,7 @@ class HistoryView extends GetView<HistoryController> {
                   ),
                   const SizedBox(height: 20),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       if (post.typePost == "Lost") ...[
                         Text(
@@ -484,7 +485,7 @@ class HistoryView extends GetView<HistoryController> {
               radius: 30,
               backgroundColor: Colors.transparent,
               backgroundImage: (post.user!.imgUrl != null)
-                  ? NetworkImage(post.user!.imgUrl)
+                  ? NetworkImage(post.user!.imgUrl!)
                   : const AssetImage("assets/images/avatar.jpg")
                       as ImageProvider,
             ),

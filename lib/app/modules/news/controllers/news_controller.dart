@@ -46,7 +46,7 @@ class NewsController extends GetxController with GetTickerProviderStateMixin {
               "posts/lost/news?offset=$offsetLost&limit=$limitLost");
         } else {
           uri = Uri.parse(AuthController.url +
-              "posts/lost/lost/search?filter=${searchTextLost.text}");
+              "posts/lost/search?filter=${searchTextLost.text}");
         }
         if (offsetLost.value == 0) {
           isLoadingLost.value = true;

@@ -166,7 +166,9 @@ class ProfileController extends GetxController {
 
         if (statusCode == 200) {
           if (dataUser.value.imgUrl != null) {
-            FirebaseStorage.instance.refFromURL(dataUser.value.imgUrl).delete();
+            FirebaseStorage.instance
+                .refFromURL(dataUser.value.imgUrl!)
+                .delete();
           }
           print("BERHASIL MENGGANTI PROFILE PICTURE");
           tampilDataUserFuture = tampilDataUser();

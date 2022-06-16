@@ -72,11 +72,11 @@ class ProfileView extends GetView<ProfileController> {
                         controller.dataUser.value.name!;
                     controller.nimController.text =
                         (controller.dataUser.value.nim != null)
-                            ? controller.dataUser.value.nim
+                            ? controller.dataUser.value.nim!
                             : "";
                     controller.nomorController.text =
                         (controller.dataUser.value.phone != null)
-                            ? controller.dataUser.value.phone
+                            ? controller.dataUser.value.phone!
                             : "";
                     return Stack(
                       children: [
@@ -130,7 +130,7 @@ class ProfileView extends GetView<ProfileController> {
                                                       "assets/images/avatar.jpg")
                                                   : NetworkImage(
                                                       controller.dataUser.value
-                                                          .imgUrl,
+                                                          .imgUrl!,
                                                     ) as ImageProvider,
                                               child: Align(
                                                 alignment:
@@ -207,7 +207,7 @@ class ProfileView extends GetView<ProfileController> {
                                         ),
                                         const SizedBox(height: 10),
                                         Text(
-                                          "2 post created",
+                                          "${controller.dataUser.value.totalPost} post created",
                                           style: textBlackSmall,
                                         ),
                                         const SizedBox(height: 20),
@@ -360,8 +360,13 @@ class ProfileView extends GetView<ProfileController> {
                     padding: const EdgeInsets.only(top: 30),
                     child: TextFormField(
                       controller: controller.namaController,
-                      validator: RequiredValidator(
-                          errorText: "Nama tidak boleh kosong"),
+                      validator: MultiValidator([
+                        MaxLengthValidator(
+                          40,
+                          errorText: "Nama tidak boleh lebih dari 40 karakter",
+                        ),
+                        RequiredValidator(errorText: "Nama tidak boleh kosong"),
+                      ]),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
