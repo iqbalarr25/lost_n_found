@@ -22,8 +22,8 @@ class HistoryController extends GetxController {
   var ownLostPost = List<MyPost>.empty().obs;
 
   var laporanSemuaSelected = true.obs;
-  var laporanAndaSelected = true.obs;
-  var laporanDiikutiSelected = true.obs;
+  var laporanAndaSelected = false.obs;
+  var laporanDiikutiSelected = false.obs;
 
   late Future<Rx<History>>? tampilPostLaporanHistoryFuture;
 

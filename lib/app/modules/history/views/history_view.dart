@@ -44,7 +44,8 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (!controller.laporanSemuaSelected.value) {
+                                  if (!controller.laporanSemuaSelected.value &&
+                                      controller.historyAllPost.isNotEmpty) {
                                     controller.filterBehaviour(
                                         laporanSemuaSelected: !controller
                                             .laporanSemuaSelected.value);
@@ -79,10 +80,8 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (!(!controller
-                                          .laporanSemuaSelected.value &&
-                                      !controller
-                                          .laporanDiikutiSelected.value)) {
+                                  if (!controller.laporanAndaSelected.value &&
+                                      controller.historyAllPost.isNotEmpty) {
                                     controller.filterBehaviour(
                                         laporanAndaSelected: !controller
                                             .laporanAndaSelected.value);
@@ -115,9 +114,9 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  if (!(!controller
-                                          .laporanSemuaSelected.value &&
-                                      !controller.laporanAndaSelected.value)) {
+                                  if (!controller
+                                          .laporanDiikutiSelected.value &&
+                                      controller.historyAllPost.isNotEmpty) {
                                     controller.filterBehaviour(
                                         laporanDiikutiSelected: !controller
                                             .laporanDiikutiSelected.value);
