@@ -317,10 +317,14 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                     if (controller.detailLaporan.value.typePost! == "Found") {
                       openDialogMenjawab();
                     } else {
-                      if (controller.detailLaporan.value.questions![0]
-                              .statusQuestion ==
-                          "Answered") {
-                        Get.offAllNamed(Routes.MAIN, arguments: 0);
+                      if (controller.detailLaporan.value.questions != null) {
+                        if (controller.detailLaporan.value.questions![0]
+                                .statusQuestion ==
+                            "Answered") {
+                          Get.offAllNamed(Routes.MAIN, arguments: 0);
+                        } else {
+                          openDialogAjukanPertanyaan();
+                        }
                       } else {
                         openDialogAjukanPertanyaan();
                       }
@@ -460,7 +464,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                         const AssetImage("assets/images/avatar.jpg"),
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      backgroundImage: (!questions.user!.isBlank!)
+                      backgroundImage: (questions.user!.imgUrl != null)
                           ? NetworkImage(questions.user!.imgUrl!)
                           : const AssetImage("assets/images/avatar.jpg")
                               as ImageProvider,
@@ -662,7 +666,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               child: CircleAvatar(
                 radius: 35,
                 backgroundColor: Colors.transparent,
-                backgroundImage: (!questions.user!.isBlank!)
+                backgroundImage: (questions.user!.imgUrl != null)
                     ? NetworkImage(questions.user!.imgUrl!)
                     : const AssetImage("assets/images/avatar.jpg")
                         as ImageProvider,

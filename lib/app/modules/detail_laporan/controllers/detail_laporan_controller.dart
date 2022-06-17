@@ -115,8 +115,8 @@ class DetailLaporanController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil menghapus laporan.",
         ).then((value) {
-          Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
+          Get.reloadAll();
         });
       } else {
         throw "Error : $statusCode";
@@ -197,8 +197,8 @@ class DetailLaporanController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil mengirim pertanyaan.",
         ).then((value) {
-          Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
+          Get.reloadAll();
         });
       } else {
         throw "Error : $statusCode";
@@ -278,8 +278,8 @@ class DetailLaporanController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil mengirim jawaban.",
         ).then((value) {
-          Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
+          Get.reloadAll();
         });
       } else {
         throw "Error : $statusCode";
@@ -418,8 +418,8 @@ class DetailLaporanController extends GetxController {
               : "Berhasil menolak balasan.",
         ).then((value) {
           if (accepted) {
-            Get.reloadAll();
             Get.toNamed(Routes.MAIN);
+            Get.reloadAll();
           } else {
             tampilDetailLaporanFuture = tampilDetailLaporan();
             Get.back();
@@ -444,23 +444,29 @@ class DetailLaporanController extends GetxController {
       if (!post.value.activeStatus!) {
         textBottomSheet.value = "Laporan selesai";
       } else if (post.value.typePost! == "Found") {
-        if (post.value.questions![0].answers![0].userId ==
-            box.read("dataUser")["userId"]) {
-          textBottomSheet.value = "Edit Jawaban Anda";
-          balasanController.text = post.value.questions![0].answers![0].answer!;
-          isFollowedPost.value = true;
+        if (!post.value.questions![0].answers.isBlank!) {
+          if (post.value.questions![0].answers![0].userId ==
+              box.read("dataUser")["userId"]) {
+            textBottomSheet.value = "Edit Jawaban Anda";
+            balasanController.text =
+                post.value.questions![0].answers![0].answer!;
+            isFollowedPost.value = true;
+          }
         } else {
           textBottomSheet.value = "Saya Pemiliknya";
         }
       } else {
-        if (post.value.questions![0].userId == box.read("dataUser")["userId"]) {
-          if (post.value.questions![0].statusQuestion == "Answered") {
-            textBottomSheet.value = "Konfirmasi Jawaban Pelapor";
-            isFollowedPost.value = true;
-          } else {
-            textBottomSheet.value = "Edit Pertanyaan Anda";
-            balasanController.text = post.value.questions![0].question!;
-            isFollowedPost.value = true;
+        if (!post.value.questions.isBlank!) {
+          if (post.value.questions![0].userId ==
+              box.read("dataUser")["userId"]) {
+            if (post.value.questions![0].statusQuestion == "Answered") {
+              textBottomSheet.value = "Konfirmasi Jawaban Pelapor";
+              isFollowedPost.value = true;
+            } else {
+              textBottomSheet.value = "Edit Pertanyaan Anda";
+              balasanController.text = post.value.questions![0].question!;
+              isFollowedPost.value = true;
+            }
           }
         } else {
           textBottomSheet.value = "Saya Menemukan";

@@ -55,9 +55,11 @@ class ProfileView extends GetView<ProfileController> {
             ),
             IconButton(
               onPressed: () {
-                controller.box.erase();
-                Get.reloadAll();
-                Get.offAllNamed(Routes.LOGIN);
+                if (controller.dataUser.value.email != null) {
+                  controller.box.erase();
+                  Get.offAllNamed(Routes.LOGIN);
+                  Get.reloadAll();
+                }
               },
               icon: const Icon(Icons.logout),
             ),

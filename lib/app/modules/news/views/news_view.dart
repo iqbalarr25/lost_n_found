@@ -99,7 +99,7 @@ class NewsView extends GetView<NewsController> {
                                         return cardLaporan(
                                             controller.laporanNewsLost[index]);
                                       } else {
-                                        return (!(controller.offsetLost >
+                                        return (!(controller.offsetLost.value >=
                                                 controller
                                                     .laporanNewsLost.length))
                                             ? const Padding(
@@ -193,7 +193,7 @@ class NewsView extends GetView<NewsController> {
                                         return cardLaporan(
                                             controller.laporanNewsFound[index]);
                                       } else {
-                                        return (!(controller.offsetFound >
+                                        return (!(controller.offsetFound >=
                                                 controller
                                                     .laporanNewsFound.length))
                                             ? const Padding(
