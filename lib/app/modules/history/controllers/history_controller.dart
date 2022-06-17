@@ -102,10 +102,14 @@ class HistoryController extends GetxController {
       content: Column(
         children: [
           const SizedBox(height: 15),
-          Text(
-            "Iqbal Arrafi",
-            style: textBlackSmall,
+          FittedBox(
+            child: Text(
+              post.user!.name!.capitalize!,
+              style: textBlackSmall,
+              textAlign: TextAlign.center,
+            ),
           ),
+          const SizedBox(height: 5),
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.white,
@@ -119,13 +123,17 @@ class HistoryController extends GetxController {
                       as ImageProvider,
             ),
           ),
-          Text(
-            post.socialMediaType!,
-            style: textBlackMedium,
+          FittedBox(
+            child: Text(
+              post.socialMediaType!,
+              style: textBlackMedium,
+            ),
           ),
-          Text(
-            post.socialMedia!,
-            style: textGreyMediumNormal,
+          FittedBox(
+            child: Text(
+              post.socialMedia!,
+              style: textGreyMediumNormal,
+            ),
           ),
           const SizedBox(height: 15),
           GestureDetector(
@@ -166,32 +174,35 @@ class HistoryController extends GetxController {
       {bool? laporanSemuaSelected,
       bool? laporanAndaSelected,
       bool? laporanDiikutiSelected}) {
+    isLoading.value = true;
+    historyAllPost.clear();
     if (laporanSemuaSelected != null) {
-      if (!this.laporanAndaSelected.value ||
-          !this.laporanDiikutiSelected.value) {
-        this.laporanSemuaSelected.value = laporanSemuaSelected;
-        if (this.laporanSemuaSelected.value) {
-          this.laporanAndaSelected.value = true;
-          this.laporanDiikutiSelected.value = true;
-        }
-      }
+      this.laporanSemuaSelected.value = laporanSemuaSelected;
+      this.laporanAndaSelected.value = false;
+      this.laporanDiikutiSelected.value = false;
+      historyAllPost.value = [
+        ...ownLostPost,
+        ...ownFoundPost,
+        ...followingLostPost,
+        ...followingFoundPost
+      ];
     }
     if (laporanAndaSelected != null) {
+      this.laporanSemuaSelected.value = false;
       this.laporanAndaSelected.value = laporanAndaSelected;
-      if (this.laporanAndaSelected.value && this.laporanDiikutiSelected.value) {
-        this.laporanSemuaSelected.value = true;
-      } else {
-        this.laporanSemuaSelected.value = false;
-      }
+      this.laporanDiikutiSelected.value = false;
+      historyAllPost.value = [
+        ...ownLostPost,
+        ...ownFoundPost,
+      ];
     }
     if (laporanDiikutiSelected != null) {
+      this.laporanSemuaSelected.value = false;
+      this.laporanAndaSelected.value = false;
       this.laporanDiikutiSelected.value = laporanDiikutiSelected;
-      if (this.laporanAndaSelected.value && this.laporanDiikutiSelected.value) {
-        this.laporanSemuaSelected.value = true;
-      } else {
-        this.laporanSemuaSelected.value = false;
-      }
+      historyAllPost.value = [...followingLostPost, ...followingFoundPost];
     }
+    isLoading.value = false;
   }
 
   void errorMsg(String msg) {

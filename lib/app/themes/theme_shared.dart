@@ -52,6 +52,8 @@ TextStyle textGreyMediumNormal =
     GoogleFonts.poppins().copyWith(color: darkGreyColor, fontSize: 14);
 TextStyle textRedMini = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 11, fontWeight: FontWeight.w600);
+TextStyle textGreenDarkMini = GoogleFonts.poppins()
+    .copyWith(color: greenDarkColor, fontSize: 11, fontWeight: FontWeight.w600);
 TextStyle textRedBig = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 16, fontWeight: FontWeight.bold);
 TextStyle textHint =

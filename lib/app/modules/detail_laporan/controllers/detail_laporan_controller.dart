@@ -29,7 +29,8 @@ class DetailLaporanController extends GetxController {
   Future<Rx<MyPost>> tampilDetailLaporan() async {
     print("PROSES TAMPIL LAPORAN");
     Uri uri;
-    if (post.value.userId == box.read("dataUser")["userId"]) {
+    if (post.value.userId == box.read("dataUser")["userId"] &&
+        post.value.activeStatus!) {
       if (post.value.typePost == "Found") {
         uri = Uri.parse(
             AuthController.url + "posts/found/my-post/" + post.value.id!);

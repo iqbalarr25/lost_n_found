@@ -208,10 +208,14 @@ class HomeController extends GetxController {
       content: Column(
         children: [
           const SizedBox(height: 15),
-          Text(
-            "Iqbal Arrafi",
-            style: textBlackSmall,
+          FittedBox(
+            child: Text(
+              post.user!.name!.capitalize!,
+              style: textBlackSmall,
+              textAlign: TextAlign.center,
+            ),
           ),
+          const SizedBox(height: 5),
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.white,
@@ -225,13 +229,17 @@ class HomeController extends GetxController {
                       as ImageProvider,
             ),
           ),
-          Text(
-            post.socialMediaType!,
-            style: textBlackMedium,
+          FittedBox(
+            child: Text(
+              post.socialMediaType!,
+              style: textBlackMedium,
+            ),
           ),
-          Text(
-            post.socialMedia!,
-            style: textGreyMediumNormal,
+          FittedBox(
+            child: Text(
+              post.socialMedia!,
+              style: textGreyMediumNormal,
+            ),
           ),
           const SizedBox(height: 15),
           GestureDetector(

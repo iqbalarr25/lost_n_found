@@ -12,10 +12,10 @@ import '../controllers/history_controller.dart';
 class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
-    return buildHistoryPageDevelopment(context);
+    return buildHistoryPage(context);
   }
 
-  Widget buildHistoryPageDevelopment(BuildContext context) {
+  Widget buildHistoryPage(BuildContext context) {
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -44,9 +44,11 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  controller.filterBehaviour(
-                                      laporanSemuaSelected: !controller
-                                          .laporanSemuaSelected.value);
+                                  if (!controller.laporanSemuaSelected.value) {
+                                    controller.filterBehaviour(
+                                        laporanSemuaSelected: !controller
+                                            .laporanSemuaSelected.value);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -77,9 +79,14 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  controller.filterBehaviour(
-                                      laporanAndaSelected: !controller
-                                          .laporanAndaSelected.value);
+                                  if (!(!controller
+                                          .laporanSemuaSelected.value &&
+                                      !controller
+                                          .laporanDiikutiSelected.value)) {
+                                    controller.filterBehaviour(
+                                        laporanAndaSelected: !controller
+                                            .laporanAndaSelected.value);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -108,9 +115,13 @@ class HistoryView extends GetView<HistoryController> {
                                   left: 10, top: 13, bottom: 13),
                               child: GestureDetector(
                                 onTap: () {
-                                  controller.filterBehaviour(
-                                      laporanDiikutiSelected: !controller
-                                          .laporanDiikutiSelected.value);
+                                  if (!(!controller
+                                          .laporanSemuaSelected.value &&
+                                      !controller.laporanAndaSelected.value)) {
+                                    controller.filterBehaviour(
+                                        laporanDiikutiSelected: !controller
+                                            .laporanDiikutiSelected.value);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
@@ -199,74 +210,6 @@ class HistoryView extends GetView<HistoryController> {
     );
   }
 
-  Widget buildHistoryPage(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        title: Text(
-          "History",
-          style: textAppBar,
-        ),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await (controller.tampilPostLaporanHistoryFuture =
-              controller.tampilPostLaporanHistory());
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            children: [
-              buildSearchTextField(),
-              Expanded(
-                child: Obx(
-                  () => MediaQuery.removePadding(
-                    removeTop: true,
-                    context: context,
-                    child: (!controller.isLoading.value)
-                        ? FutureBuilder(
-                            future: controller.tampilPostLaporanHistoryFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                if (controller.historyAllPost.isNotEmpty) {
-                                  return ListView.builder(
-                                    physics:
-                                        const AlwaysScrollableScrollPhysics(),
-                                    itemCount: controller.historyAllPost.length,
-                                    itemBuilder: (context, index) =>
-                                        buildCardHistory(
-                                            controller.historyAllPost[index],
-                                            context),
-                                  );
-                                } else {
-                                  return Center(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        "Belum ada history",
-                                        style: textRedMini,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                          )
-                        : const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget buildSearchTextField() {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 15),
@@ -275,11 +218,11 @@ class HistoryView extends GetView<HistoryController> {
           borderRadius: BorderRadius.circular(10),
           color: searchColor,
         ),
-        padding: EdgeInsets.symmetric(vertical: 10),
-        prefixInsets: EdgeInsets.only(left: 20, right: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        prefixInsets: const EdgeInsets.only(left: 20, right: 10),
         suffixIcon: const Icon(Icons.close),
         suffixMode: OverlayVisibilityMode.editing,
-        suffixInsets: EdgeInsets.only(right: 10),
+        suffixInsets: const EdgeInsets.only(right: 10),
         itemColor: Colors.black,
       ),
     );
@@ -290,26 +233,32 @@ class HistoryView extends GetView<HistoryController> {
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: GestureDetector(
         onTap: () {
-          if (post.typePost == "Lost") {
-            if (post.questions![post.questions!.length - 1].answers![0]
-                    .statusAnswer ==
-                "Finished") {
-              if (controller.box.read("dataUser")["userId"] == post.userId) {
-                print("user");
-                openDialogJawaban(
-                    post: post,
-                    questions: post.questions![post.questions!.length - 1],
-                    context: context);
-              } else {
+          if (post.userId == controller.box.read("dataUser")["userId"]) {
+            Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+          } else {
+            if (post.typePost == "Lost") {
+              if (post.questions![post.questions!.length - 1].answers![0]
+                      .statusAnswer ==
+                  "Finished") {
                 controller.openDialogKontak(post, context);
+              } else {
+                Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
               }
             } else {
-              Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+              if (post
+                      .questions![0]
+                      .answers![post.questions![0].answers!.length - 1]
+                      .statusAnswer ==
+                  "Finished") {
+                controller.openDialogKontak(post, context);
+              } else {
+                Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
+              }
             }
-          } else {}
+          }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
           width: 360,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -347,106 +296,110 @@ class HistoryView extends GetView<HistoryController> {
                   const SizedBox(width: 10)
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 7),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              child: Text(
-                                post.title!.capitalizeFirst!,
-                                style: textTitleCard,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 7),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                child: Text(
+                                  post.title!.capitalizeFirst!,
+                                  style: textTitleCard,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              post.date!,
-                              style: textGreyCard,
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
+                              const SizedBox(height: 1),
+                              Text(
+                                post.date!,
+                                style: textGreyCard,
                               ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: primaryColor,
+                              const SizedBox(height: 5),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: primaryColor,
+                                ),
+                                child: Text(
+                                  post.typePost!,
+                                  style: textWhiteMedium,
+                                ),
                               ),
-                              child: Text(
-                                post.typePost!,
-                                style: textWhiteMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (post.typePost == "Lost") ...[
-                        Text(
-                          "Status: " +
-                              post.questions![post.questions!.length - 1]
-                                  .statusQuestion!,
-                          style: (post.questions![post.questions!.length - 1]
-                                      .statusQuestion! ==
-                                  "Finished")
-                              ? textGreenDarkCard
-                              : textGreyCard,
-                        ),
-                      ] else ...[
-                        Text(
-                          "Status: " +
-                              post.questions![0].answers![0].statusAnswer!,
-                          style:
-                              (post.questions![0].answers![0].statusAnswer! ==
-                                      "Finished")
-                                  ? textGreenDarkCard
-                                  : textGreyCard,
-                        ),
-                      ],
-                      const SizedBox(width: 15),
-                      if (post.typePost == "Lost") ...[
-                        if (controller.box.read("dataUser")["userId"] ==
-                            post.userId) ...[
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        if (post.typePost == "Lost") ...[
                           Text(
-                            "Detail",
-                            style: textRedMini,
+                            "Status: " +
+                                post.questions![post.questions!.length - 1]
+                                    .statusQuestion!,
+                            style: (post.questions![post.questions!.length - 1]
+                                        .statusQuestion! ==
+                                    "Finished")
+                                ? textGreenDarkCard
+                                : textGreyCard,
                           ),
                         ] else ...[
                           Text(
-                            (post.questions![post.questions!.length - 1]
-                                        .statusQuestion! ==
+                            "Status: " +
+                                post.questions![0].answers![0].statusAnswer!,
+                            style:
+                                (post.questions![0].answers![0].statusAnswer! ==
+                                        "Finished")
+                                    ? textGreenDarkCard
+                                    : textGreyCard,
+                          ),
+                        ],
+                        const SizedBox(width: 15),
+                        if (post.typePost == "Lost") ...[
+                          if (controller.box.read("dataUser")["userId"] ==
+                              post.userId) ...[
+                            Text(
+                              "Detail",
+                              style: textRedMini,
+                            ),
+                          ] else ...[
+                            Text(
+                              (post.questions![post.questions!.length - 1]
+                                          .statusQuestion! ==
+                                      "Finished")
+                                  ? "Cek kontak"
+                                  : "Detail",
+                              style: textRedMini,
+                            ),
+                          ],
+                        ] else ...[
+                          Text(
+                            (post.questions![0].answers![0].statusAnswer ==
                                     "Finished")
                                 ? "Cek kontak"
                                 : "Detail",
                             style: textRedMini,
                           ),
                         ],
-                      ] else ...[
-                        Text(
-                          (post.questions![0].answers![0].statusAnswer ==
-                                  "Finished")
-                              ? "Cek kontak"
-                              : "Detail",
-                          style: textRedMini,
-                        ),
                       ],
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
