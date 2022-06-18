@@ -449,10 +449,12 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 2),
             height: 55,
             decoration: BoxDecoration(
-              color: (questions.answers![questions.answers!.length - 1]
-                          .statusAnswer ==
-                      "Finished")
-                  ? greenDarkColor
+              color: (questions.answers != null)
+                  ? (questions.answers![questions.answers!.length - 1]
+                              .statusAnswer ==
+                          "Finished")
+                      ? greenDarkColor
+                      : primaryColor
                   : primaryColor,
               borderRadius: BorderRadius.circular(50),
             ),
@@ -506,10 +508,12 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   ),
                   child: Text(
                     "Detail",
-                    style: (questions.answers![questions.answers!.length - 1]
-                                .statusAnswer ==
-                            "Finished")
-                        ? textGreenDarkMini
+                    style: (questions.answers != null)
+                        ? (questions.answers![questions.answers!.length - 1]
+                                    .statusAnswer ==
+                                "Finished")
+                            ? textGreenDarkMini
+                            : textRedMini
                         : textRedMini,
                   ),
                 ),
@@ -641,11 +645,15 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
 
   Future openDialogMenjawabBalasan(MyQuestions questions) async {
     bool enabled;
-    if (questions.answers![questions.answers!.length - 1].statusAnswer ==
-        "Finished") {
-      controller.balasanController.text =
-          questions.answers![questions.answers!.length - 1].answer!;
-      enabled = false;
+    if (questions.answers != null) {
+      if (questions.answers![questions.answers!.length - 1].statusAnswer ==
+          "Finished") {
+        controller.balasanController.text =
+            questions.answers![questions.answers!.length - 1].answer!;
+        enabled = false;
+      } else {
+        enabled = true;
+      }
     } else {
       enabled = true;
     }
@@ -692,10 +700,33 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             const SizedBox(height: 10),
             buildTextFormField(hint: "Masukkan jawaban", enabled: enabled),
             (enabled) ? const SizedBox(height: 15) : const SizedBox(),
-            if (questions
-                    .answers![questions.answers!.length - 1].statusAnswer ==
-                "Finished") ...[
-              const SizedBox(),
+            if (questions.answers != null) ...[
+              if (questions
+                      .answers![questions.answers!.length - 1].statusAnswer ==
+                  "Finished") ...[
+                const SizedBox(),
+              ] else ...[
+                GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      controller.kirimJawabanBalasan(questions);
+                    }
+                  },
+                  child: Container(
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Kirim",
+                        style: textWhiteMedium,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ] else ...[
               GestureDetector(
                 onTap: () {

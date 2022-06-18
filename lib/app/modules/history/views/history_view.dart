@@ -45,7 +45,7 @@ class HistoryView extends GetView<HistoryController> {
                               child: GestureDetector(
                                 onTap: () {
                                   if (!controller.laporanSemuaSelected.value &&
-                                      controller.historyAllPost.isNotEmpty) {
+                                      !controller.isLoading.value) {
                                     controller.filterBehaviour(
                                         laporanSemuaSelected: !controller
                                             .laporanSemuaSelected.value);
@@ -81,7 +81,7 @@ class HistoryView extends GetView<HistoryController> {
                               child: GestureDetector(
                                 onTap: () {
                                   if (!controller.laporanAndaSelected.value &&
-                                      controller.historyAllPost.isNotEmpty) {
+                                      !controller.isLoading.value) {
                                     controller.filterBehaviour(
                                         laporanAndaSelected: !controller
                                             .laporanAndaSelected.value);
@@ -116,7 +116,7 @@ class HistoryView extends GetView<HistoryController> {
                                 onTap: () {
                                   if (!controller
                                           .laporanDiikutiSelected.value &&
-                                      controller.historyAllPost.isNotEmpty) {
+                                      !controller.isLoading.value) {
                                     controller.filterBehaviour(
                                         laporanDiikutiSelected: !controller
                                             .laporanDiikutiSelected.value);
@@ -354,8 +354,8 @@ class HistoryView extends GetView<HistoryController> {
                             style: (post.questions![post.questions!.length - 1]
                                         .statusQuestion! ==
                                     "Finished")
-                                ? textGreenDarkCard
-                                : textGreyCard,
+                                ? textGreenDarkMini
+                                : textRedMini,
                           ),
                         ] else ...[
                           Text(
@@ -364,8 +364,8 @@ class HistoryView extends GetView<HistoryController> {
                             style:
                                 (post.questions![0].answers![0].statusAnswer! ==
                                         "Finished")
-                                    ? textGreenDarkCard
-                                    : textGreyCard,
+                                    ? textGreenDarkMini
+                                    : textRedMini,
                           ),
                         ],
                         const SizedBox(width: 15),

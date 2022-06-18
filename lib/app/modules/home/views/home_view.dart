@@ -373,7 +373,7 @@ class HomeView extends GetView<HomeController> {
                                               "Status: " + e.statusAnswer!,
                                               style:
                                                   (e.statusAnswer == "Accepted")
-                                                      ? textGreenDarkCard
+                                                      ? textGreenDarkMini
                                                       : textGreyCard,
                                             ),
                                           ],
@@ -497,7 +497,7 @@ class HomeView extends GetView<HomeController> {
                                                 "Status: " + e.statusQuestion!,
                                                 style: (e.statusQuestion ==
                                                         "Answered")
-                                                    ? textGreenDarkCard
+                                                    ? textGreenDarkMini
                                                     : textGreyCard,
                                               ),
                                             ],

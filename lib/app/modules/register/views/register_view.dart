@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'package:get/get.dart';
@@ -43,127 +46,26 @@ class RegisterView extends GetView<RegisterController> {
                           key: _formkey,
                           child: Container(
                             decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(25),
-                                    topLeft: Radius.circular(25))),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(25),
+                                topLeft: Radius.circular(25),
+                              ),
+                            ),
                             child: Center(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 30),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.only(top: 25, bottom: 15),
-                                      child: Text(
-                                        "Register",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    buildTextFormField(
-                                      label: "Email",
-                                      textController:
-                                          controller.emailController,
-                                      validator: MultiValidator(
-                                        [
-                                          RequiredValidator(
-                                              errorText:
-                                                  "Email tidak boleh kosong"),
-                                          EmailValidator(
-                                              errorText: "Email tidak valid"),
-                                        ],
-                                      ),
-                                    ),
-                                    buildTextFormField(
-                                      label: "Nama",
-                                      textController: controller.namaController,
-                                      validator: RequiredValidator(
-                                          errorText: "Nama tidak boleh kosong"),
-                                    ),
-                                    buildTextFormFieldPassword(
-                                      label: "Password",
-                                      textController:
-                                          controller.passwordController,
-                                      validator: RequiredValidator(
-                                          errorText:
-                                              "Password tidak boleh kosong"),
-                                      isObsecure: controller.passwordVisible,
-                                    ),
-                                    buildTextFormFieldPassword(
-                                      label: "Confirm Password",
-                                      textController:
-                                          controller.confirmPasswordController,
-                                      validator: RequiredValidator(
-                                          errorText:
-                                              "Confirm password tidak boleh kosong"),
-                                      isObsecure:
-                                          controller.confirmPasswordVisible,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 20),
-                                      child: Center(
-                                        child: ElevatedButton(
-                                          clipBehavior: Clip.hardEdge,
-                                          onPressed: () {
-                                            if (_formkey.currentState!
-                                                .validate()) {
-                                              controller.register();
-                                            }
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: 45,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                "Sign up",
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 25),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          const Text(
-                                            "Doesn't have an account?",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Get.offNamed(Routes.LOGIN);
-                                            },
-                                            child: const Text(
-                                              "Sign In",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                              child: Obx(
+                                () => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: (!controller.openOtp.value)
+                                        ? buildRegisterForm(context)
+                                        : buildKodeVerifikasiForm(context),
+                                  ),
                                 ),
                               ),
                             ),
@@ -181,11 +83,235 @@ class RegisterView extends GetView<RegisterController> {
     );
   }
 
-  Obx buildTextFormFieldPassword({
+  List<Widget> buildRegisterForm(BuildContext context) {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 25, bottom: 15),
+        child: Text("Register", style: textBlackSuperBig),
+      ),
+      buildTextFormField(
+        label: "Email",
+        textController: controller.emailController,
+        validator: MultiValidator(
+          [
+            RequiredValidator(errorText: "Email tidak boleh kosong"),
+            EmailValidator(errorText: "Email tidak valid"),
+          ],
+        ),
+        context: context,
+      ),
+      buildTextFormField(
+        label: "Nama",
+        textController: controller.namaController,
+        validator: RequiredValidator(errorText: "Nama tidak boleh kosong"),
+        context: context,
+      ),
+      buildTextFormFieldPassword(
+        label: "Password",
+        textController: controller.passwordController,
+        validator: RequiredValidator(errorText: "Password tidak boleh kosong"),
+        isObsecure: controller.passwordVisible,
+        context: context,
+      ),
+      buildTextFormFieldPassword(
+        label: "Confirm Password",
+        textController: controller.confirmPasswordController,
+        validator:
+            RequiredValidator(errorText: "Confirm password tidak boleh kosong"),
+        isObsecure: controller.confirmPasswordVisible,
+        context: context,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Center(
+          child: ElevatedButton(
+            clipBehavior: Clip.hardEdge,
+            style: ButtonStyle(
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+            ),
+            onPressed: () {
+              if (_formkey.currentState!.validate()) {
+                controller.openOtp.value = !controller.openOtp.value;
+                controller.startTimer();
+              }
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 45,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Text(
+                  "Sign up",
+                  style: textWhiteSmallNormal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 25),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Already have an account?",
+              style: textBlackSmallBalasan,
+            ),
+            TextButton(
+              onPressed: () {
+                Get.offNamed(Routes.LOGIN);
+              },
+              child: Text(
+                "Sign In",
+                style: textRedMini,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> buildKodeVerifikasiForm(BuildContext context) {
+    return [
+      Padding(
+        padding: const EdgeInsets.only(top: 25, bottom: 15),
+        child: Text(
+          "Verification code",
+          style: textBlackSuperBig,
+        ),
+      ),
+      Text(
+        "We have sent the code verification to:",
+        style: textBlackSmallBalasan,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 10, bottom: 20),
+        child: Text(
+          controller.emailController.text,
+          style: textBlackSmallNormal,
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          buildTextFormFieldOtp(
+            textController: controller.otpControllerOne,
+            context: context,
+          ),
+          buildTextFormFieldOtp(
+            textController: controller.otpControllerTwo,
+            context: context,
+          ),
+          buildTextFormFieldOtp(
+            textController: controller.otpControllerThree,
+            context: context,
+          ),
+          buildTextFormFieldOtp(
+            textController: controller.otpControllerFour,
+            context: context,
+          ),
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Center(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "Resend code after ",
+                  style: textBlackSmallBalasan,
+                ),
+                TextSpan(
+                  text: controller.startTime.value.toString(),
+                  style: textRedMini,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 100),
+      Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: Row(
+          children: [
+            Expanded(
+              child: Center(
+                child: FlatButton(
+                  clipBehavior: Clip.hardEdge,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    side: BorderSide(color: primaryColor),
+                  ),
+                  onPressed: () {
+                    if (controller.startTime.value <= 0) {
+                      controller.timer.cancel();
+                      controller.startTimer();
+                    }
+                  },
+                  child: SizedBox(
+                    height: 45,
+                    child: Center(
+                      child: Text(
+                        "Resend",
+                        style: textRedSmallNormal,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Center(
+                child: ElevatedButton(
+                  clipBehavior: Clip.hardEdge,
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formkey.currentState!.validate()) {
+                      controller.openOtp.value = !controller.openOtp.value;
+                    }
+                  },
+                  child: SizedBox(
+                    height: 45,
+                    child: Center(
+                      child: Text(
+                        "Confirm",
+                        style: textWhiteSmallNormal,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 20),
+    ];
+  }
+
+  Widget buildTextFormFieldPassword({
     required String label,
     required TextEditingController textController,
     required String? Function(String?)? validator,
     required RxBool isObsecure,
+    required BuildContext context,
   }) {
     return Obx(
       () => Padding(
@@ -194,6 +320,7 @@ class RegisterView extends GetView<RegisterController> {
           controller: textController,
           obscureText: isObsecure.value,
           validator: validator,
+          onEditingComplete: () => FocusScope.of(context).nextFocus(),
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
@@ -212,21 +339,53 @@ class RegisterView extends GetView<RegisterController> {
     );
   }
 
-  Padding buildTextFormField({
+  Widget buildTextFormField({
     required String label,
     required TextEditingController textController,
     required String? Function(String?)? validator,
+    required BuildContext context,
   }) {
     return Padding(
       padding: const EdgeInsets.only(top: 15),
       child: TextFormField(
+        onEditingComplete: () => FocusScope.of(context).nextFocus(),
         controller: textController,
         validator: validator,
         decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            labelText: label),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          labelText: label,
+        ),
+      ),
+    );
+  }
+
+  Widget buildTextFormFieldOtp({
+    required TextEditingController textController,
+    required BuildContext context,
+  }) {
+    return SizedBox(
+      width: 64,
+      height: 68,
+      child: TextFormField(
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        style: textRedSuperBig,
+        onChanged: (value) {
+          FocusScope.of(context).nextFocus();
+        },
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(1),
+          FilteringTextInputFormatter.digitsOnly,
+        ],
+        controller: textController,
+        decoration: InputDecoration(
+          hintText: "0",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
       ),
     );
   }

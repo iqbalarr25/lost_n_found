@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,16 +10,22 @@ import 'dart:convert';
 import '../../../themes/theme_app.dart';
 
 class RegisterController extends GetxController {
-  //TODO: Implement RegisterController
-
   final count = 0.obs;
   var passwordVisible = true.obs;
   var confirmPasswordVisible = true.obs;
-
   TextEditingController emailController = TextEditingController();
   TextEditingController namaController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
+  var openOtp = false.obs;
+  TextEditingController otpControllerOne = TextEditingController();
+  TextEditingController otpControllerTwo = TextEditingController();
+  TextEditingController otpControllerThree = TextEditingController();
+  TextEditingController otpControllerFour = TextEditingController();
+
+  late Timer timer;
+  var startTime = 120.obs;
 
   Future register() async {
     var defaultDialog = Get.dialog(
@@ -82,6 +89,18 @@ class RegisterController extends GetxController {
     }
   }
 
+  void startTimer() {
+    startTime.value = 120;
+    const oneSec = Duration(seconds: 1);
+    timer = Timer.periodic(oneSec, (timer) {
+      if (startTime.value <= 0) {
+        timer.cancel();
+      } else {
+        startTime--;
+      }
+    });
+  }
+
   void errorMsg(String msg) {
     Get.defaultDialog(
       title: "TERJADI KESALAHAN",
@@ -105,6 +124,7 @@ class RegisterController extends GetxController {
   @override
   void onClose() {
     passwordController.dispose();
+    timer.cancel();
     super.onClose();
   }
 

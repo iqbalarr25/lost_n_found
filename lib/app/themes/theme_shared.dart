@@ -44,8 +44,6 @@ TextStyle textTitleCard = GoogleFonts.poppins()
     .copyWith(color: blackColor, fontSize: 14, fontWeight: FontWeight.bold);
 TextStyle textGreyCard = GoogleFonts.poppins()
     .copyWith(color: greyColor, fontSize: 11, fontWeight: FontWeight.w600);
-TextStyle textGreenDarkCard = GoogleFonts.poppins()
-    .copyWith(color: greenDarkColor, fontSize: 11, fontWeight: FontWeight.w600);
 TextStyle textGreyDetailLaporan = GoogleFonts.poppins()
     .copyWith(color: darkGreyColor, fontSize: 12, fontWeight: FontWeight.w600);
 TextStyle textGreyMediumNormal =
@@ -56,5 +54,7 @@ TextStyle textGreenDarkMini = GoogleFonts.poppins()
     .copyWith(color: greenDarkColor, fontSize: 11, fontWeight: FontWeight.w600);
 TextStyle textRedBig = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 16, fontWeight: FontWeight.bold);
+TextStyle textRedSuperBig = GoogleFonts.poppins()
+    .copyWith(color: primaryColor, fontSize: 20, fontWeight: FontWeight.bold);
 TextStyle textHint =
     TextStyle(color: greyColor, fontSize: 15, fontWeight: FontWeight.w600);

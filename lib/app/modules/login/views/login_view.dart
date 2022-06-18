@@ -68,6 +68,9 @@ class LoginView extends GetView<LoginController> {
                                       Padding(
                                         padding: const EdgeInsets.only(top: 30),
                                         child: TextFormField(
+                                          onEditingComplete: () =>
+                                              FocusScope.of(context)
+                                                  .nextFocus(),
                                           controller:
                                               controller.emailController,
                                           validator: MultiValidator([
@@ -92,6 +95,9 @@ class LoginView extends GetView<LoginController> {
                                           padding:
                                               const EdgeInsets.only(top: 15),
                                           child: TextFormField(
+                                            onEditingComplete: () =>
+                                                FocusScope.of(context)
+                                                    .nextFocus(),
                                             controller:
                                                 controller.passwordController,
                                             obscureText: controller
@@ -128,6 +134,14 @@ class LoginView extends GetView<LoginController> {
                                         child: Center(
                                           child: ElevatedButton(
                                             clipBehavior: Clip.hardEdge,
+                                            style: ButtonStyle(
+                                              shape: MaterialStateProperty.all(
+                                                RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
+                                                ),
+                                              ),
+                                            ),
                                             onPressed: () {
                                               if (_formkey.currentState!
                                                   .validate()) {
@@ -143,12 +157,10 @@ class LoginView extends GetView<LoginController> {
                                                 borderRadius:
                                                     BorderRadius.circular(30),
                                               ),
-                                              child: const Center(
-                                                child: Text(
-                                                  "Login",
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
+                                              child: Center(
+                                                child: Text("Login",
+                                                    style:
+                                                        textWhiteSmallNormal),
                                               ),
                                             ),
                                           ),
@@ -171,9 +183,9 @@ class LoginView extends GetView<LoginController> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            const Text(
+                                            Text(
                                               "Doesn't have an account?",
-                                              style: TextStyle(fontSize: 15),
+                                              style: textBlackSmallBalasan,
                                             ),
                                             TextButton(
                                               onPressed: () {
@@ -181,11 +193,7 @@ class LoginView extends GetView<LoginController> {
                                               },
                                               child: Text(
                                                 "Sign Up",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.red[900],
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                style: textRedMini,
                                               ),
                                             ),
                                           ],
