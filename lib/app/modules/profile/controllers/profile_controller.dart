@@ -5,7 +5,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/user_model.dart';
@@ -14,7 +13,6 @@ import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class ProfileController extends GetxController {
-  final box = GetStorage();
   var dataUser = User().obs;
   var onEditProfile = false.obs;
   var isLoading = false.obs;
@@ -35,7 +33,8 @@ class ProfileController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
       );
 
@@ -76,15 +75,17 @@ class ProfileController extends GetxController {
       ),
       barrierDismissible: false,
     );
-    Uri uri = Uri.parse(
-        AuthController.url + "users/" + box.read("dataUser")["userId"]);
+    Uri uri = Uri.parse(AuthController.url +
+        "users/" +
+        AuthController.box.read("dataUser")["userId"]);
     try {
       var response = await http.patch(
         uri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
           "name": namaController.text,
@@ -109,6 +110,11 @@ class ProfileController extends GetxController {
           Get.back();
           tampilDataUserFuture = tampilDataUser();
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -137,8 +143,9 @@ class ProfileController extends GetxController {
         ),
         barrierDismissible: false,
       );
-      Uri uri = Uri.parse(
-          AuthController.url + "users/" + box.read("dataUser")["userId"]);
+      Uri uri = Uri.parse(AuthController.url +
+          "users/" +
+          AuthController.box.read("dataUser")["userId"]);
 
       Reference ref = FirebaseStorage.instance.ref().child(image.path);
       UploadTask task = ref.putFile(
@@ -152,7 +159,8 @@ class ProfileController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({"imgUrl": imageUrl}),
         );
@@ -172,6 +180,11 @@ class ProfileController extends GetxController {
           print("BERHASIL MENGGANTI PROFILE PICTURE");
           tampilDataUserFuture = tampilDataUser();
           Get.back();
+        } else if (statusCode == 401) {
+          Get.defaultDialog(
+            title: "TERJADI KESALAHAN",
+            middleText: "Silahkan login ulang",
+          ).then((value) => AuthController.logout());
         } else {
           throw "Error : $statusCode";
         }
@@ -206,5 +219,10 @@ class ProfileController extends GetxController {
   }
 
   @override
-  void onClose() {}
+  void onClose() {
+    namaController.dispose();
+    nimController.dispose();
+    nomorController.dispose();
+    super.onClose();
+  }
 }

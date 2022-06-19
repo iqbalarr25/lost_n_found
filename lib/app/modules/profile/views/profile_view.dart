@@ -5,6 +5,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
 import 'package:get_cli/commands/commands_list.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/user_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
@@ -56,9 +57,7 @@ class ProfileView extends GetView<ProfileController> {
             IconButton(
               onPressed: () {
                 if (controller.dataUser.value.email != null) {
-                  controller.box.erase();
-                  Get.offAllNamed(Routes.LOGIN);
-                  Get.reloadAll();
+                  AuthController.logout();
                 }
               },
               icon: const Icon(Icons.logout),

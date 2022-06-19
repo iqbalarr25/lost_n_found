@@ -10,13 +10,13 @@ import 'dart:convert';
 import '../../../themes/theme_app.dart';
 
 class RegisterController extends GetxController {
-  final count = 0.obs;
   var passwordVisible = true.obs;
   var confirmPasswordVisible = true.obs;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController namaController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController emailRegisterController = TextEditingController();
+  TextEditingController namaRegisterController = TextEditingController();
+  TextEditingController passwordRegisterController = TextEditingController();
+  TextEditingController confirmPasswordRegisterController =
+      TextEditingController();
 
   var openOtp = false.obs;
   TextEditingController otpControllerOne = TextEditingController();
@@ -50,10 +50,10 @@ class RegisterController extends GetxController {
           "Accept": "application/json",
         },
         body: json.encode({
-          "email": emailController.text,
-          "name": namaController.text,
-          "password": passwordController.text,
-          "confirmPassword": confirmPasswordController.text,
+          "email": emailRegisterController.text,
+          "name": namaRegisterController.text,
+          "password": passwordRegisterController.text,
+          "confirmPassword": confirmPasswordRegisterController.text,
         }),
       );
 
@@ -68,7 +68,6 @@ class RegisterController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil menambahkan akun.",
         ).then((value) {
-          Get.reloadAll();
           Get.toNamed(Routes.LOGIN);
         });
       } else if (statusCode == 500) {
@@ -114,6 +113,13 @@ class RegisterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (startTime.value <= 0) {
+        timer.cancel();
+      } else {
+        startTime--;
+      }
+    });
   }
 
   @override
@@ -123,10 +129,15 @@ class RegisterController extends GetxController {
 
   @override
   void onClose() {
-    passwordController.dispose();
+    emailRegisterController.dispose();
+    namaRegisterController.dispose();
+    passwordRegisterController.dispose();
+    confirmPasswordRegisterController.dispose();
+    otpControllerOne.dispose();
+    otpControllerTwo.dispose();
+    otpControllerThree.dispose();
+    otpControllerFour.dispose();
     timer.cancel();
     super.onClose();
   }
-
-  void increment() => count.value++;
 }

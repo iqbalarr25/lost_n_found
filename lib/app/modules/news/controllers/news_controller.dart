@@ -9,7 +9,6 @@ import '../../../controllers/auth_controller.dart';
 import 'package:http/http.dart' as http;
 
 class NewsController extends GetxController with GetTickerProviderStateMixin {
-  final box = GetStorage();
   late TabController tabController =
       TabController(length: 2, vsync: this, initialIndex: thisPage.value);
   var thisPage = 0.obs;
@@ -74,7 +73,8 @@ class NewsController extends GetxController with GetTickerProviderStateMixin {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
         );
 
@@ -105,6 +105,11 @@ class NewsController extends GetxController with GetTickerProviderStateMixin {
 
           laporanNewsLost.refresh();
           laporanNewsFound.refresh();
+        } else if (statusCode == 401) {
+          Get.defaultDialog(
+            title: "TERJADI KESALAHAN",
+            middleText: "Silahkan login ulang",
+          ).then((value) => AuthController.logout());
         } else {
           throw "Error : $statusCode";
         }

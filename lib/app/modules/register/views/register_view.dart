@@ -91,7 +91,7 @@ class RegisterView extends GetView<RegisterController> {
       ),
       buildTextFormField(
         label: "Email",
-        textController: controller.emailController,
+        textController: controller.emailRegisterController,
         validator: MultiValidator(
           [
             RequiredValidator(errorText: "Email tidak boleh kosong"),
@@ -102,20 +102,20 @@ class RegisterView extends GetView<RegisterController> {
       ),
       buildTextFormField(
         label: "Nama",
-        textController: controller.namaController,
+        textController: controller.namaRegisterController,
         validator: RequiredValidator(errorText: "Nama tidak boleh kosong"),
         context: context,
       ),
       buildTextFormFieldPassword(
         label: "Password",
-        textController: controller.passwordController,
+        textController: controller.passwordRegisterController,
         validator: RequiredValidator(errorText: "Password tidak boleh kosong"),
         isObsecure: controller.passwordVisible,
         context: context,
       ),
       buildTextFormFieldPassword(
         label: "Confirm Password",
-        textController: controller.confirmPasswordController,
+        textController: controller.confirmPasswordRegisterController,
         validator:
             RequiredValidator(errorText: "Confirm password tidak boleh kosong"),
         isObsecure: controller.confirmPasswordVisible,
@@ -147,7 +147,7 @@ class RegisterView extends GetView<RegisterController> {
               ),
               child: Center(
                 child: Text(
-                  "Sign up",
+                  "Register",
                   style: textWhiteSmallNormal,
                 ),
               ),
@@ -195,7 +195,7 @@ class RegisterView extends GetView<RegisterController> {
       Padding(
         padding: const EdgeInsets.only(top: 10, bottom: 20),
         child: Text(
-          controller.emailController.text,
+          controller.emailRegisterController.text,
           style: textBlackSmallNormal,
         ),
       ),

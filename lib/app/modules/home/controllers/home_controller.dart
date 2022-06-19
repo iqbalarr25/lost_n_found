@@ -11,7 +11,6 @@ import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class HomeController extends GetxController {
-  final box = GetStorage();
   var isLoading = false.obs;
   late Future<RxList<MyPost>>? tampilPostLaporanAndaFuture;
   late Future<RxList<MyPost>>? tampilPostFollowingFuture;
@@ -29,7 +28,8 @@ class HomeController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
       );
 
@@ -53,6 +53,11 @@ class HomeController extends GetxController {
         }
 
         laporanAnda.refresh();
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -74,7 +79,8 @@ class HomeController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
       );
 
@@ -95,12 +101,15 @@ class HomeController extends GetxController {
                   .add(MyPost.fromJson(element as Map<String, dynamic>));
             },
           );
-
           print(
               "jumlah laporan following: " + laporanDiikuti.length.toString());
         }
-
         laporanDiikuti.refresh();
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -141,7 +150,8 @@ class HomeController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "postId": post.id,
@@ -155,7 +165,8 @@ class HomeController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "questionId": questions.id,
@@ -183,6 +194,11 @@ class HomeController extends GetxController {
             isLoading.value = false;
           }
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -302,7 +318,8 @@ class HomeController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
           "postId": post.id,
@@ -315,6 +332,11 @@ class HomeController extends GetxController {
       if (statusCode == 201) {
         Get.back();
         openDialogKontak(post, context);
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -348,7 +370,7 @@ class HomeController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    print(box.read("dataUser"));
+    print(AuthController.box.read("dataUser"));
   }
 
   @override

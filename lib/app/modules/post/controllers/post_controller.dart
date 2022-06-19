@@ -17,7 +17,6 @@ import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
 class PostController extends GetxController {
-  final box = GetStorage();
   final List<String> mediaSosials = ["WhatsApp", "Instagram", "Line"];
   final List<String> categorys = ["Lost", "Found"];
 
@@ -78,10 +77,11 @@ class PostController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
-          "userId": box.read("dataUser")["userId"],
+          "userId": AuthController.box.read("dataUser")["userId"],
           "typePost": category.value,
           "title": judulController.text,
           "description": deskripsiController.text,
@@ -112,9 +112,13 @@ class PostController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil menambahkan laporan.",
         ).then((value) {
-          Get.reloadAll();
           Get.offAllNamed(Routes.MAIN, arguments: 0);
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -162,7 +166,8 @@ class PostController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "typePost": category.value,
@@ -197,8 +202,12 @@ class PostController extends GetxController {
             middleText: "Berhasil mengedit laporan.",
           ).then((value) {
             Get.offAllNamed(Routes.MAIN, arguments: 0);
-            Get.reloadAll();
           });
+        } else if (statusCode == 401) {
+          Get.defaultDialog(
+            title: "TERJADI KESALAHAN",
+            middleText: "Silahkan login ulang",
+          ).then((value) => AuthController.logout());
         } else {
           throw "Error : $statusCode";
         }
@@ -208,7 +217,8 @@ class PostController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "typePost": category.value,
@@ -238,9 +248,13 @@ class PostController extends GetxController {
             title: "BERHASIL",
             middleText: "Berhasil mengedit laporan.",
           ).then((value) {
-            Get.reloadAll();
             Get.toNamed(Routes.MAIN, arguments: 0);
           });
+        } else if (statusCode == 401) {
+          Get.defaultDialog(
+            title: "TERJADI KESALAHAN",
+            middleText: "Silahkan login ulang",
+          ).then((value) => AuthController.logout());
         } else {
           throw "Error : $statusCode";
         }
@@ -259,10 +273,11 @@ class PostController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
-          "userId": box.read("dataUser")["userId"],
+          "userId": AuthController.box.read("dataUser")["userId"],
           "postId": postId.value,
           "typeQuestion": "PostQuestion",
           "question": pertanyaanController.text,
@@ -278,6 +293,11 @@ class PostController extends GetxController {
 
       if (statusCode == 201) {
         print("BERHASIL MENAMBAHKAN QUESTION");
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -297,7 +317,8 @@ class PostController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
           "question": pertanyaanController.text,
@@ -432,5 +453,16 @@ class PostController extends GetxController {
       print(selectedImagesEdit);
     }
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    judulController.dispose();
+    deskripsiController.dispose();
+    kronologiController.dispose();
+    mediaSosialController.dispose();
+    dateController.dispose();
+    pertanyaanController.dispose();
+    super.onClose();
   }
 }

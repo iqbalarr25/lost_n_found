@@ -1,4 +1,3 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +12,6 @@ import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class DetailLaporanController extends GetxController {
-  final box = GetStorage();
   TextEditingController balasanController = TextEditingController();
   var post = MyPost().obs;
   var detailLaporan = MyPost().obs;
@@ -29,7 +27,7 @@ class DetailLaporanController extends GetxController {
   Future<Rx<MyPost>> tampilDetailLaporan() async {
     print("PROSES TAMPIL LAPORAN");
     Uri uri;
-    if (post.value.userId == box.read("dataUser")["userId"] &&
+    if (post.value.userId == AuthController.box.read("dataUser")["userId"] &&
         post.value.activeStatus!) {
       if (post.value.typePost == "Found") {
         uri = Uri.parse(
@@ -45,7 +43,8 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
         );
 
@@ -63,6 +62,11 @@ class DetailLaporanController extends GetxController {
                 MyPost.fromJson(body['data'] as Map<String, dynamic>);
             print(detailLaporan);
           }
+        } else if (statusCode == 401) {
+          Get.defaultDialog(
+            title: "TERJADI KESALAHAN",
+            middleText: "Silahkan login ulang",
+          ).then((value) => AuthController.logout());
         } else {
           throw "Error : $statusCode";
         }
@@ -99,7 +103,8 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({"activeStatus": false, "deleteStatus": true}),
       );
@@ -117,8 +122,12 @@ class DetailLaporanController extends GetxController {
           middleText: "Berhasil menghapus laporan.",
         ).then((value) {
           Get.offAllNamed(Routes.MAIN, arguments: 0);
-          Get.reloadAll();
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -161,10 +170,11 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
-            "userId": box.read("dataUser")["userId"],
+            "userId": AuthController.box.read("dataUser")["userId"],
             "postId": post.value.id,
             "typeQuestion": "UserQuestion",
             "question": balasanController.text,
@@ -177,7 +187,8 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "question": balasanController.text,
@@ -199,8 +210,12 @@ class DetailLaporanController extends GetxController {
           middleText: "Berhasil mengirim pertanyaan.",
         ).then((value) {
           Get.offAllNamed(Routes.MAIN, arguments: 0);
-          Get.reloadAll();
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -244,11 +259,12 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "questionId": detailLaporan.value.questions![0].id,
-            "userId": box.read("dataUser")["userId"],
+            "userId": AuthController.box.read("dataUser")["userId"],
             "answer": balasanController.text,
             "statusAnswer": "Waiting"
           }),
@@ -259,7 +275,8 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "answer": balasanController.text,
@@ -280,8 +297,12 @@ class DetailLaporanController extends GetxController {
           middleText: "Berhasil mengirim jawaban.",
         ).then((value) {
           Get.offAllNamed(Routes.MAIN, arguments: 0);
-          Get.reloadAll();
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -316,7 +337,8 @@ class DetailLaporanController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
         body: json.encode({
           "questionId": question.id,
@@ -343,6 +365,11 @@ class DetailLaporanController extends GetxController {
           await (tampilDetailLaporanFuture = tampilDetailLaporan());
           isLoading.value = false;
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -384,7 +411,8 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({
             "postId": detailLaporan.value.id,
@@ -398,7 +426,8 @@ class DetailLaporanController extends GetxController {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             "Accept": "application/json",
-            'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+            'Authorization':
+                'Bearer ' + AuthController.box.read("dataUser")["token"],
           },
           body: json.encode({"answerId": answers.id!}),
         );
@@ -420,13 +449,17 @@ class DetailLaporanController extends GetxController {
         ).then((value) {
           if (accepted) {
             Get.toNamed(Routes.MAIN);
-            Get.reloadAll();
           } else {
             tampilDetailLaporanFuture = tampilDetailLaporan();
             Get.back();
             Get.back();
           }
         });
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
@@ -441,13 +474,13 @@ class DetailLaporanController extends GetxController {
   }
 
   void detailLaporanManager() {
-    if (post.value.userId != box.read("dataUser")["userId"]) {
+    if (post.value.userId != AuthController.box.read("dataUser")["userId"]) {
       if (!post.value.activeStatus!) {
         textBottomSheet.value = "Laporan selesai";
       } else if (post.value.typePost! == "Found") {
         if (!post.value.questions![0].answers.isBlank!) {
           if (post.value.questions![0].answers![0].userId ==
-              box.read("dataUser")["userId"]) {
+              AuthController.box.read("dataUser")["userId"]) {
             textBottomSheet.value = "Edit Jawaban Anda";
             balasanController.text =
                 post.value.questions![0].answers![0].answer!;
@@ -459,7 +492,7 @@ class DetailLaporanController extends GetxController {
       } else {
         if (!post.value.questions.isBlank!) {
           if (post.value.questions![0].userId ==
-              box.read("dataUser")["userId"]) {
+              AuthController.box.read("dataUser")["userId"]) {
             if (post.value.questions![0].statusQuestion == "Answered") {
               textBottomSheet.value = "Konfirmasi Jawaban Pelapor";
               isFollowedPost.value = true;
@@ -503,6 +536,7 @@ class DetailLaporanController extends GetxController {
 
   @override
   void onClose() {
+    balasanController.dispose();
     super.onClose();
   }
 }

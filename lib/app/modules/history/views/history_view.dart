@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/post_model.dart';
 import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
@@ -232,7 +233,7 @@ class HistoryView extends GetView<HistoryController> {
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: GestureDetector(
         onTap: () {
-          if (post.userId == controller.box.read("dataUser")["userId"]) {
+          if (post.userId == AuthController.box.read("dataUser")["userId"]) {
             Get.toNamed(Routes.DETAIL_LAPORAN, arguments: post);
           } else {
             if (post.typePost == "Lost") {
@@ -370,7 +371,7 @@ class HistoryView extends GetView<HistoryController> {
                         ],
                         const SizedBox(width: 15),
                         if (post.typePost == "Lost") ...[
-                          if (controller.box.read("dataUser")["userId"] ==
+                          if (AuthController.box.read("dataUser")["userId"] ==
                               post.userId) ...[
                             Text(
                               "Detail",

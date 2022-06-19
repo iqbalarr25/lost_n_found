@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/answers_model.dart';
 import 'package:lost_n_found/app/data/models/questions_model.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
@@ -24,7 +25,8 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
         ),
         actions: [
           if (controller.post.value.userId ==
-              controller.box.read("dataUser")["userId"]) ...[
+                  AuthController.box.read("dataUser")["userId"] ||
+              AuthController.box.read("dataUser")["userRole"] == "Admin") ...[
             IconButton(
               onPressed: () {
                 if (controller.detailLaporan.value.id != null) {
@@ -187,7 +189,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                                     ),
                                   const SizedBox(height: 10),
                                   if (controller.detailLaporan.value.userId ==
-                                      controller.box
+                                      AuthController.box
                                           .read("dataUser")["userId"]) ...[
                                     Obx(
                                       () => textTitleBody(
@@ -248,7 +250,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                                     ),
                                   ],
                                   (controller.detailLaporan.value.userId !=
-                                          controller.box
+                                          AuthController.box
                                               .read("dataUser")["userId"])
                                       ? const SizedBox(height: 60)
                                       : const SizedBox(height: 10),
@@ -305,7 +307,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
         ),
       ),
       bottomSheet: (controller.post.value.userId !=
-              controller.box.read("dataUser")["userId"])
+              AuthController.box.read("dataUser")["userId"])
           ? BottomSheet(
               enableDrag: false,
               elevation: 75,
@@ -339,7 +341,7 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                   decoration: BoxDecoration(
                     color: (controller.detailLaporan.value.activeStatus!)
                         ? primaryColor
-                        : greenColor,
+                        : greenDarkColor,
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: Center(
@@ -647,9 +649,13 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
     bool enabled;
     if (questions.answers != null) {
       if (questions.answers![questions.answers!.length - 1].statusAnswer ==
-          "Finished") {
+              "Finished" ||
+          questions.answers![questions.answers!.length - 1].statusAnswer ==
+              "Rejected") {
         controller.balasanController.text =
             questions.answers![questions.answers!.length - 1].answer!;
+        print("isinya: " +
+            questions.answers![questions.answers!.length - 1].answer!);
         enabled = false;
       } else {
         enabled = true;
@@ -699,12 +705,40 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
             ),
             const SizedBox(height: 10),
             buildTextFormField(hint: "Masukkan jawaban", enabled: enabled),
-            (enabled) ? const SizedBox(height: 15) : const SizedBox(),
+            const SizedBox(height: 15),
             if (questions.answers != null) ...[
-              if (questions
-                      .answers![questions.answers!.length - 1].statusAnswer ==
-                  "Finished") ...[
-                const SizedBox(),
+              if (!enabled) ...[
+                if (questions
+                        .answers![questions.answers!.length - 1].statusAnswer ==
+                    "Finished") ...[
+                  Container(
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: greenDarkColor,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Jawaban Diterima",
+                        style: textWhiteMedium,
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  Container(
+                    height: 45,
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Jawaban Ditolak",
+                        style: textWhiteMedium,
+                      ),
+                    ),
+                  ),
+                ],
               ] else ...[
                 GestureDetector(
                   onTap: () {

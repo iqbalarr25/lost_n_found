@@ -72,7 +72,7 @@ class LoginView extends GetView<LoginController> {
                                               FocusScope.of(context)
                                                   .nextFocus(),
                                           controller:
-                                              controller.emailController,
+                                              controller.emailLoginController,
                                           validator: MultiValidator([
                                             RequiredValidator(
                                                 errorText:
@@ -98,8 +98,8 @@ class LoginView extends GetView<LoginController> {
                                             onEditingComplete: () =>
                                                 FocusScope.of(context)
                                                     .nextFocus(),
-                                            controller:
-                                                controller.passwordController,
+                                            controller: controller
+                                                .passwordLoginController,
                                             obscureText: controller
                                                 .passwordVisible.value,
                                             decoration: InputDecoration(

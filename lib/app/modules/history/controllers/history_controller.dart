@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/data/models/history_model.dart';
 import 'package:lost_n_found/app/data/models/post_model.dart';
@@ -11,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'package:lost_n_found/app/themes/theme_app.dart';
 
 class HistoryController extends GetxController {
-  final box = GetStorage();
   var isLoading = false.obs;
   var laporanHistory = History().obs;
 
@@ -40,7 +38,8 @@ class HistoryController extends GetxController {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Accept": "application/json",
-          'Authorization': 'Bearer ' + box.read("dataUser")["token"],
+          'Authorization':
+              'Bearer ' + AuthController.box.read("dataUser")["token"],
         },
       );
 
@@ -78,6 +77,11 @@ class HistoryController extends GetxController {
           print("jumlah laporan history: " + laporanHistory.toString());
         }
         laporanHistory.refresh();
+      } else if (statusCode == 401) {
+        Get.defaultDialog(
+          title: "TERJADI KESALAHAN",
+          middleText: "Silahkan login ulang",
+        ).then((value) => AuthController.logout());
       } else {
         throw "Error : $statusCode";
       }
