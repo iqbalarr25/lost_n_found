@@ -16,10 +16,12 @@ class HomeView extends GetView<HomeController> {
     return RefreshIndicator(
       onRefresh: () async {
         controller.isLoading.value = true;
-        await (controller.tampilPostLaporanAndaFuture =
-            controller.tampilPostLaporanAnda());
-        await (controller.tampilPostFollowingFuture =
-            controller.tampilPostFollowing());
+        await Future.sync(() {
+          controller.tampilPostLaporanAndaFuture =
+              controller.tampilPostLaporanAnda();
+          controller.tampilPostFollowingFuture =
+              controller.tampilPostFollowing();
+        });
         controller.isLoading.value = false;
       },
       child: Obx(
@@ -269,7 +271,7 @@ class HomeView extends GetView<HomeController> {
   Widget buildCardLaporanIkuti(
       {required MyPost post, required BuildContext context}) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 8),
       child: Column(
         children: (post.typePost == "Found")
             ? post.questions![0].answers!
@@ -304,19 +306,22 @@ class HomeView extends GetView<HomeController> {
                                 children: [
                                   Row(
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image: NetworkImage(
-                                              post.imgUrl![0],
+                                      Hero(
+                                        tag: post.imgUrl![0],
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                post.imgUrl![0],
+                                              ),
                                             ),
                                           ),
+                                          width: 130,
+                                          height: 130,
                                         ),
-                                        width: 130,
-                                        height: 130,
                                       ),
                                       const SizedBox(width: 10),
                                       Container(
@@ -435,19 +440,22 @@ class HomeView extends GetView<HomeController> {
                                   children: [
                                     Row(
                                       children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                post.imgUrl![0],
+                                        Hero(
+                                          tag: post.imgUrl![0],
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                  post.imgUrl![0],
+                                                ),
                                               ),
                                             ),
+                                            width: 130,
+                                            height: 130,
                                           ),
-                                          width: 130,
-                                          height: 130,
                                         ),
                                         const SizedBox(width: 10),
                                         Container(

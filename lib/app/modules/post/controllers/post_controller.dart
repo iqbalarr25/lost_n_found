@@ -113,6 +113,7 @@ class PostController extends GetxController {
           middleText: "Berhasil menambahkan laporan.",
         ).then((value) {
           Get.offAllNamed(Routes.MAIN, arguments: 0);
+          Get.reloadAll();
         });
       } else if (statusCode == 401) {
         Get.defaultDialog(
@@ -202,6 +203,7 @@ class PostController extends GetxController {
             middleText: "Berhasil mengedit laporan.",
           ).then((value) {
             Get.offAllNamed(Routes.MAIN, arguments: 0);
+            Get.reloadAll();
           });
         } else if (statusCode == 401) {
           Get.defaultDialog(
