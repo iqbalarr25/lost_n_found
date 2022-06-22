@@ -59,12 +59,15 @@ class LoginController extends GetxController {
             "token": body['data']['access_token']
           },
         );
+        AuthController.box.remove("userOtp");
         Get.offAllNamed(Routes.MAIN);
-      } else if (statusCode == 401) {
+      } else if (statusCode == 400) {
         defaultDialog = Get.defaultDialog(
-          title: "Gagal",
+          title: "KESALAHAN",
           content: const Text("Email atau password salah!"),
         ).then((value) => Get.back());
+      } else if (statusCode == 401) {
+        Get.offNamed(Routes.REGISTER);
       } else {
         throw "Error : $statusCode";
       }

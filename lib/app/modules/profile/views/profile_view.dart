@@ -368,6 +368,7 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                         RequiredValidator(errorText: "Nama tidak boleh kosong"),
                       ]),
+                      maxLength: 40,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),

@@ -33,7 +33,7 @@ TextStyle textBlackSmall = GoogleFonts.poppins()
 TextStyle textBlackSmallNormal =
     GoogleFonts.poppins().copyWith(color: blackColor, fontSize: 14);
 TextStyle textRedSmallNormal =
-    GoogleFonts.poppins().copyWith(color: Colors.red, fontSize: 14);
+    GoogleFonts.poppins().copyWith(color: primaryColor, fontSize: 14);
 TextStyle textGreyHintSec =
     GoogleFonts.poppins().copyWith(color: greyColor, fontSize: 11);
 TextStyle textBottomNavBar = GoogleFonts.poppins()
@@ -58,3 +58,7 @@ TextStyle textRedSuperBig = GoogleFonts.poppins()
     .copyWith(color: primaryColor, fontSize: 20, fontWeight: FontWeight.bold);
 TextStyle textHint =
     TextStyle(color: greyColor, fontSize: 15, fontWeight: FontWeight.w600);
+TextStyle textBlackSuperSmall = GoogleFonts.poppins()
+    .copyWith(color: blackColor, fontSize: 12, fontWeight: FontWeight.w900);
+TextStyle textLinkSmallNormal =
+    GoogleFonts.poppins().copyWith(color: Colors.blue, fontSize: 10);

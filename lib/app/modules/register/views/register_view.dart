@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/controllers/auth_controller.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 
 import '../../../themes/theme_app.dart';
@@ -135,8 +136,7 @@ class RegisterView extends GetView<RegisterController> {
             ),
             onPressed: () {
               if (_formkey.currentState!.validate()) {
-                controller.openOtp.value = !controller.openOtp.value;
-                controller.startTimer();
+                controller.register();
               }
             },
             child: Container(
@@ -193,10 +193,38 @@ class RegisterView extends GetView<RegisterController> {
         style: textBlackSmallBalasan,
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 10, bottom: 20),
-        child: Text(
-          controller.emailRegisterController.text,
-          style: textBlackSmallNormal,
+        padding: const EdgeInsets.only(bottom: 10),
+        child: FittedBox(
+          child: Row(
+            children: [
+              FittedBox(
+                child: Text(
+                  AuthController.box.read('userOtp')['email'],
+                  style: textBlackSmall,
+                ),
+              ),
+              FittedBox(
+                child: TextButton(
+                  onPressed: () {
+                    controller.openOtp.value = false;
+                    AuthController.box.remove('userOtp');
+                    controller.timer.cancel();
+                    controller.otpControllerOne.text = "";
+                    controller.otpControllerTwo.text = "";
+                    controller.otpControllerThree.text = "";
+                    controller.otpControllerFour.text = "";
+                  },
+                  child: Text(
+                    "Bukan email saya?",
+                    style: textLinkSmallNormal,
+                  ),
+                  style: ButtonStyle(
+                      overlayColor:
+                          MaterialStateProperty.all(Colors.transparent)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       Row(
@@ -247,6 +275,13 @@ class RegisterView extends GetView<RegisterController> {
             Expanded(
               child: Center(
                 child: FlatButton(
+                  splashColor:
+                      (controller.startTime.value <= 0) ? null : whiteColor,
+                  highlightColor:
+                      (controller.startTime.value <= 0) ? null : whiteColor,
+                  color: (controller.startTime.value <= 0)
+                      ? primaryColor
+                      : Colors.transparent,
                   clipBehavior: Clip.hardEdge,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -254,6 +289,7 @@ class RegisterView extends GetView<RegisterController> {
                   ),
                   onPressed: () {
                     if (controller.startTime.value <= 0) {
+                      controller.recieveOtp();
                       controller.timer.cancel();
                       controller.startTimer();
                     }
@@ -263,7 +299,9 @@ class RegisterView extends GetView<RegisterController> {
                     child: Center(
                       child: Text(
                         "Resend",
-                        style: textRedSmallNormal,
+                        style: (controller.startTime.value <= 0)
+                            ? textWhiteSmallNormal
+                            : textRedSmallNormal,
                       ),
                     ),
                   ),
@@ -284,7 +322,7 @@ class RegisterView extends GetView<RegisterController> {
                   ),
                   onPressed: () {
                     if (_formkey.currentState!.validate()) {
-                      controller.openOtp.value = !controller.openOtp.value;
+                      controller.verifyOtp();
                     }
                   },
                   child: SizedBox(

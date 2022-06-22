@@ -24,9 +24,10 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
           style: textAppBar,
         ),
         actions: [
-          if (controller.post.value.userId ==
-                  AuthController.box.read("dataUser")["userId"] ||
-              AuthController.box.read("dataUser")["userRole"] == "Admin") ...[
+          if ((controller.post.value.userId ==
+                      AuthController.box.read("dataUser")["userId"] ||
+                  AuthController.box.read("dataUser")["userRole"] == "Admin") &&
+              controller.post.value.activeStatus!) ...[
             IconButton(
               onPressed: () {
                 if (controller.detailLaporan.value.id != null) {
@@ -831,8 +832,35 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
               ),
             ),
             const SizedBox(height: 10),
-            (answers.statusAnswer == "Finished")
-                ? const SizedBox()
+            (answers.statusAnswer == "Finished" ||
+                    answers.statusAnswer == "Rejected")
+                ? (answers.statusAnswer == "Finished")
+                    ? Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: greenDarkColor,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Jawaban Diterima",
+                            style: textWhiteMedium,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Jawaban Ditolak",
+                            style: textWhiteMedium,
+                          ),
+                        ),
+                      )
                 : Row(
                     children: [
                       Expanded(

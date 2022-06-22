@@ -35,12 +35,12 @@ class PostView extends GetView<PostController> {
                   validator: MultiValidator([
                     RequiredValidator(errorText: "Judul barang harus diisi"),
                     MaxLengthValidator(
-                      14,
+                      30,
                       errorText:
-                          "Judul barang tidak boleh lebih dari 14 karakter",
+                          "Judul barang tidak boleh lebih dari 30 karakter",
                     ),
                   ]),
-                  maxlength: 14,
+                  maxlength: 30,
                 ),
                 buildTextField(
                   judul: "Deskripsi",
@@ -57,6 +57,7 @@ class PostView extends GetView<PostController> {
                           "Deskripsi barang tidak boleh lebih dari 200 karakter",
                     ),
                   ]),
+                  maxlength: 200,
                 ),
                 radioCategory(),
                 if (controller.category.value.isNotEmpty) ...[
@@ -74,6 +75,7 @@ class PostView extends GetView<PostController> {
                             "Kronologi tidak boleh lebih dari 200 karakter",
                       ),
                     ]),
+                    maxlength: 200,
                   ),
                   buildTextFieldDate(
                     judul: "Tanggal",
@@ -97,6 +99,7 @@ class PostView extends GetView<PostController> {
                               "${controller.mediaSosial.value} tidak boleh lebih dari 50 karakter",
                         ),
                       ]),
+                      maxlength: 50,
                     ),
                   if (controller.category.value == "Found" &&
                       controller.mediaSosial.value != "")
@@ -115,6 +118,7 @@ class PostView extends GetView<PostController> {
                               "Pertanyaan tidak boleh lebih dari 100 karakter",
                         ),
                       ]),
+                      maxlength: 100,
                     ),
                   if (controller.mediaSosial.value != "")
                     Container(

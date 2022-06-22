@@ -10,5 +10,6 @@ class AuthController extends GetxController {
   static void logout() {
     box.erase();
     Get.offAllNamed(Routes.LOGIN);
+    Get.reloadAll();
   }
 }

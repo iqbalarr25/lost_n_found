@@ -74,7 +74,7 @@ class HistoryController extends GetxController {
             ...ownFoundPost,
             ...ownLostPost
           ];
-          print("jumlah laporan history: " + laporanHistory.toString());
+          print("jumlah laporan history: " + historyAllPost.length.toString());
         }
         laporanHistory.refresh();
       } else if (statusCode == 401) {

@@ -25,7 +25,7 @@ class RegisterController extends GetxController {
   TextEditingController otpControllerFour = TextEditingController();
 
   late Timer timer;
-  var startTime = 120.obs;
+  var startTime = 60.obs;
 
   Future register() async {
     var defaultDialog = Get.dialog(
@@ -64,20 +64,26 @@ class RegisterController extends GetxController {
 
       if (statusCode == 201) {
         print("BERHASIL REGISTER");
-        defaultDialog = Get.defaultDialog(
-          title: "BERHASIL",
-          middleText: "Berhasil menambahkan akun.",
-        ).then((value) {
-          Get.toNamed(Routes.LOGIN);
-        });
-      } else if (statusCode == 500) {
-        defaultDialog = Get.defaultDialog(
-          title: "GAGAL",
-          middleText: "Email telah dipakai!",
-        ).then((value) {
+        Get.back();
+        startTimer();
+        recieveOtp(userId: body['data']['id'], email: body['data']['email']);
+        openOtp.value = true;
+      } else if (statusCode == 401) {
+        print(body['user']['activeStatus']);
+        if (body['user']['activeStatus'] == false) {
           Get.back();
-          Get.back();
-        });
+          startTimer();
+          recieveOtp(userId: body['user']['id'], email: body['user']['email']);
+          openOtp.value = true;
+        } else {
+          defaultDialog = Get.defaultDialog(
+            title: "GAGAL",
+            middleText: "Email telah dipakai!",
+          ).then((value) {
+            Get.back();
+            Get.back();
+          });
+        }
       } else {
         throw "Error : $statusCode";
       }
@@ -88,8 +94,35 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future recieveOtp({String? userId, String? email}) async {
+    if (AuthController.box.read('userOtp') == null) {
+      AuthController.box.write(
+        'userOtp',
+        {
+          'userId': userId,
+          'email': email,
+        },
+      );
+    }
+
+    var uri = Uri.parse(AuthController.url + "user/otp");
+    var response = await http.post(
+      uri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Accept": "application/json",
+      },
+      body: json.encode({
+        "userId": AuthController.box.read('userOtp')['userId'],
+        "email": AuthController.box.read('userOtp')['email'],
+      }),
+    );
+    print("otp: ${response.statusCode}");
+    print(response.body);
+  }
+
   void startTimer() {
-    startTime.value = 120;
+    startTime.value = 60;
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(oneSec, (timer) {
       if (startTime.value <= 0) {
@@ -98,6 +131,64 @@ class RegisterController extends GetxController {
         startTime--;
       }
     });
+  }
+
+  Future verifyOtp({String? userId, String? email}) async {
+    var defaultDialog = Get.dialog(
+      Center(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor,
+          ),
+          padding: const EdgeInsets.all(15),
+          child: const CircularProgressIndicator(),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+    var uri = Uri.parse(AuthController.url + "user/otp/verify");
+    try {
+      var response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Accept": "application/json",
+        },
+        body: json.encode({
+          "userId": AuthController.box.read('userOtp')['userId'],
+          "otp": otpControllerOne.text +
+              otpControllerTwo.text +
+              otpControllerThree.text +
+              otpControllerFour.text,
+        }),
+      );
+      var statusCode = response.statusCode;
+      var body = json.decode(response.body) as Map<String, dynamic>;
+      print("otp: ${response.statusCode}");
+      print(body);
+
+      if (statusCode == 201) {
+        defaultDialog = Get.defaultDialog(
+          title: "BERHASIL",
+          middleText: "Berhasil melakukan verifikasi OTP",
+        ).then((value) {
+          AuthController.box.remove('userOtp');
+          Get.offNamed(Routes.LOGIN);
+        });
+      } else {
+        defaultDialog = Get.defaultDialog(
+          title: "GAGAL",
+          middleText: "OTP yang dimasukkan salah!",
+        ).then((value) {
+          Get.back();
+          Get.back();
+        });
+      }
+    } catch (e) {
+      print(e);
+      errorMsg("Tidak dapat konfirmasi OTP. Hubungi customer service kami.");
+    }
   }
 
   void errorMsg(String msg) {
@@ -113,6 +204,10 @@ class RegisterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print(AuthController.box.read('userOtp'));
+    if (AuthController.box.read('userOtp') != null) {
+      openOtp.value = true;
+    }
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (startTime.value <= 0) {
         timer.cancel();

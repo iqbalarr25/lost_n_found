@@ -251,6 +251,7 @@ class PostController extends GetxController {
             middleText: "Berhasil mengedit laporan.",
           ).then((value) {
             Get.toNamed(Routes.MAIN, arguments: 0);
+            Get.reloadAll();
           });
         } else if (statusCode == 401) {
           Get.defaultDialog(

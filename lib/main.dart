@@ -9,6 +9,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:lost_n_found/app/modules/login/bindings/login_binding.dart';
 import 'package:lost_n_found/app/modules/login/views/login_view.dart';
 import 'package:lost_n_found/app/modules/main/bindings/main_binding.dart';
+import 'package:lost_n_found/app/modules/register/bindings/register_binding.dart';
+import 'package:lost_n_found/app/modules/register/views/register_view.dart';
 import 'package:lost_n_found/app/routes/app_pages.dart';
 import 'package:lost_n_found/app/themes/theme_app.dart';
 import 'app/modules/main/views/main_view.dart';
@@ -31,11 +33,18 @@ class MyApp extends StatelessWidget {
     final box = GetStorage();
 
     return GetMaterialApp(
-      initialBinding:
-          (box.read('dataUser') == null) ? LoginBinding() : MainBinding(),
+      initialBinding: (box.read('dataUser') == null)
+          ? (box.read('userOtp') == null)
+              ? LoginBinding()
+              : RegisterBinding()
+          : MainBinding(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
-      home: (box.read('dataUser') == null) ? LoginView() : MainView(),
+      home: (box.read('dataUser') == null)
+          ? (box.read('userOtp') == null)
+              ? LoginView()
+              : RegisterView()
+          : MainView(),
       theme: ThemeData(
         bottomSheetTheme:
             const BottomSheetThemeData(backgroundColor: Colors.transparent),

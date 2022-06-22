@@ -449,6 +449,7 @@ class DetailLaporanController extends GetxController {
         ).then((value) {
           if (accepted) {
             Get.toNamed(Routes.MAIN);
+            Get.reloadAll();
           } else {
             tampilDetailLaporanFuture = tampilDetailLaporan();
             Get.back();
