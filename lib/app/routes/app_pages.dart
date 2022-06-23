@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:lost_n_found/app/modules/splash_screen.dart';
 
 import '../modules/detail_laporan/bindings/detail_laporan_binding.dart';
 import '../modules/detail_laporan/views/detail_laporan_view.dart';
@@ -24,7 +25,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.MAIN;
+  static const INITIAL = SplashScreen();
 
   static final routes = [
     GetPage(

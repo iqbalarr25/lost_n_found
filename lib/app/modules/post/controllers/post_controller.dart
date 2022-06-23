@@ -250,7 +250,7 @@ class PostController extends GetxController {
             title: "BERHASIL",
             middleText: "Berhasil mengedit laporan.",
           ).then((value) {
-            Get.toNamed(Routes.MAIN, arguments: 0);
+            Get.offAllNamed(Routes.MAIN, arguments: 0);
             Get.reloadAll();
           });
         } else if (statusCode == 401) {

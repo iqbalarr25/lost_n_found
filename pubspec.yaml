@@ -9,7 +9,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   supercharged: ^2.1.1
   google_fonts: ^2.3.1
-  get_cli: ^1.7.1
   get: 4.6.1
   flutter: 
     sdk: flutter
@@ -25,7 +24,7 @@ dependencies:
 dev_dependencies: 
   flutter_lints: ^1.0.0
   flutter_test: 
-    sdk: flutter
+    sdk: flutter  
 
 flutter: 
   uses-material-design: true
