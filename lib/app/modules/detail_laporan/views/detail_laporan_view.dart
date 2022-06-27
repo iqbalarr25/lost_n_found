@@ -118,10 +118,15 @@ class DetailLaporanView extends GetView<DetailLaporanController> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              controller.post.value.title!.capitalizeFirst!,
-                              style: textBlackBig,
+                            Flexible(
+                              child: FittedBox(
+                                child: Text(
+                                  controller.post.value.title!.capitalizeFirst!,
+                                  style: textBlackBig,
+                                ),
+                              ),
                             ),
+                            const SizedBox(width: 10),
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(

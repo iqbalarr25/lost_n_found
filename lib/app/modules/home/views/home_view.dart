@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
                                         if (controller.laporanAnda.isEmpty) {
                                           return Center(
                                             child: Text(
-                                              "Belum mempunyai laporan :(",
+                                              "Belum mempunyai laporan",
                                               style: textWhiteSmallNormal,
                                             ),
                                           );
@@ -135,9 +135,11 @@ class HomeView extends GetView<HomeController> {
                                   top: MediaQuery.of(context).size.height *
                                       0.15),
                               child: Center(
-                                child: Text(
-                                  "Belum ada laporan",
-                                  style: textRedMini,
+                                child: FittedBox(
+                                  child: Text(
+                                    "Belum ada laporan",
+                                    style: textRedSmall,
+                                  ),
                                 ),
                               ),
                             );
@@ -184,82 +186,84 @@ class HomeView extends GetView<HomeController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Row(
-              children: [
-                Hero(
-                  tag: post.imgUrl![0],
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: greyColor,
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          post.imgUrl![0],
-                        ),
-                      ),
+            Hero(
+              tag: post.imgUrl![0],
+              child: Container(
+                decoration: BoxDecoration(
+                  color: greyColor,
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      post.imgUrl![0],
                     ),
-                    width: 130,
-                    height: 130,
                   ),
                 ),
-                const SizedBox(width: 10),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 7),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 130,
-                            child: Text(
-                              post.title!.capitalizeFirst!,
-                              style: textTitleCard,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(height: 1),
-                          Text(
-                            post.date.toString(),
-                            style: textGreyCard,
-                          ),
-                          const SizedBox(height: 5),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: primaryColor,
-                            ),
-                            child: Text(
-                              post.typePost!,
-                              style: textWhiteMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        (post.typePost == "Found")
-                            ? "Penjawab: ${post.totalAnswer.toString()}"
-                            : "Penemu: ${post.totalQuestion.toString()}",
-                        style: textGreyCard,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                width: 130,
+                height: 130,
+              ),
             ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 7, right: 7),
-              child: Text(
-                "Detail",
-                style: textRedMini,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 7),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          post.title!.capitalizeFirst!,
+                          style: textTitleCard,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          post.date.toString(),
+                          style: textGreyCard,
+                        ),
+                        const SizedBox(height: 5),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: primaryColor,
+                          ),
+                          child: Text(
+                            post.typePost!,
+                            style: textWhiteMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          (post.typePost == "Found")
+                              ? "Penjawab: ${post.totalAnswer.toString()}"
+                              : "Penemu: ${post.totalQuestion.toString()}",
+                          style: textGreyCard,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(right: 7),
+                          child: Text(
+                            "Detail",
+                            style: textRedMini,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -300,99 +304,99 @@ class HomeView extends GetView<HomeController> {
                                 color: whiteColor,
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Hero(
-                                        tag: post.imgUrl![0],
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            image: DecorationImage(
-                                              fit: BoxFit.cover,
-                                              image: NetworkImage(
-                                                post.imgUrl![0],
-                                              ),
-                                            ),
+                                  Hero(
+                                    tag: post.imgUrl![0],
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                            post.imgUrl![0],
                                           ),
-                                          width: 130,
-                                          height: 130,
                                         ),
                                       ),
-                                      const SizedBox(width: 10),
-                                      Container(
-                                        height: 110,
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                      width: 130,
+                                      height: 130,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            SizedBox(
+                                              width: 155,
+                                              child: Text(
+                                                post.title!.capitalizeFirst!,
+                                                style: textTitleCard,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 1),
+                                            Text(
+                                              post.date!,
+                                              style: textGreyCard,
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 4,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: primaryColor,
+                                              ),
+                                              child: Text(
+                                                post.typePost!,
+                                                style: textWhiteMedium,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 25),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              mainAxisSize: MainAxisSize.max,
                                               children: [
-                                                SizedBox(
-                                                  width: 117,
-                                                  child: Text(
-                                                    post.title!
-                                                        .capitalizeFirst!,
-                                                    style: textTitleCard,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 1),
                                                 Text(
-                                                  post.date!,
-                                                  style: textGreyCard,
+                                                  "Status: " + e.statusAnswer!,
+                                                  style: (e.statusAnswer ==
+                                                          "Accepted")
+                                                      ? textGreenDarkMini
+                                                      : textGreyCard,
                                                 ),
-                                                const SizedBox(height: 5),
+                                                const SizedBox(width: 35),
                                                 Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 4,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: primaryColor,
-                                                  ),
+                                                  color: whiteColor,
                                                   child: Text(
-                                                    post.typePost!,
-                                                    style: textWhiteMedium,
+                                                    "Detail",
+                                                    style: textRedMini,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            Text(
-                                              "Status: " + e.statusAnswer!,
-                                              style:
-                                                  (e.statusAnswer == "Accepted")
-                                                      ? textGreenDarkMini
-                                                      : textGreyCard,
-                                            ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    color: whiteColor,
-                                    padding: const EdgeInsets.only(
-                                        bottom: 10, right: 7),
-                                    child: Text(
-                                      "Detail",
-                                      style: textRedMini,
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -434,92 +438,102 @@ class HomeView extends GetView<HomeController> {
                                   color: whiteColor,
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Hero(
-                                          tag: post.imgUrl![0],
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                  post.imgUrl![0],
-                                                ),
-                                              ),
+                                    Hero(
+                                      tag: post.imgUrl![0],
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                              post.imgUrl![0],
                                             ),
-                                            width: 130,
-                                            height: 130,
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
-                                        Container(
-                                          height: 110,
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 8),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                        width: 130,
+                                        height: 130,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                              SizedBox(
+                                                width: 155,
+                                                child: Text(
+                                                  post.title!.capitalizeFirst!,
+                                                  style: textTitleCard,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 1),
+                                              Text(
+                                                post.date!,
+                                                style: textGreyCard,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: primaryColor,
+                                                ),
+                                                child: Text(
+                                                  post.typePost!,
+                                                  style: textWhiteMedium,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 25),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
-                                                    post.title!,
-                                                    style: textTitleCard,
+                                                    "Status: " +
+                                                        e.statusQuestion!,
+                                                    style: (e.statusQuestion ==
+                                                            "Answered")
+                                                        ? textGreenDarkMini
+                                                        : textGreyCard,
                                                   ),
-                                                  const SizedBox(height: 1),
-                                                  Text(
-                                                    post.date!,
-                                                    style: textGreyCard,
-                                                  ),
-                                                  const SizedBox(height: 5),
+                                                  const SizedBox(width: 35),
                                                   Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 4,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: primaryColor,
-                                                    ),
+                                                    color: whiteColor,
                                                     child: Text(
-                                                      post.typePost!,
-                                                      style: textWhiteMedium,
+                                                      "Detail",
+                                                      style: textRedMini,
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                              Text(
-                                                "Status: " + e.statusQuestion!,
-                                                style: (e.statusQuestion ==
-                                                        "Answered")
-                                                    ? textGreenDarkMini
-                                                    : textGreyCard,
-                                              ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      color: whiteColor,
-                                      padding: const EdgeInsets.only(
-                                          bottom: 10, right: 7),
-                                      child: Text(
-                                        "Detail",
-                                        style: textRedMini,
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -555,7 +569,7 @@ class HomeView extends GetView<HomeController> {
           ),
           const SizedBox(height: 15),
           Text(
-            "Iqbal Arrafi",
+            post.user!.name!,
             style: textBlackSmall,
           ),
           const SizedBox(height: 10),

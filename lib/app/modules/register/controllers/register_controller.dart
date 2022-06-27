@@ -84,6 +84,14 @@ class RegisterController extends GetxController {
             Get.back();
           });
         }
+      } else if (statusCode == 400) {
+        defaultDialog = Get.defaultDialog(
+          title: "GAGAL",
+          middleText: "Password tidak cocok!",
+        ).then((value) {
+          Get.back();
+          Get.back();
+        });
       } else {
         throw "Error : $statusCode";
       }
@@ -95,6 +103,8 @@ class RegisterController extends GetxController {
   }
 
   Future recieveOtp({String? userId, String? email}) async {
+    timer.cancel();
+    startTimer();
     if (AuthController.box.read('userOtp') == null) {
       AuthController.box.write(
         'userOtp',
@@ -117,11 +127,21 @@ class RegisterController extends GetxController {
         "email": AuthController.box.read('userOtp')['email'],
       }),
     );
+    var statusCode = response.statusCode;
     print("otp: ${response.statusCode}");
     print(response.body);
+    if (statusCode == 201) {
+      Get.snackbar(
+          "OTP Berhasil dikirim", "Cek spam folder jika OTP tidak terkirim",
+          backgroundColor: greenDarkColor, colorText: whiteColor);
+    } else {
+      Get.snackbar("OTP Gagal dikirim", "Silahkan kirim ulang OTP",
+          backgroundColor: primaryColor, colorText: whiteColor);
+    }
   }
 
   void startTimer() {
+    timer.cancel();
     startTime.value = 60;
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(oneSec, (timer) {
@@ -173,8 +193,12 @@ class RegisterController extends GetxController {
           title: "BERHASIL",
           middleText: "Berhasil melakukan verifikasi OTP",
         ).then((value) {
+          openOtp.value = false;
+          Get.offNamed(Routes.LOGIN, arguments: [
+            emailRegisterController.text,
+            passwordRegisterController.text
+          ]);
           AuthController.box.remove('userOtp');
-          Get.offNamed(Routes.LOGIN);
         });
       } else {
         defaultDialog = Get.defaultDialog(
@@ -204,6 +228,10 @@ class RegisterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    if (Get.arguments != null && Get.arguments != 0) {
+      emailRegisterController.text = Get.arguments[0];
+      passwordRegisterController.text = Get.arguments[1];
+    }
     print(AuthController.box.read('userOtp'));
     if (AuthController.box.read('userOtp') != null) {
       openOtp.value = true;

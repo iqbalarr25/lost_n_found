@@ -110,7 +110,11 @@ class RegisterView extends GetView<RegisterController> {
       buildTextFormFieldPassword(
         label: "Password",
         textController: controller.passwordRegisterController,
-        validator: RequiredValidator(errorText: "Password tidak boleh kosong"),
+        validator: MultiValidator([
+          RequiredValidator(errorText: "Password tidak boleh kosong"),
+          MinLengthValidator(8,
+              errorText: "Password tidak boleh kurang dari 8 karakter!")
+        ]),
         isObsecure: controller.passwordVisible,
         context: context,
       ),
@@ -166,7 +170,10 @@ class RegisterView extends GetView<RegisterController> {
             ),
             TextButton(
               onPressed: () {
-                Get.offNamed(Routes.LOGIN);
+                Get.offNamed(Routes.LOGIN, arguments: [
+                  controller.emailRegisterController.text,
+                  controller.passwordRegisterController.text
+                ]);
               },
               child: Text(
                 "Sign In",
@@ -219,8 +226,8 @@ class RegisterView extends GetView<RegisterController> {
                     style: textLinkSmallNormal,
                   ),
                   style: ButtonStyle(
-                      overlayColor:
-                          MaterialStateProperty.all(Colors.transparent)),
+                    overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  ),
                 ),
               ),
             ],
@@ -228,20 +235,23 @@ class RegisterView extends GetView<RegisterController> {
         ),
       ),
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           buildTextFormFieldOtp(
             textController: controller.otpControllerOne,
             context: context,
           ),
+          const SizedBox(width: 10),
           buildTextFormFieldOtp(
             textController: controller.otpControllerTwo,
             context: context,
           ),
+          const SizedBox(width: 10),
           buildTextFormFieldOtp(
             textController: controller.otpControllerThree,
             context: context,
           ),
+          const SizedBox(width: 10),
           buildTextFormFieldOtp(
             textController: controller.otpControllerFour,
             context: context,
@@ -249,7 +259,7 @@ class RegisterView extends GetView<RegisterController> {
         ],
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.only(top: 20),
         child: Center(
           child: RichText(
             text: TextSpan(
@@ -290,8 +300,6 @@ class RegisterView extends GetView<RegisterController> {
                   onPressed: () {
                     if (controller.startTime.value <= 0) {
                       controller.recieveOtp();
-                      controller.timer.cancel();
-                      controller.startTimer();
                     }
                   },
                   child: SizedBox(

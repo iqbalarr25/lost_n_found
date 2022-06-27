@@ -169,7 +169,10 @@ class LoginView extends GetView<LoginController> {
             ),
             TextButton(
               onPressed: () {
-                Get.offNamed(Routes.REGISTER);
+                Get.offNamed(Routes.REGISTER, arguments: [
+                  controller.emailLoginController.text,
+                  controller.passwordLoginController.text
+                ]);
               },
               child: Text(
                 "Sign Up",
@@ -296,20 +299,23 @@ class LoginView extends GetView<LoginController> {
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             buildTextFormFieldOtp(
               textController: controller.otpControllerOne,
               context: context,
             ),
+            const SizedBox(width: 10),
             buildTextFormFieldOtp(
               textController: controller.otpControllerTwo,
               context: context,
             ),
+            const SizedBox(width: 10),
             buildTextFormFieldOtp(
               textController: controller.otpControllerThree,
               context: context,
             ),
+            const SizedBox(width: 10),
             buildTextFormFieldOtp(
               textController: controller.otpControllerFour,
               context: context,
@@ -317,7 +323,7 @@ class LoginView extends GetView<LoginController> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 20),
           child: Center(
             child: RichText(
               text: TextSpan(
@@ -357,8 +363,6 @@ class LoginView extends GetView<LoginController> {
                     onPressed: () {
                       if (controller.startTime.value <= 0) {
                         controller.sentOtpResetPassword();
-                        controller.timer.cancel();
-                        controller.startTimer();
                       }
                     },
                     child: SizedBox(
@@ -445,8 +449,6 @@ class LoginView extends GetView<LoginController> {
                 if (_formkey.currentState!.validate()) {
                   controller.isOtpSend.value = true;
                   controller.sentOtpResetPassword();
-                  controller.timer.cancel();
-                  controller.startTimer();
                 }
               },
               child: Container(

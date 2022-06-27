@@ -448,7 +448,7 @@ class DetailLaporanController extends GetxController {
               : "Berhasil menolak balasan.",
         ).then((value) {
           if (accepted) {
-            Get.toNamed(Routes.MAIN);
+            Get.offAllNamed(Routes.MAIN);
             Get.reloadAll();
           } else {
             tampilDetailLaporanFuture = tampilDetailLaporan();

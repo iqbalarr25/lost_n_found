@@ -96,6 +96,8 @@ class LoginController extends GetxController {
   }
 
   Future sentOtpResetPassword() async {
+    timer.cancel();
+    startTimer();
     Uri uri = Uri.parse(AuthController.url + "auth/reset-password");
     var response = await http.post(
       uri,
@@ -113,7 +115,15 @@ class LoginController extends GetxController {
     var statusCode = response.statusCode;
     print("STATUS CODE : $statusCode");
     print(body);
-    userId.value = body['data']['id'];
+    if (statusCode == 201) {
+      userId.value = body['data']['id'];
+      Get.snackbar(
+          "OTP Berhasil dikirim", "Cek spam folder jika OTP tidak terkirim",
+          backgroundColor: greenDarkColor, colorText: whiteColor);
+    } else {
+      Get.snackbar("OTP Gagal dikirim", "Email yang dimasukkan tidak valid!",
+          backgroundColor: primaryColor, colorText: whiteColor);
+    }
   }
 
   Future confirmOtpResetPassword() async {
@@ -221,7 +231,7 @@ class LoginController extends GetxController {
       } else if (statusCode == 500) {
         defaultDialog = Get.defaultDialog(
           title: "KESALAHAN",
-          content: const Text("Password dan confirm password tidak match!"),
+          content: const Text("Password tidak cocok!"),
         ).then((value) => Get.back());
       } else {
         defaultDialog = Get.defaultDialog(
@@ -261,6 +271,10 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    if (Get.arguments != null && Get.arguments != 0) {
+      emailLoginController.text = Get.arguments[0];
+      passwordLoginController.text = Get.arguments[1];
+    }
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(oneSec, (timer) {
       if (startTime.value <= 0) {

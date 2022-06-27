@@ -54,9 +54,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
             IconButton(
               onPressed: () {
-                if (controller.dataUser.value.email != null) {
-                  AuthController.logout();
-                }
+                AuthController.logout();
               },
               icon: const Icon(Icons.logout),
             ),
@@ -67,16 +65,19 @@ class ProfileView extends GetView<ProfileController> {
                 future: controller.tampilDataUserFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    controller.namaController.text =
-                        controller.dataUser.value.name!;
-                    controller.nimController.text =
-                        (controller.dataUser.value.nim != null)
-                            ? controller.dataUser.value.nim!
-                            : "";
-                    controller.nomorController.text =
-                        (controller.dataUser.value.phone != null)
-                            ? controller.dataUser.value.phone!
-                            : "";
+                    if (controller.dataUser.value.email != null) {
+                      controller.namaController.text =
+                          controller.dataUser.value.name!;
+                      controller.nimController.text =
+                          (controller.dataUser.value.nim != null)
+                              ? controller.dataUser.value.nim!
+                              : "";
+                      controller.nomorController.text =
+                          (controller.dataUser.value.phone != null)
+                              ? controller.dataUser.value.phone!
+                              : "";
+                    }
+
                     return Stack(
                       children: [
                         Container(
@@ -198,15 +199,15 @@ class ProfileView extends GetView<ProfileController> {
                                         FittedBox(
                                           fit: BoxFit.fitWidth,
                                           child: Text(
-                                            controller.dataUser.value.name!
-                                                .capitalize!,
+                                            (controller.dataUser.value.name) ??
+                                                "Unknown",
                                             style: textBlackSuperBig,
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                         const SizedBox(height: 10),
                                         Text(
-                                          "${controller.dataUser.value.totalPost} post created",
+                                          "${(controller.dataUser.value.totalPost) ?? "0"} post created",
                                           style: textBlackSmall,
                                         ),
                                         const SizedBox(height: 20),

@@ -128,9 +128,11 @@ class NewsView extends GetView<NewsController> {
                               } else {
                                 return Center(
                                   child: SingleChildScrollView(
-                                    child: Text(
-                                      "Belum ada laporan kehilangan",
-                                      style: textRedMini,
+                                    child: FittedBox(
+                                      child: Text(
+                                        "Belum ada laporan kehilangan",
+                                        style: textRedSmall,
+                                      ),
                                     ),
                                   ),
                                 );
@@ -222,9 +224,11 @@ class NewsView extends GetView<NewsController> {
                               } else {
                                 return Center(
                                   child: SingleChildScrollView(
-                                    child: Text(
-                                      "Belum ada laporan penemuan",
-                                      style: textRedMini,
+                                    child: FittedBox(
+                                      child: Text(
+                                        "Belum ada laporan penemuan",
+                                        style: textRedSmall,
+                                      ),
                                     ),
                                   ),
                                 );
@@ -290,7 +294,6 @@ class NewsView extends GetView<NewsController> {
         },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          width: 360,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
@@ -304,79 +307,62 @@ class NewsView extends GetView<NewsController> {
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Hero(
-                    tag: post.imgUrl![0],
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: greyColor,
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(
-                            post.imgUrl![0],
-                          ),
+              Hero(
+                tag: post.imgUrl![0],
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: greyColor,
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        post.imgUrl![0],
+                      ),
+                    ),
+                  ),
+                  width: 130,
+                  height: 130,
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post.title!.capitalizeFirst!,
+                        style: textTitleCard,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        post.date!,
+                        style: textGreyCard,
+                      ),
+                      const SizedBox(height: 5),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: primaryColor,
+                        ),
+                        child: Text(
+                          post.typePost!,
+                          style: textWhiteMedium,
                         ),
                       ),
-                      width: 130,
-                      height: 130,
-                    ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 7),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 130,
-                              child: Text(
-                                post.title!.capitalizeFirst!,
-                                style: textTitleCard,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              post.date!,
-                              style: textGreyCard,
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: primaryColor,
-                              ),
-                              child: Text(
-                                post.typePost!,
-                                style: textWhiteMedium,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 7, right: 7),
-                child: Text(
-                  "Detail",
-                  style: textRedMini,
                 ),
               ),
             ],

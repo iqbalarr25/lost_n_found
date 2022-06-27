@@ -160,7 +160,7 @@ class HistoryView extends GetView<HistoryController> {
           margin: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              buildSearchTextField(),
+              //buildSearchTextField(),
               Expanded(
                 child: Obx(
                   () => MediaQuery.removePadding(
@@ -185,9 +185,11 @@ class HistoryView extends GetView<HistoryController> {
                                 } else {
                                   return Center(
                                     child: SingleChildScrollView(
-                                      child: Text(
-                                        "Belum ada history",
-                                        style: textRedMini,
+                                      child: FittedBox(
+                                        child: Text(
+                                          "Belum ada history",
+                                          style: textRedSmall,
+                                        ),
                                       ),
                                     ),
                                   );
@@ -388,13 +390,21 @@ class HistoryView extends GetView<HistoryController> {
                             ),
                           ],
                         ] else ...[
-                          Text(
-                            (post.questions![0].answers![0].statusAnswer ==
-                                    "Finished")
-                                ? "Cek kontak"
-                                : "Detail",
-                            style: textRedMini,
-                          ),
+                          if (AuthController.box.read("dataUser")["userId"] ==
+                              post.userId) ...[
+                            Text(
+                              "Detail",
+                              style: textRedMini,
+                            ),
+                          ] else ...[
+                            Text(
+                              (post.questions![0].answers![0].statusAnswer ==
+                                      "Finished")
+                                  ? "Cek kontak"
+                                  : "Detail",
+                              style: textRedMini,
+                            ),
+                          ],
                         ],
                       ],
                     ),
